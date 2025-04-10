@@ -2,7 +2,6 @@ package com.thedeathlycow.novoatlas.registry;
 
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -17,14 +16,20 @@ import java.io.InputStream;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-public class ImageManager {
+public final class ImageManager {
+    public static final ImageManager HEIGHTMAP = new ImageManager(NovoAtlasResourceKeys.HEIGHTMAP, false);
+    public static final ImageManager BIOME_MAP = new ImageManager(NovoAtlasResourceKeys.BIOME_MAP, true);
+
+    private final ResourceKey<Registry<MapImage>> registryKey;
+    private final boolean color;
     private final Map<ResourceKey<MapImage>, MapImage> registry = new IdentityHashMap<>();
 
-    public void reload(
-            ResourceKey<Registry<MapImage>> registryKey,
-            ResourceManager resourceManager,
-            boolean color
-    ) {
+    private ImageManager(ResourceKey<Registry<MapImage>> registryKey, boolean color) {
+        this.registryKey = registryKey;
+        this.color = color;
+    }
+
+    public void reload(ResourceManager resourceManager) {
         Map<ResourceKey<MapImage>, MapImage> updatedRegistry = new IdentityHashMap<>();
 
         String regPath = "novoatlas/" + registryKey.location().getPath();

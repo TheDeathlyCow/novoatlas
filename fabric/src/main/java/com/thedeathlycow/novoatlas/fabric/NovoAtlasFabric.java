@@ -6,6 +6,8 @@ import net.fabricmc.api.ModInitializer;
 
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.server.packs.PackType;
 
 public final class NovoAtlasFabric implements ModInitializer {
     @Override
@@ -13,5 +15,8 @@ public final class NovoAtlasFabric implements ModInitializer {
         NovoAtlas.init();
 
         DynamicRegistries.register(NovoAtlasResourceKeys.MAP_INFO, MapInfo.CODEC);
+
+        ResourceManagerHelper serverManager = ResourceManagerHelper.get(PackType.SERVER_DATA);
+        serverManager.registerReloadListener(new MapImageLoader());
     }
 }
