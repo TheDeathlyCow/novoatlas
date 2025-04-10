@@ -21,7 +21,7 @@
         "com.thedeathlycow.novoatlas.fabric.NovoAtlasFabric"
     ],
     "client": [
-      "com.thedeathlycow.novoatlas.fabric.client.ExampleModFabricClient"
+      "com.thedeathlycow.novoatlas.fabric.client.NovoAtlasClient"
     ]
   },
   "mixins": [
