@@ -1,5 +1,6 @@
 package com.thedeathlycow.novoatlas.registry;
 
+import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.FileToIdConverter;
@@ -52,6 +53,7 @@ public final class ImageManager {
 
         this.registry.clear();
         this.registry.putAll(updatedRegistry);
+        NovoAtlas.LOGGER.info("Reloaded map images for {}", registryKey);
     }
 
     @Nullable

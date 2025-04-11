@@ -1,0 +1,13 @@
+{
+    "type": "minecraft:overworld",
+    "generator": {
+        "type": "novoatlas:prescribed",
+        "map_info": "test:avila",
+        "biome_source": {
+            "type": "minecraft:multi_noise",
+            "preset": "minecraft:overworld"
+        },
+        "settings": "minecraft:overworld"
+    }
+}
+
