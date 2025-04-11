@@ -185,38 +185,32 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
                                 noiseChunk.updateForZ(absoluteZ, (double) localZ / cellWidth);
 
                                 // sample from heightmap
-//                                int x = noiseChunk.blockX();
-//                                int y = noiseChunk.blockY();
-//                                int z = noiseChunk.blockZ();
-//
-//                                mutable.set(x, y, z);
-//
-//                                OptionalInt maybeElevation = this.sampleHeight(
-//                                        randomState,
-//                                        noiseChunk,
-//                                        x, y, z
-//                                );
-//
-//                                if (maybeElevation.isEmpty()) {
-//                                    continue blockZ;
-//                                }
-//                                int elevation = maybeElevation.getAsInt();
+                                OptionalInt maybeElevation = this.sampleHeight(
+                                        randomState,
+                                        noiseChunk,
+                                        absoluteX, absoluteY, absoluteZ
+                                );
+
+                                if (maybeElevation.isEmpty()) {
+                                    continue blockZ;
+                                }
+
+                                int elevation = maybeElevation.getAsInt();
                                 BlockState state;
 
-//                                if (elevation - y <= 10) {
-//                                    state = this.sampleBlockStateForHeight(
-//                                            randomState,
-//                                            noiseChunk,
-//                                            absoluteY,
-//                                            elevation
-//                                    );
-//                                } else {
-//                                    // fallback to vanilla sampling when below surface
-//                                    state = this.sampleState(noiseChunkAccessor);
-//                                }
+                                if (elevation - absoluteY <= 10) {
+                                    state = this.sampleBlockStateForHeight(
+                                            randomState,
+                                            noiseChunk,
+                                            absoluteY,
+                                            elevation
+                                    );
+                                } else {
+                                    // fallback to vanilla sampling when below surface
+                                    state = this.sampleState(noiseChunkAccessor);
+                                }
 
-                                state = this.sampleState(noiseChunkAccessor);
-                                if (state != AIR && !SharedConstants.debugVoidTerrain(chunkAccess.getPos())) {
+                                if (!state.is(Blocks.AIR) && !SharedConstants.debugVoidTerrain(chunkAccess.getPos())) {
                                     currentSection.setBlockState(localBlockX, localBlockY, localBlockZ, state, false);
 
                                     oceanFloor.update(localBlockX, absoluteY, localBlockZ, state);
