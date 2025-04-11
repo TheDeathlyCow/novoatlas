@@ -31,12 +31,19 @@ public record MapImage(
     }
 
     private static int[][] color(BufferedImage image, int width, int height) {
+        int[] data = new int[width * height];
+        image.getRGB(0, 0, width, height, data, 0, width);
+
+        int x = 0;
+        int y = 0;
         int[][] pixels = new int[width][height];
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                pixels[x][y] = image.getRGB(x, y);
+        for (int datum : data) {
+            if (x >= width) {
+                x = 0;
+                y++;
             }
+            pixels[x++][y] = datum & 0xffffff;
         }
 
         return pixels;
