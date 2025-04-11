@@ -6,6 +6,8 @@ import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.mixin.accessor.NoiseBasedChunkGeneratorAccessor;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
@@ -13,6 +15,7 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import org.jetbrains.annotations.NotNull;
 
 public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
     public static final MapCodec<NovoAtlasChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
@@ -51,6 +54,11 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     @Override
+    public int getBaseHeight(int x, int z, Heightmap.Types types, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
+        return (int) this.getFromMap(x, z, this.mapInfo.value().lookupHeightmap());
+    }
+
+    @Override
     public void buildSurface(
             ChunkAccess chunkAccess,
             WorldGenerationContext worldGenerationContext,
@@ -86,5 +94,23 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
 
     public Holder<MapInfo> getMapInfo() {
         return mapInfo;
+    }
+
+    private double getFromMap(int x, int z, @NotNull MapImage mapImage) {
+        MapInfo info = this.mapInfo.value();
+
+        float xR = (x / info.horizontalScale()) + mapImage.width() / 2f; // these will always be even numbers
+        float zR = (z / info.horizontalScale()) + mapImage.height() / 2f;
+
+        if (xR < 0 || zR < 0 || xR >= mapImage.width() || zR >= mapImage.height()) {
+            return this.getMinY() - 1;
+        }
+
+        int truncatedX = Mth.floor(xR);
+        int truncatedZ = Mth.floor(zR);
+
+        double height = mapImage.bilerp(truncatedX, xR - truncatedX, truncatedZ, zR - truncatedZ);
+
+        return info.verticalScale() * height + info.startingY();
     }
 }

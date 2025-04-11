@@ -1,5 +1,7 @@
 package com.thedeathlycow.novoatlas.world.gen;
 
+import net.minecraft.util.Mth;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 
@@ -47,5 +49,23 @@ public record MapImage(
         }
 
         return pixels;
+    }
+
+    public double bilerp(int truncatedX, float xR, int truncatedZ, float zR) {
+        int dx = 0;
+        int dz = 0;
+
+        int u0 = Math.max(0, truncatedX + dx);
+        int v0 = Math.max(0, truncatedZ + dz);
+
+        int u1 = Math.min(width - 1, u0 + 1);
+        int v1 = Math.min(v0 + 1, height - 1);
+
+        float i00 = pixels[u0][v0];
+        float i01 = pixels[u1][v0];
+        float i10 = pixels[u0][v1];
+        float i11 = pixels[u1][v1];
+
+        return Mth.lerp2(Math.abs(xR), Math.abs(zR), i00, i10, i01, i11);
     }
 }
