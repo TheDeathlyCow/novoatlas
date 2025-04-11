@@ -1,14 +1,16 @@
 {
-  "required": true,
-  "package": "com.thedeathlycow.novoatlas.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "minVersion": "0.8",
-  "client": [
-  ],
-  "mixins": [
-    "accessor.NovoAtlasSurfaceSystemImpl"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+    "required": true,
+    "package": "com.thedeathlycow.novoatlas.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "minVersion": "0.8",
+    "client": [
+    ],
+    "mixins": [
+        "NovoAtlasSurfaceSystemImpl",
+        "accessor.NoiseBasedChunkGeneratorAccessor",
+        "accessor.NoiseChunkAccessor"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
 }
