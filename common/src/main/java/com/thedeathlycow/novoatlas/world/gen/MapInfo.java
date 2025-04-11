@@ -2,7 +2,10 @@ package com.thedeathlycow.novoatlas.world.gen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceLocation;
 
 public record MapInfo(
@@ -11,7 +14,7 @@ public record MapInfo(
         float verticalScale,
         int startingY
 ) {
-    public static final Codec<MapInfo> CODEC = RecordCodecBuilder.create(
+    public static final Codec<MapInfo> DIRECT_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     ResourceLocation.CODEC
                             .fieldOf("height_map")
@@ -27,4 +30,6 @@ public record MapInfo(
                             .forGetter(MapInfo::startingY)
             ).apply(instance, MapInfo::new)
     );
+
+    public static final Codec<Holder<MapInfo>> CODEC = RegistryFileCodec.create(NovoAtlasResourceKeys.MAP_INFO, DIRECT_CODEC);
 }

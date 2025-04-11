@@ -14,7 +14,7 @@ public final class NovoAtlasFabric implements ModInitializer {
     public void onInitialize() {
         NovoAtlas.init();
 
-        DynamicRegistries.register(NovoAtlasResourceKeys.MAP_INFO, MapInfo.CODEC);
+        DynamicRegistries.register(NovoAtlasResourceKeys.MAP_INFO, MapInfo.DIRECT_CODEC);
 
         ResourceManagerHelper serverManager = ResourceManagerHelper.get(PackType.SERVER_DATA);
         serverManager.registerReloadListener(new MapImageLoader());

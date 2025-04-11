@@ -17,7 +17,7 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(NovoAtlasResourceKeys.MAP_INFO, MapInfo.CODEC);
+        event.dataPackRegistry(NovoAtlasResourceKeys.MAP_INFO, MapInfo.DIRECT_CODEC);
     }
 
     private static void registerResourceReloader(AddServerReloadListenersEvent event) {

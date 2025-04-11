@@ -24,6 +24,10 @@ configurations {
     }
 }
 
+loom {
+    accessWidenerPath = project(":common").file("src/main/resources/novoatlas.accesswidener")
+}
+
 repositories {
     maven {
         name = 'NeoForged'
@@ -53,4 +57,11 @@ shadowJar {
 
 remapJar {
     inputFile.set shadowJar.archiveFile
+}
+
+tasks {
+    remapJar {
+        atAccessWideners.add("novoatlas.accesswidener")
+        archiveClassifier.set("neoforge")
+    }
 }

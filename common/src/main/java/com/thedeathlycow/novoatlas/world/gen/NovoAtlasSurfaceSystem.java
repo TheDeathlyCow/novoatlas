@@ -1,5 +1,6 @@
 package com.thedeathlycow.novoatlas.world.gen;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
@@ -19,7 +20,7 @@ public interface NovoAtlasSurfaceSystem {
             ChunkAccess chunkAccess,
             NoiseChunk noiseChunk,
             SurfaceRules.RuleSource ruleSource,
-            MapInfo mapInfo
+            Holder<MapInfo> mapInfo
     ) {
         throw new UnsupportedOperationException("Implemented in mixin");
     }
