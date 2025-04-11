@@ -3,14 +3,18 @@ package com.thedeathlycow.novoatlas.world.gen;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.NovoAtlas;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
@@ -56,9 +60,7 @@ public class NovoAtlasChunkGenerator extends ChunkGenerator {
         final int lavelLevel = -54;
 
         Aquifer.FluidStatus lava = new Aquifer.FluidStatus(lavelLevel, Blocks.LAVA.defaultBlockState());
-
         int seaLevel = noiseGeneratorSettings.seaLevel();
-
         Aquifer.FluidStatus baseFluid = new Aquifer.FluidStatus(seaLevel, noiseGeneratorSettings.defaultFluid());
 
         return (x, y, z) -> y < Math.min(lavelLevel, seaLevel) ? lava : baseFluid;
@@ -142,8 +144,49 @@ public class NovoAtlasChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void buildSurface(WorldGenRegion worldGenRegion, StructureManager structureManager, RandomState randomState, ChunkAccess chunkAccess) {
+    public void buildSurface(
+            WorldGenRegion worldGenRegion,
+            StructureManager structureManager,
+            RandomState randomState,
+            ChunkAccess chunkAccess
+    ) {
+        if (!SharedConstants.debugVoidTerrain(chunkAccess.getPos())) {
+            WorldGenerationContext context = new WorldGenerationContext(this, worldGenRegion);
+            this.buildSurface(
+                    chunkAccess,
+                    context,
+                    randomState,
+                    structureManager,
+                    worldGenRegion.getBiomeManager(),
+                    worldGenRegion.registryAccess().lookupOrThrow(Registries.BIOME),
+                    Blender.of(worldGenRegion)
+            );
+        }
+    }
 
+    private void buildSurface(
+            ChunkAccess chunkAccess,
+            WorldGenerationContext worldGenerationContext,
+            RandomState randomState,
+            StructureManager structureManager,
+            BiomeManager biomeManager,
+            Registry<Biome> registry,
+            Blender blender
+    ) {
+        NoiseChunk noiseChunk = chunkAccess.getOrCreateNoiseChunk(chunkAccessx -> this.createNoiseChunk(chunkAccessx, structureManager, blender, randomState));
+        NoiseGeneratorSettings noiseGeneratorSettings = this.settings.value();
+        ((NovoAtlasSurfaceSystem) randomState.surfaceSystem())
+                .novoatlas$buildSurface(
+                        randomState,
+                        biomeManager,
+                        registry,
+                        noiseGeneratorSettings.useLegacyRandomSource(),
+                        worldGenerationContext,
+                        chunkAccess,
+                        noiseChunk,
+                        noiseGeneratorSettings.surfaceRule(),
+                        this.mapInfo
+                );
     }
 
     @Override
