@@ -17,10 +17,10 @@ public record MapInfo(
                             .fieldOf("height_map")
                             .forGetter(MapInfo::heightMap),
                     Codec.FLOAT
-                            .fieldOf("horizontal_scale")
+                            .optionalFieldOf("horizontal_scale", 1f)
                             .forGetter(MapInfo::horizontalScale),
                     Codec.FLOAT
-                            .fieldOf("vertical_scale")
+                            .optionalFieldOf("vertical_scale", 1f)
                             .forGetter(MapInfo::verticalScale),
                     Codec.INT
                             .fieldOf("starting_y")
