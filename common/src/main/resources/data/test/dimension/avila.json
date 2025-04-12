@@ -4,7 +4,7 @@
         "type": "novoatlas:heightmap",
         "map_info": "test:avila",
         "biome_source": {
-            "type": "minecraft:multi_noise",
+            "type": "novoatlas:color_map",
             "preset": "minecraft:overworld"
         },
         "settings": "novoatlas:default"

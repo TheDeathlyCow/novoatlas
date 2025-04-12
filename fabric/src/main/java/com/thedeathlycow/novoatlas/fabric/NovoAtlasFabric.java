@@ -4,6 +4,7 @@ import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.NovoAtlasChunkGenerator;
+import com.thedeathlycow.novoatlas.world.gen.biome.NovoAtlasBiomeSource;
 import com.thedeathlycow.novoatlas.world.gen.condition.AbovePreliminarySurface;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
@@ -21,6 +22,7 @@ public final class NovoAtlasFabric implements ModInitializer {
 
         Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.loc("heightmap"), NovoAtlasChunkGenerator.CODEC);
         Registry.register(BuiltInRegistries.MATERIAL_CONDITION, NovoAtlas.loc("above_preliminary_surface"), AbovePreliminarySurface.CODEC.codec());
+        Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.loc("color_map"), NovoAtlasBiomeSource.CODEC);
 
         ResourceManagerHelper serverManager = ResourceManagerHelper.get(PackType.SERVER_DATA);
         serverManager.registerReloadListener(new MapImageLoader());
