@@ -23,7 +23,7 @@ public class NovoAtlasBiomeSource extends BiomeSource {
                     MapInfo.CODEC
                             .fieldOf("map_info")
                             .forGetter(NovoAtlasBiomeSource::getMapInfo),
-                    BiomeColorEntry.CODEC.listOf()
+                    BiomeColorEntry.LIST_CODEC
                             .fieldOf("biomes")
                             .forGetter(NovoAtlasBiomeSource::getBiomeColors),
                     Biome.CODEC
