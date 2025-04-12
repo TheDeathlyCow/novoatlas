@@ -3,7 +3,6 @@ package com.thedeathlycow.novoatlas.world.gen;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.NovoAtlas;
-import com.thedeathlycow.novoatlas.mixin.accessor.NoiseBasedChunkGeneratorAccessor;
 import com.thedeathlycow.novoatlas.mixin.accessor.NoiseChunkAccessor;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -23,6 +22,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
 
@@ -80,7 +80,7 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
             Blender blender
     ) {
         NoiseChunk noiseChunk = chunkAccess.getOrCreateNoiseChunk(chunk -> {
-            return ((NoiseBasedChunkGeneratorAccessor) this).invokeCreateNoiseChunk(
+            return this.createNoiseChunk(
                     chunk,
                     structureManager,
                     blender,
@@ -113,7 +113,7 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
             int noiseCellCount
     ) {
         NoiseChunk noiseChunk = chunkAccess.getOrCreateNoiseChunk(
-                c -> ((NoiseBasedChunkGeneratorAccessor) this).invokeCreateNoiseChunk(
+                c -> this.createNoiseChunk(
                         c,
                         structureManager,
                         blender,
@@ -188,7 +188,7 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
                                 // sample from heightmap
                                 int elevation = this.sampleElevation(absoluteX, absoluteZ);
 
-                                if (absoluteY >= elevation || elevation < this.getMinY()) {
+                                if (elevation < this.getMinY()) {
                                     continue blockZ;
                                 }
 
@@ -257,12 +257,41 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
         return column;
     }
 
+    @Override
+    @NotNull
+    protected NoiseChunk createNoiseChunk(ChunkAccess chunkAccess, StructureManager structureManager, Blender blender, RandomState randomState) {
+        return NoiseChunk.forChunk(
+                chunkAccess,
+                randomState,
+                Beardifier.forStructuresInChunk(structureManager, chunkAccess.getPos()),
+                this.generatorSettings().value(),
+                this.createFluidLevelSampler(this.generatorSettings().value()),
+                blender
+        );
+    }
+
+    private Aquifer.FluidPicker createFluidLevelSampler(NoiseGeneratorSettings settings) {
+        final int lavaLevel = -54;
+        var fluidPicker = new Aquifer.FluidStatus(lavaLevel, Blocks.LAVA.defaultBlockState());
+        int seaLevel = settings.seaLevel();
+
+        return (x, y, z) -> {
+            if (y < Math.min(lavaLevel, seaLevel)) {
+                return fluidPicker;
+            }
+            return new Aquifer.FluidStatus(
+                    seaLevel,
+                    settings.defaultFluid()
+            );
+        };
+    }
+
     private int sampleElevation(int x, int z) {
         return Mth.floor(this.mapInfo.value().getHeightMapElevation(x, z, this.getMinY() - 1));
     }
 
     private BlockState sampleBlockStateForHeight(RandomState randomState, NoiseChunk noiseChunk, int y, int elevation) {
-        if (y <= elevation) {
+        if (y < elevation) {
             double cave = randomState.router()
                     .initialDensityWithoutJaggedness()
                     .compute(noiseChunk);
@@ -270,7 +299,7 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
             return cave > 0
                     ? this.defaultBlock()
                     : this.getCaveState(elevation, this.getSeaLevel());
-        } else if (y <= this.getSeaLevel()) {
+        } else if (y < this.getSeaLevel()) {
             return this.defaultFluid();
         } else {
             return AIR;
@@ -298,7 +327,7 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     private BlockState defaultFluid() {
-        return this.generatorSettings().value().defaultBlock();
+        return this.generatorSettings().value().defaultFluid();
     }
 
     private BlockState defaultBlock() {
