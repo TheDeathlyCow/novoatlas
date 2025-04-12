@@ -7,7 +7,6 @@ import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;
 
@@ -48,11 +47,15 @@ public record MapInfo(
         return Objects.requireNonNull(ImageManager.BIOME_MAP.getImage(this.biomeMap), "Missing biome map image " + this.biomeMap);
     }
 
-    public double getHeightMapElevation(int x, int z, int fallback) {
-        return this.lookupHeightmap().getElevation(x, z, this, fallback);
+    public int getHeightMapElevation(int x, int z, int fallback) {
+        return this.lookupHeightmap().sample(x, z, this, fallback);
     }
 
-    public double getHeightMapElevation(int x, int z) {
-        return this.lookupHeightmap().getElevation(x, z, this);
+    public int getHeightMapElevation(int x, int z) {
+        return this.lookupHeightmap().sample(x, z, this);
+    }
+
+    public int getBiomeColor(int x, int z, int fallback) {
+        return this.lookupBiomeMap().sample(x, z, this, fallback);
     }
 }

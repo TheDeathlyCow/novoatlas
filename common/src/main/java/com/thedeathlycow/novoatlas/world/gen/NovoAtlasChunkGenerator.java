@@ -287,7 +287,7 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     private int sampleElevation(int x, int z) {
-        return Mth.floor(this.mapInfo.value().getHeightMapElevation(x, z, this.getMinY() - 1));
+        return this.mapInfo.value().getHeightMapElevation(x, z, this.getMinY() - 1);
     }
 
     private BlockState sampleBlockStateForHeight(RandomState randomState, NoiseChunk noiseChunk, int y, int elevation) {

@@ -37,7 +37,7 @@ public record AbovePreliminarySurface(
 
             SurfaceRulesContextAccessor accessor = (SurfaceRulesContextAccessor) context;
 
-            double elevation = mapInfo.getHeightMapElevation(
+            int elevation = mapInfo.getHeightMapElevation(
                     accessor.blockX(),
                     accessor.blockZ()
             );

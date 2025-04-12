@@ -13,7 +13,7 @@ public final class ColorHelper {
     );
 
     private static DataResult<String> isValidColor(String str) {
-        int requiredLength = "#000000".length();
+        final int requiredLength = "#000000".length();
 
         if (str.length() != requiredLength) {
             return DataResult.error(() -> "Color string must be " + requiredLength + " characters long");
@@ -26,7 +26,7 @@ public final class ColorHelper {
         for (int i = 1; i < str.length(); i++) {
             char digit = str.charAt(i);
             if (!Character.isDefined(digit) && Character.digit(digit, 16) == -1) {
-                return DataResult.error(() -> "Found non [a-fA-F0-9] character in color code: " + digit);
+                return DataResult.error(() -> "Found non hex digit in color code: '" + digit + "' (must be [a-fA-F0-9])");
             }
         }
 

@@ -1,7 +1,6 @@
 package com.thedeathlycow.novoatlas.world.gen;
 
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -52,11 +51,11 @@ public record MapImage(
         return pixels;
     }
 
-    public double getElevation(int x, int z, MapInfo info) {
-        return this.getElevation(x, z, info, Integer.MIN_VALUE);
+    public int sample(int x, int z, MapInfo info) {
+        return this.sample(x, z, info, Integer.MIN_VALUE);
     }
 
-    public double getElevation(int x, int z, MapInfo info, int fallback) {
+    public int sample(int x, int z, MapInfo info, int fallback) {
         float xR = (x / info.horizontalScale()) + this.width() / 2f; // these will always be even numbers
         float zR = (z / info.horizontalScale()) + this.height() / 2f;
 
@@ -69,7 +68,7 @@ public record MapImage(
 
         double height = this.bilerp(truncatedX, xR - truncatedX, truncatedZ, zR - truncatedZ);
 
-        return info.verticalScale() * height + info.startingY();
+        return Mth.floor(info.verticalScale() * height + info.startingY());
     }
 
     private double bilerp(int truncatedX, float xR, int truncatedZ, float zR) {
