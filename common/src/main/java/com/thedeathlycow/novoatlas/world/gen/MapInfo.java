@@ -48,14 +48,14 @@ public record MapInfo(
     }
 
     public int getHeightMapElevation(int x, int z, int fallback) {
-        return this.lookupHeightmap().sample(x, z, this, fallback);
+        return this.lookupHeightmap().sample(x, z, this, true, fallback);
     }
 
     public int getHeightMapElevation(int x, int z) {
-        return this.lookupHeightmap().sample(x, z, this);
+        return this.lookupHeightmap().sample(x, z, this, true);
     }
 
     public int getBiomeColor(int x, int z, int fallback) {
-        return this.lookupBiomeMap().sample(x, z, this, fallback);
+        return this.lookupBiomeMap().sample(x, z, this, false, fallback);
     }
 }

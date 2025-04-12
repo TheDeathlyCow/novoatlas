@@ -51,11 +51,11 @@ public record MapImage(
         return pixels;
     }
 
-    public int sample(int x, int z, MapInfo info) {
-        return this.sample(x, z, info, Integer.MIN_VALUE);
+    public int sample(int x, int z, MapInfo info, boolean lerp) {
+        return this.sample(x, z, info, lerp, Integer.MIN_VALUE);
     }
 
-    public int sample(int x, int z, MapInfo info, int fallback) {
+    public int sample(int x, int z, MapInfo info, boolean lerp, int fallback) {
         float xR = (x / info.horizontalScale()) + this.width() / 2f; // these will always be even numbers
         float zR = (z / info.horizontalScale()) + this.height() / 2f;
 
@@ -66,9 +66,13 @@ public record MapImage(
         int truncatedX = Mth.floor(xR);
         int truncatedZ = Mth.floor(zR);
 
-        double height = this.bilerp(truncatedX, xR - truncatedX, truncatedZ, zR - truncatedZ);
+        if (lerp) {
+            double height = this.bilerp(truncatedX, xR - truncatedX, truncatedZ, zR - truncatedZ);
 
-        return Mth.floor(info.verticalScale() * height + info.startingY());
+            return Mth.floor(info.verticalScale() * height + info.startingY());
+        } else {
+            return this.pixels[truncatedX][truncatedZ];
+        }
     }
 
     private double bilerp(int truncatedX, float xR, int truncatedZ, float zR) {

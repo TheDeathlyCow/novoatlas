@@ -1,7 +1,6 @@
 package com.thedeathlycow.novoatlas.world.gen.biome;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
@@ -9,10 +8,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.biome.Climate;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,7 +70,7 @@ public class NovoAtlasBiomeSource extends BiomeSource {
 
     @Override
     protected MapCodec<? extends BiomeSource> codec() {
-        return null;
+        return CODEC;
     }
 
     @Override

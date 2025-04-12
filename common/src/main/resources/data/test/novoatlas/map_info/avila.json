@@ -1,5 +1,6 @@
 {
     "height_map": "test:avila",
+    "biome_map": "test:avila",
     "starting_y": 6,
     "horizontal_scale": 1,
     "vertical_scale": 1

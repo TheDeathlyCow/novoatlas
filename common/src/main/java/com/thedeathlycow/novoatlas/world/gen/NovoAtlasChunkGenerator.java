@@ -103,6 +103,13 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
                 );
     }
 
+    /**
+     * A debofuscated reimplementation of {@link NoiseBasedChunkGenerator#doFill(Blender, StructureManager, RandomState, ChunkAccess, int, int)}
+     * (also called populateNoise in Yarn).
+     * <p>
+     * This implementation is very similar to the vanilla one - except that it contains special handling for sampling from
+     * the atlas height map (which is part of this mod).
+     */
     @Override
     protected ChunkAccess doFill(
             Blender blender,
@@ -178,14 +185,14 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
                             noiseChunk.updateForX(absoluteX, (double) localX / cellWidth);
 
                             blockZ:
-                            // NOSONAR: labels are necessary here for clarity
                             for (int localZ = 0; localZ < cellWidth; localZ++) {
                                 int absoluteZ = chunkBlockZ + cellZ * cellWidth + localZ;
                                 int localBlockZ = absoluteZ & 0xF;
 
                                 noiseChunk.updateForZ(absoluteZ, (double) localZ / cellWidth);
 
-                                // sample from heightmap
+                                // sample from heightmap - vanilla would fallback to the regular sampleState() call at
+                                // this point
                                 int elevation = this.sampleElevation(absoluteX, absoluteZ);
 
                                 if (elevation < this.getMinY()) {
@@ -201,6 +208,9 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
                                             elevation
                                     );
                                 } else {
+                                    // use vanilla sampling when below the surface
+                                    // this is used in conjunction with custom noise settings to properly fill the interior,
+                                    // using the overworld settings here will make hollow mountains
                                     state = this.sampleState(noiseChunkAccessor);
                                 }
 
