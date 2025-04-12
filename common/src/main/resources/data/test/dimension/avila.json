@@ -1,7 +1,7 @@
 {
     "type": "minecraft:overworld",
     "generator": {
-        "type": "novoatlas:prescribed",
+        "type": "novoatlas:heightmap",
         "map_info": "test:avila",
         "biome_source": {
             "type": "minecraft:multi_noise",

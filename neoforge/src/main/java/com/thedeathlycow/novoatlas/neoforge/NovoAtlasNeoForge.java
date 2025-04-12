@@ -25,7 +25,7 @@ public final class NovoAtlasNeoForge {
     private static void register(RegisterEvent event) {
         event.register(
                 Registries.CHUNK_GENERATOR,
-                NovoAtlas.loc("prescribed"),
+                NovoAtlas.loc("heightmap"),
                 () -> NovoAtlasChunkGenerator.CODEC
         );
 

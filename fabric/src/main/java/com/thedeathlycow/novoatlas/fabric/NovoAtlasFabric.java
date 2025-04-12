@@ -19,7 +19,7 @@ public final class NovoAtlasFabric implements ModInitializer {
 
         DynamicRegistries.register(NovoAtlasResourceKeys.MAP_INFO, MapInfo.DIRECT_CODEC);
 
-        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.loc("prescribed"), NovoAtlasChunkGenerator.CODEC);
+        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.loc("heightmap"), NovoAtlasChunkGenerator.CODEC);
         Registry.register(BuiltInRegistries.MATERIAL_CONDITION, NovoAtlas.loc("above_preliminary_surface"), AbovePreliminarySurface.CODEC.codec());
 
         ResourceManagerHelper serverManager = ResourceManagerHelper.get(PackType.SERVER_DATA);
