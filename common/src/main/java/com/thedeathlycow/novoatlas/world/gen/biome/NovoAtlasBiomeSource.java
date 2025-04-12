@@ -69,7 +69,7 @@ public class NovoAtlasBiomeSource extends BiomeSource {
     }
 
     @Override
-    protected MapCodec<? extends BiomeSource> codec() {
+    protected MapCodec<? extends NovoAtlasBiomeSource> codec() {
         return CODEC;
     }
 

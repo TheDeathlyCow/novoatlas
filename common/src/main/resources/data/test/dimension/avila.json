@@ -8,6 +8,7 @@
             "type": "novoatlas:color_map",
             "map_info": "test:avila",
             "default_biome": "minecraft:the_void",
+            "below_depth": 10,
             "biomes": [
                 {
                     "biome": "minecraft:plains",
@@ -73,7 +74,102 @@
                     "biome": "minecraft:taiga",
                     "color": "#338553"
                 }
-            ]
+            ],
+            "cave_biomes": {
+                "type": "minecraft:multi_noise",
+                "biomes": [
+                    {
+                        "parameters": {
+                            "weirdness": [
+                                -1,
+                                1
+                            ],
+                            "continentalness": [
+                                -1.2,
+                                0.8
+                            ],
+                            "erosion": [
+                                -1,
+                                1
+                            ],
+                            "temperature": [
+                                -1,
+                                1
+                            ],
+                            "humidity": [
+                                0.7,
+                                1
+                            ],
+                            "depth": [
+                                0.2,
+                                0.9
+                            ],
+                            "offset": 0
+                        },
+                        "biome": "minecraft:lush_caves"
+                    },
+                    {
+                        "parameters": {
+                            "weirdness": [
+                                -1,
+                                1
+                            ],
+                            "continentalness": [
+                                0.8,
+                                1
+                            ],
+                            "erosion": [
+                                -1,
+                                1
+                            ],
+                            "temperature": [
+                                -1,
+                                1
+                            ],
+                            "humidity": [
+                                -1,
+                                1
+                            ],
+                            "depth": [
+                                0.2,
+                                0.9
+                            ],
+                            "offset": 0
+                        },
+                        "biome": "minecraft:dripstone_caves"
+                    },
+                    {
+                        "parameters": {
+                            "weirdness": [
+                                -1,
+                                1
+                            ],
+                            "continentalness": [
+                                -1.2,
+                                1
+                            ],
+                            "erosion": [
+                                -1,
+                                -0.375
+                            ],
+                            "temperature": [
+                                -1,
+                                1
+                            ],
+                            "humidity": [
+                                -1,
+                                1
+                            ],
+                            "depth": [
+                                1.1,
+                                1.1
+                            ],
+                            "offset": 0
+                        },
+                        "biome": "minecraft:deep_dark"
+                    }
+                ]
+            }
         }
     }
 }
