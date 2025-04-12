@@ -18,16 +18,16 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 public final class ImageManager {
-    public static final ImageManager HEIGHTMAP = new ImageManager(NovoAtlasResourceKeys.HEIGHTMAP, false);
-    public static final ImageManager BIOME_MAP = new ImageManager(NovoAtlasResourceKeys.BIOME_MAP, true);
+    public static final ImageManager HEIGHTMAP = new ImageManager(NovoAtlasResourceKeys.HEIGHTMAP, MapImage.Type.HEIGHTMAP);
+    public static final ImageManager BIOME_MAP = new ImageManager(NovoAtlasResourceKeys.BIOME_MAP, MapImage.Type.BIOME_MAP);
 
     private final ResourceKey<Registry<MapImage>> registryKey;
-    private final boolean color;
+    private final MapImage.Type type;
     private final Map<ResourceKey<MapImage>, MapImage> registry = new IdentityHashMap<>();
 
-    private ImageManager(ResourceKey<Registry<MapImage>> registryKey, boolean color) {
+    private ImageManager(ResourceKey<Registry<MapImage>> registryKey, MapImage.Type type) {
         this.registryKey = registryKey;
-        this.color = color;
+        this.type = type;
     }
 
     public void reload(ResourceManager resourceManager) {
@@ -45,7 +45,7 @@ public final class ImageManager {
                 throw new RuntimeException(e);
             }
 
-            MapImage map = MapImage.fromBufferedImage(image, color);
+            MapImage map = MapImage.fromBufferedImage(image, this.type);
             ResourceKey<MapImage> key = ResourceKey.create(registryKey, converter.fileToId(entry.getKey()));
 
             updatedRegistry.put(key, map);

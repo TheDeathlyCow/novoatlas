@@ -62,8 +62,8 @@ public record MapImage(
     }
 
     public int sample(int x, int z, MapInfo info, int fallback) {
-        float xR = (x / info.horizontalScale()) + this.width() / 2f; // these will always be even numbers
-        float zR = (z / info.horizontalScale()) + this.height() / 2f;
+        double xR = (x / info.horizontalScale()) + this.width() / 2.0; // these will always be even numbers
+        double zR = (z / info.horizontalScale()) + this.height() / 2.0;
 
         if (xR < 0 || zR < 0 || xR >= this.width() || zR >= this.height()) {
             return fallback;
@@ -73,7 +73,11 @@ public record MapImage(
         int truncatedZ = Mth.floor(zR);
 
         if (this.type == Type.HEIGHTMAP) {
-            double height = this.bilerp(truncatedX, xR - truncatedX, truncatedZ, zR - truncatedZ);
+            // xR - truncatedX gets the fractional part of the sampled point, to use for lerp deltas
+            double deltaX = xR - truncatedX;
+            double deltaZ = zR - truncatedZ;
+
+            double height = this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ);
 
             return Mth.floor(info.verticalScale() * height + info.startingY());
         } else {
@@ -81,21 +85,18 @@ public record MapImage(
         }
     }
 
-    private double bilerp(int truncatedX, float xR, int truncatedZ, float zR) {
-        int dx = 0;
-        int dz = 0;
-
-        int u0 = Math.max(0, truncatedX + dx);
-        int v0 = Math.max(0, truncatedZ + dz);
+    private double bilerp(int x, double deltaX, int z, double deltaZ) {
+        int u0 = Math.max(0, x);
+        int v0 = Math.max(0, z);
 
         int u1 = Math.min(width - 1, u0 + 1);
         int v1 = Math.min(v0 + 1, height - 1);
 
-        float i00 = pixels[u0][v0];
-        float i01 = pixels[u1][v0];
-        float i10 = pixels[u0][v1];
-        float i11 = pixels[u1][v1];
+        double i00 = pixels[u0][v0];
+        double i01 = pixels[u1][v0];
+        double i10 = pixels[u0][v1];
+        double i11 = pixels[u1][v1];
 
-        return Mth.lerp2(Math.abs(xR), Math.abs(zR), i00, i10, i01, i11);
+        return Mth.lerp2(Math.abs(deltaX), Math.abs(deltaZ), i00, i10, i01, i11);
     }
 }
