@@ -8,18 +8,24 @@ import java.awt.image.Raster;
 public record MapImage(
         int width,
         int height,
-        int[][] pixels
+        int[][] pixels,
+        Type type
 ) {
-    public static MapImage fromBufferedImage(BufferedImage image, boolean color) {
+    public enum Type {
+        BIOME_MAP,
+        HEIGHTMAP
+    }
+
+    public static MapImage fromBufferedImage(BufferedImage image, Type type) {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        int[][] pixels = color ? color(image, width, height) : grayscale(image, width, height);
+        int[][] pixels = type == Type.BIOME_MAP ? getColorPixels(image, width, height) : getGrayScalePixels(image, width, height);
 
-        return new MapImage(width, height, pixels);
+        return new MapImage(width, height, pixels, type);
     }
 
-    private static int[][] grayscale(BufferedImage image, int width, int height) {
+    private static int[][] getGrayScalePixels(BufferedImage image, int width, int height) {
         int[][] pixels = new int[width][height];
         Raster raster = image.getRaster();
 
@@ -32,7 +38,7 @@ public record MapImage(
         return pixels;
     }
 
-    private static int[][] color(BufferedImage image, int width, int height) {
+    private static int[][] getColorPixels(BufferedImage image, int width, int height) {
         int[] data = new int[width * height];
         image.getRGB(0, 0, width, height, data, 0, width);
 
@@ -51,11 +57,11 @@ public record MapImage(
         return pixels;
     }
 
-    public int sample(int x, int z, MapInfo info, boolean lerp) {
-        return this.sample(x, z, info, lerp, Integer.MIN_VALUE);
+    public int sample(int x, int z, MapInfo info) {
+        return this.sample(x, z, info, Integer.MIN_VALUE);
     }
 
-    public int sample(int x, int z, MapInfo info, boolean lerp, int fallback) {
+    public int sample(int x, int z, MapInfo info, int fallback) {
         float xR = (x / info.horizontalScale()) + this.width() / 2f; // these will always be even numbers
         float zR = (z / info.horizontalScale()) + this.height() / 2f;
 
@@ -66,7 +72,7 @@ public record MapImage(
         int truncatedX = Mth.floor(xR);
         int truncatedZ = Mth.floor(zR);
 
-        if (lerp) {
+        if (this.type == Type.HEIGHTMAP) {
             double height = this.bilerp(truncatedX, xR - truncatedX, truncatedZ, zR - truncatedZ);
 
             return Mth.floor(info.verticalScale() * height + info.startingY());
