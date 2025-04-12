@@ -231,11 +231,9 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
 
     private BlockState sampleBlockStateForHeight(RandomState randomState, NoiseChunk noiseChunk, int y, int elevation) {
         if (y <= elevation) {
-//            double cave = randomState.router()
-//                    .initialDensityWithoutJaggedness()
-//                    .compute(noiseChunk);
-
-            double cave = 1;
+            double cave = randomState.router()
+                    .initialDensityWithoutJaggedness()
+                    .compute(noiseChunk);
 
             return cave > 0
                     ? this.defaultBlock()

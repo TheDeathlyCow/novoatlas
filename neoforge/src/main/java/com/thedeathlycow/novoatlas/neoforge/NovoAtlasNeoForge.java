@@ -4,6 +4,9 @@ import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.NovoAtlasChunkGenerator;
+import com.thedeathlycow.novoatlas.world.gen.condition.AbovePreliminarySurface;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -26,6 +29,12 @@ public final class NovoAtlasNeoForge {
                 Registries.CHUNK_GENERATOR,
                 NovoAtlas.loc("prescribed"),
                 () -> NovoAtlasChunkGenerator.CODEC
+        );
+
+        event.register(
+                Registries.MATERIAL_CONDITION,
+                NovoAtlas.loc("above_preliminary_surface"),
+                AbovePreliminarySurface.CODEC::codec
         );
     }
 
