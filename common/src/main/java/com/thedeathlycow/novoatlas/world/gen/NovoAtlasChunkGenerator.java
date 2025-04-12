@@ -8,10 +8,13 @@ import com.thedeathlycow.novoatlas.mixin.accessor.NoiseChunkAccessor;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,7 +22,6 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import org.jetbrains.annotations.NotNull;
 
 public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
     public static final MapCodec<NovoAtlasChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
@@ -64,39 +66,39 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
         return this.sampleHeight(x, z);
     }
 
-//    @Override
-//    public void buildSurface(
-//            ChunkAccess chunkAccess,
-//            WorldGenerationContext worldGenerationContext,
-//            RandomState randomState,
-//            StructureManager structureManager,
-//            BiomeManager biomeManager,
-//            Registry<Biome> registry,
-//            Blender blender
-//    ) {
-//        NoiseChunk noiseChunk = chunkAccess.getOrCreateNoiseChunk(chunk -> {
-//            return ((NoiseBasedChunkGeneratorAccessor) this).invokeCreateNoiseChunk(
-//                    chunk,
-//                    structureManager,
-//                    blender,
-//                    randomState
-//            );
-//        });
-//
-//        NoiseGeneratorSettings noiseGeneratorSettings = this.generatorSettings().value();
-//        ((NovoAtlasSurfaceSystem) randomState.surfaceSystem())
-//                .novoatlas$buildSurface(
-//                        randomState,
-//                        biomeManager,
-//                        registry,
-//                        noiseGeneratorSettings.useLegacyRandomSource(),
-//                        worldGenerationContext,
-//                        chunkAccess,
-//                        noiseChunk,
-//                        noiseGeneratorSettings.surfaceRule(),
-//                        this.mapInfo
-//                );
-//    }
+    @Override
+    public void buildSurface(
+            ChunkAccess chunkAccess,
+            WorldGenerationContext worldGenerationContext,
+            RandomState randomState,
+            StructureManager structureManager,
+            BiomeManager biomeManager,
+            Registry<Biome> registry,
+            Blender blender
+    ) {
+        NoiseChunk noiseChunk = chunkAccess.getOrCreateNoiseChunk(chunk -> {
+            return ((NoiseBasedChunkGeneratorAccessor) this).invokeCreateNoiseChunk(
+                    chunk,
+                    structureManager,
+                    blender,
+                    randomState
+            );
+        });
+
+        NoiseGeneratorSettings noiseGeneratorSettings = this.generatorSettings().value();
+        ((NovoAtlasSurfaceSystem) randomState.surfaceSystem())
+                .novoatlas$buildSurface(
+                        randomState,
+                        biomeManager,
+                        registry,
+                        noiseGeneratorSettings.useLegacyRandomSource(),
+                        worldGenerationContext,
+                        chunkAccess,
+                        noiseChunk,
+                        noiseGeneratorSettings.surfaceRule(),
+                        this.mapInfo
+                );
+    }
 
     @Override
     protected ChunkAccess doFill(
@@ -172,7 +174,8 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
 
                             noiseChunk.updateForX(absoluteX, (double) localX / cellWidth);
 
-                            blockZ: // NOSONAR: labels are necessary here for clarity
+                            blockZ:
+                            // NOSONAR: labels are necessary here for clarity
                             for (int localZ = 0; localZ < cellWidth; localZ++) {
                                 int absoluteZ = chunkBlockZ + cellZ * cellWidth + localZ;
                                 int localBlockZ = absoluteZ & 0xF;
@@ -186,23 +189,28 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
                                     continue blockZ;
                                 }
 
-                                BlockState state = this.sampleBlockStateForHeight(
-                                        randomState,
-                                        noiseChunk,
-                                        absoluteY,
-                                        elevation
-                                );
+                                BlockState state;
+                                if (absoluteY >= elevation - 10) {
+                                    state = this.sampleBlockStateForHeight(
+                                            randomState,
+                                            noiseChunk,
+                                            absoluteY,
+                                            elevation
+                                    );
+                                } else {
+                                    state = this.sampleState(noiseChunkAccessor);
+                                }
 
                                 if (!state.is(Blocks.AIR) && !SharedConstants.debugVoidTerrain(chunkAccess.getPos())) {
                                     currentSection.setBlockState(localBlockX, localBlockY, localBlockZ, state, false);
 
                                     oceanFloor.update(localBlockX, absoluteY, localBlockZ, state);
                                     worldSurface.update(localBlockX, absoluteY, localBlockZ, state);
-                                }
 
-                                if (aquifer.shouldScheduleFluidUpdate() && !state.getFluidState().isEmpty()) {
-                                    mutable.set(absoluteX, absoluteY, absoluteZ);
-                                    chunkAccess.markPosForPostprocessing(mutable);
+                                    if (aquifer.shouldScheduleFluidUpdate() && !state.getFluidState().isEmpty()) {
+                                        mutable.set(absoluteX, absoluteY, absoluteZ);
+                                        chunkAccess.markPosForPostprocessing(mutable);
+                                    }
                                 }
                             }
                         }
@@ -218,19 +226,20 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     private int sampleHeight(int x, int z) {
-        return Mth.floor(this.getFromMap(x, z, this.mapInfo.value().lookupHeightmap()));
+        return Mth.floor(this.mapInfo.value().getHeightMapElevation(x, z));
     }
 
     private BlockState sampleBlockStateForHeight(RandomState randomState, NoiseChunk noiseChunk, int y, int elevation) {
         if (y <= elevation) {
-            return Blocks.PINK_CONCRETE.defaultBlockState();
 //            double cave = randomState.router()
 //                    .initialDensityWithoutJaggedness()
 //                    .compute(noiseChunk);
-//
-//            return cave > 0
-//                    ?
-//                    : this.getCaveState(elevation, this.getSeaLevel());
+
+            double cave = 1;
+
+            return cave > 0
+                    ? this.defaultBlock()
+                    : this.getCaveState(elevation, this.getSeaLevel());
         } else if (y <= this.getSeaLevel()) {
             return this.defaultFluid();
         } else {
@@ -240,24 +249,6 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
 
     public Holder<MapInfo> getMapInfo() {
         return mapInfo;
-    }
-
-    private double getFromMap(int x, int z, @NotNull MapImage mapImage) {
-        MapInfo info = this.mapInfo.value();
-
-        float xR = (x / info.horizontalScale()) + mapImage.width() / 2f; // these will always be even numbers
-        float zR = (z / info.horizontalScale()) + mapImage.height() / 2f;
-
-        if (xR < 0 || zR < 0 || xR >= mapImage.width() || zR >= mapImage.height()) {
-            return this.getMinY() - 1;
-        }
-
-        int truncatedX = Mth.floor(xR);
-        int truncatedZ = Mth.floor(zR);
-
-        double height = mapImage.bilerp(truncatedX, xR - truncatedX, truncatedZ, zR - truncatedZ);
-
-        return info.verticalScale() * height + info.startingY();
     }
 
     private BlockState getCaveState(int elevation, int seaLevel) {

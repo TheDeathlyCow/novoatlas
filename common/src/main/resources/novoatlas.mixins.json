@@ -7,8 +7,10 @@
     ],
     "mixins": [
         "NovoAtlasSurfaceSystemImpl",
+        "SurfaceRulesContextMixin",
         "accessor.NoiseBasedChunkGeneratorAccessor",
-        "accessor.NoiseChunkAccessor"
+        "accessor.NoiseChunkAccessor",
+        "accessor.SurfaceRulesContextAccessor"
     ],
     "injectors": {
         "defaultRequire": 1

@@ -3,6 +3,7 @@ package com.thedeathlycow.novoatlas.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.NovoAtlasSurfaceSystem;
+import com.thedeathlycow.novoatlas.world.gen.condition.NovoAtlasSurfaceRulesContext;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
@@ -31,7 +32,7 @@ public abstract class NovoAtlasSurfaceSystemImpl implements NovoAtlasSurfaceSyst
     );
 
     @Unique
-    private ThreadLocal<MapInfo> novoatlas$mapInfo = new ThreadLocal<>();
+    private final ThreadLocal<MapInfo> novoatlas$mapInfo = new ThreadLocal<>();
 
     @Override
     public void novoatlas$buildSurface(
@@ -68,5 +69,8 @@ public abstract class NovoAtlasSurfaceSystemImpl implements NovoAtlasSurfaceSyst
             CallbackInfo ci,
             @Local(ordinal = 0) SurfaceRules.Context context
     ) {
+        ((NovoAtlasSurfaceRulesContext) context).novoatlas$setMapInfo(this.novoatlas$mapInfo.get());
+
+        this.novoatlas$mapInfo.remove();
     }
 }
