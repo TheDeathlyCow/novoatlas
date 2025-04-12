@@ -1,19 +1,16 @@
 package com.thedeathlycow.novoatlas.fabric;
 
+import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.NovoAtlasChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.condition.AbovePreliminarySurface;
 import net.fabricmc.api.ModInitializer;
-
-import com.thedeathlycow.novoatlas.NovoAtlas;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.world.item.Items;
 
 public final class NovoAtlasFabric implements ModInitializer {
     @Override

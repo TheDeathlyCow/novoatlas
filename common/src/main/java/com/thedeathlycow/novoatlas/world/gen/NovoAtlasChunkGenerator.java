@@ -12,6 +12,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
@@ -22,6 +23,8 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
+
+import java.util.stream.Stream;
 
 public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
     public static final MapCodec<NovoAtlasChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
@@ -63,7 +66,7 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types types, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
-        return this.sampleHeight(x, z);
+        return this.sampleElevation(x, z);
     }
 
     @Override
@@ -183,7 +186,7 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
                                 noiseChunk.updateForZ(absoluteZ, (double) localZ / cellWidth);
 
                                 // sample from heightmap
-                                int elevation = this.sampleHeight(absoluteX, absoluteZ);
+                                int elevation = this.sampleElevation(absoluteX, absoluteZ);
 
                                 if (absoluteY >= elevation || elevation < this.getMinY()) {
                                     continue blockZ;
@@ -225,8 +228,37 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
         return chunkAccess;
     }
 
-    private int sampleHeight(int x, int z) {
-        return Mth.floor(this.mapInfo.value().getHeightMapElevation(x, z));
+    @Override
+    public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
+        int elevation = this.sampleElevation(x, z);
+        int minY = this.getMinY();
+        int seaLevel = this.getSeaLevel();
+
+        NoiseColumn column;
+        if (elevation < minY) {
+            column = new NoiseColumn(levelHeightAccessor.getMinY(), new BlockState[]{AIR});
+        } else if (elevation < seaLevel) {
+            column = new NoiseColumn(
+                    minY,
+                    Stream.concat(
+                            Stream.generate(this::defaultBlock).limit(elevation - minY),
+                            Stream.generate(this::defaultFluid).limit(seaLevel - elevation - minY)
+                    ).toArray(BlockState[]::new)
+            );
+        } else {
+            column = new NoiseColumn(
+                    minY,
+                    Stream.generate(this::defaultBlock)
+                            .limit(elevation - minY + 1)
+                            .toArray(BlockState[]::new)
+            );
+        }
+
+        return column;
+    }
+
+    private int sampleElevation(int x, int z) {
+        return Mth.floor(this.mapInfo.value().getHeightMapElevation(x, z, this.getMinY() - 1));
     }
 
     private BlockState sampleBlockStateForHeight(RandomState randomState, NoiseChunk noiseChunk, int y, int elevation) {

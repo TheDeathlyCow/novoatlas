@@ -53,11 +53,15 @@ public record MapImage(
     }
 
     public double getElevation(int x, int z, MapInfo info) {
+        return this.getElevation(x, z, info, Integer.MIN_VALUE);
+    }
+
+    public double getElevation(int x, int z, MapInfo info, int fallback) {
         float xR = (x / info.horizontalScale()) + this.width() / 2f; // these will always be even numbers
         float zR = (z / info.horizontalScale()) + this.height() / 2f;
 
         if (xR < 0 || zR < 0 || xR >= this.width() || zR >= this.height()) {
-            return Integer.MIN_VALUE;
+            return fallback;
         }
 
         int truncatedX = Mth.floor(xR);

@@ -42,6 +42,10 @@ public record MapInfo(
         return Objects.requireNonNull(ImageManager.HEIGHTMAP.getImage(key), "Missing height map image " + key);
     }
 
+    public double getHeightMapElevation(int x, int z, int fallback) {
+        return this.lookupHeightmap().getElevation(x, z, this, fallback);
+    }
+
     public double getHeightMapElevation(int x, int z) {
         return this.lookupHeightmap().getElevation(x, z, this);
     }
