@@ -2,6 +2,8 @@ plugins {
     id 'com.github.johnrengelman.shadow'
 }
 
+def accessWidenerFile = project(":common").file("src/main/resources/novoatlas.accesswidener")
+
 architectury {
     platformSetupLoomIde()
     fabric()
@@ -25,7 +27,7 @@ configurations {
 }
 
 loom {
-    accessWidenerPath = project(":common").file("src/main/resources/novoatlas.accesswidener")
+    accessWidenerPath = accessWidenerFile
 }
 
 dependencies {
