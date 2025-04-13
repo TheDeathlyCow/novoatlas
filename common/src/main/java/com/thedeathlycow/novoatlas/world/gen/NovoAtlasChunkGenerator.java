@@ -214,7 +214,7 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
 
                                 BlockState state;
                                 if (this.computeBeardDensity(distanceBelowTop, finalDensityValue, beardifier, noiseChunk) > 0) {
-                                    state = Blocks.PINK_CONCRETE.defaultBlockState();
+                                    state = this.defaultBlock();
                                 } else if (distanceBelowTop <= 10) {
                                     state = this.sampleBlockStateForHeight(
                                             finalDensityValue,
