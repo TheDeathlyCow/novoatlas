@@ -23,9 +23,10 @@ public final class ColorHelper {
             return DataResult.error(() -> "Color string must start with '#'");
         }
 
+        // start at 1 to skip the required leading # character
         for (int i = 1; i < str.length(); i++) {
             char digit = str.charAt(i);
-            if (!Character.isDefined(digit) && Character.digit(digit, 16) == -1) {
+            if (Character.digit(digit, 16) == -1) {
                 return DataResult.error(() -> "Found non hex digit in color code: '" + digit + "' (must be [a-fA-F0-9])");
             }
         }
