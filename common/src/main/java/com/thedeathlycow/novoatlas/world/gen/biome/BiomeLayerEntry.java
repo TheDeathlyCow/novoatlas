@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.level.biome.BiomeSource;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.IntPredicate;
 
@@ -41,8 +40,8 @@ public record BiomeLayerEntry(
 
         @Override
         public boolean test(int number) {
-            int minValue = min.orElse(Integer.MIN_VALUE);
-            int maxValue = min.orElse(Integer.MAX_VALUE);
+            int minValue = this.min.orElse(Integer.MIN_VALUE);
+            int maxValue = this.max.orElse(Integer.MAX_VALUE);
 
             return minValue <= number && number <= maxValue;
         }

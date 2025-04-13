@@ -63,8 +63,8 @@ public class LayeredHeightmapBiomeSource extends BiomeSource {
         int y = QuartPos.toBlock(biomeY);
         int z = QuartPos.toBlock(biomeZ);
 
-        int elevation = info.getHeightMapElevation(x, z);
-        if (elevation == Integer.MIN_VALUE) {
+        int elevation = info.getHeightMapElevation(x, z, -1);
+        if (elevation == -1) {
             return this.defaultBiome;
         }
 
