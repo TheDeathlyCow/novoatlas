@@ -201,32 +201,15 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
 
                                 noiseChunk.updateForZ(absoluteZ, (double) localZ / cellWidth);
 
-                                // sample from heightmap - vanilla would fallback to the regular sampleState() call at
-                                // this point
+                                // sample from heightmap
                                 int elevation = this.sampleElevation(absoluteX, absoluteZ);
 
+                                // todo: end of the world generation
                                 if (elevation < this.getMinY()) {
                                     continue blockZ;
                                 }
 
-                                int distanceBelowTop = elevation - absoluteY;
-                                double finalDensityValue = finalDensity.compute(noiseChunk);
-
-                                BlockState state;
-                                if (this.computeBeardDensity(distanceBelowTop, finalDensityValue, beardifier, noiseChunk) > 0) {
-                                    state = this.defaultBlock();
-                                } else if (distanceBelowTop <= 10) {
-                                    state = this.sampleBlockStateForHeight(
-                                            finalDensityValue,
-                                            absoluteY,
-                                            elevation
-                                    );
-                                } else {
-                                    // use vanilla sampling when below the surface
-                                    // this is used in conjunction with custom noise settings to properly fill the interior,
-                                    // using the overworld settings here will make hollow mountains
-                                    state = this.sampleState(noiseChunk);
-                                }
+                                BlockState state = this.sampleState(noiseChunk);
 
                                 if (!state.is(Blocks.AIR) && !SharedConstants.debugVoidTerrain(chunkAccess.getPos())) {
                                     currentSection.setBlockState(localBlockX, localBlockY, localBlockZ, state, false);
@@ -252,64 +235,6 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
         return chunkAccess;
     }
 
-    @Override
-    public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
-        int elevation = this.sampleElevation(x, z);
-        int minY = this.getMinY();
-        int seaLevel = this.getSeaLevel();
-
-        NoiseColumn column;
-        if (elevation < minY) {
-            column = new NoiseColumn(levelHeightAccessor.getMinY(), new BlockState[]{AIR});
-        } else if (elevation < seaLevel) {
-            column = new NoiseColumn(
-                    minY,
-                    Stream.concat(
-                            Stream.generate(this::defaultBlock).limit(elevation - minY),
-                            Stream.generate(this::defaultFluid).limit(seaLevel - elevation - minY)
-                    ).toArray(BlockState[]::new)
-            );
-        } else {
-            column = new NoiseColumn(
-                    minY,
-                    Stream.generate(this::defaultBlock)
-                            .limit(elevation - minY + 1)
-                            .toArray(BlockState[]::new)
-            );
-        }
-
-        return column;
-    }
-
-    @Override
-    @NotNull
-    protected NoiseChunk createNoiseChunk(ChunkAccess chunkAccess, StructureManager structureManager, Blender blender, RandomState randomState) {
-        return NoiseChunk.forChunk(
-                chunkAccess,
-                randomState,
-                Beardifier.forStructuresInChunk(structureManager, chunkAccess.getPos()),
-                this.generatorSettings().value(),
-                this.createFluidLevelSampler(this.generatorSettings().value()),
-                blender
-        );
-    }
-
-    private Aquifer.FluidPicker createFluidLevelSampler(NoiseGeneratorSettings settings) {
-        final int lavaLevel = -54;
-        var fluidPicker = new Aquifer.FluidStatus(lavaLevel, Blocks.LAVA.defaultBlockState());
-        int seaLevel = settings.seaLevel();
-
-        return (x, y, z) -> {
-            if (y < Math.min(lavaLevel, seaLevel)) {
-                return fluidPicker;
-            }
-            return new Aquifer.FluidStatus(
-                    seaLevel,
-                    settings.defaultFluid()
-            );
-        };
-    }
-
     private int sampleElevation(int x, int z) {
         return this.mapInfo.value().getHeightMapElevation(x, z, this.getMinY() - 1);
     }
@@ -331,26 +256,8 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
         }
     }
 
-    private BlockState sampleBlockStateForHeight(double finalDensity, int y, int elevation) {
-        if (y < elevation) {
-            return finalDensity > 0
-                    ? this.defaultBlock()
-                    : this.getCaveState(elevation, this.getSeaLevel());
-        } else if (y < this.getSeaLevel()) {
-            return this.defaultFluid();
-        } else {
-            return AIR;
-        }
-    }
-
     public Holder<MapInfo> getMapInfo() {
         return mapInfo;
-    }
-
-    private BlockState getCaveState(int elevation, int seaLevel) {
-        return elevation < seaLevel
-                ? this.defaultFluid()
-                : Blocks.CAVE_AIR.defaultBlockState();
     }
 
     private BlockState sampleState(NoiseChunk noiseChunk) {
