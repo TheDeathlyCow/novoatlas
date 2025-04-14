@@ -44,8 +44,8 @@ public class WorldCarverMixin<C extends CarverConfiguration> {
             CallbackInfoReturnable<Boolean> cir,
             @Local(ordinal = 0) BlockState state
     ) {
-        if (state.getFluidState().isSourceOfType(Fluids.WATER)) {
-            cir.setReturnValue(false);
-        }
+//        if (state.getFluidState().isSourceOfType(Fluids.WATER)) {
+//            cir.setReturnValue(false);
+//        }
     }
 }
