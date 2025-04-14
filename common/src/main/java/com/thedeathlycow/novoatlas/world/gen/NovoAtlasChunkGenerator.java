@@ -235,64 +235,6 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
         return chunkAccess;
     }
 
-//    @Override
-//    public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
-//        int elevation = this.sampleElevation(x, z);
-//        int minY = this.getMinY();
-//        int seaLevel = this.getSeaLevel();
-//
-//        NoiseColumn column;
-//        if (elevation < minY) {
-//            column = new NoiseColumn(levelHeightAccessor.getMinY(), new BlockState[]{AIR});
-//        } else if (elevation < seaLevel) {
-//            column = new NoiseColumn(
-//                    minY,
-//                    Stream.concat(
-//                            Stream.generate(this::defaultBlock).limit(elevation - minY),
-//                            Stream.generate(this::defaultFluid).limit(seaLevel - elevation - minY)
-//                    ).toArray(BlockState[]::new)
-//            );
-//        } else {
-//            column = new NoiseColumn(
-//                    minY,
-//                    Stream.generate(this::defaultBlock)
-//                            .limit(elevation - minY + 1)
-//                            .toArray(BlockState[]::new)
-//            );
-//        }
-//
-//        return column;
-//    }
-//
-//    @Override
-//    @NotNull
-//    protected NoiseChunk createNoiseChunk(ChunkAccess chunkAccess, StructureManager structureManager, Blender blender, RandomState randomState) {
-//        return NoiseChunk.forChunk(
-//                chunkAccess,
-//                randomState,
-//                Beardifier.forStructuresInChunk(structureManager, chunkAccess.getPos()),
-//                this.generatorSettings().value(),
-//                this.createFluidLevelSampler(this.generatorSettings().value()),
-//                blender
-//        );
-//    }
-//
-//    private Aquifer.FluidPicker createFluidLevelSampler(NoiseGeneratorSettings settings) {
-//        final int lavaLevel = -54;
-//        var fluidPicker = new Aquifer.FluidStatus(lavaLevel, Blocks.LAVA.defaultBlockState());
-//        int seaLevel = settings.seaLevel();
-//
-//        return (x, y, z) -> {
-//            if (y < Math.min(lavaLevel, seaLevel)) {
-//                return fluidPicker;
-//            }
-//            return new Aquifer.FluidStatus(
-//                    seaLevel,
-//                    settings.defaultFluid()
-//            );
-//        };
-//    }
-
     private int sampleElevation(int x, int z) {
         return this.mapInfo.value().getHeightMapElevation(x, z, this.getMinY() - 1);
     }
