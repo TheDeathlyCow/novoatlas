@@ -8,7 +8,6 @@
     "mixins": [
         "NovoAtlasSurfaceSystemImpl",
         "SurfaceRulesContextMixin",
-        "WorldCarverMixin",
         "accessor.NoiseChunkAccessor",
         "accessor.SurfaceRulesContextAccessor"
     ],
