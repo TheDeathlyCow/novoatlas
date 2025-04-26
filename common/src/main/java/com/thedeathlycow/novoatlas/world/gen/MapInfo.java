@@ -7,6 +7,7 @@ import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ExtraCodecs;
 
 import java.util.Objects;
 
@@ -25,10 +26,10 @@ public record MapInfo(
                     ResourceKey.codec(NovoAtlasResourceKeys.BIOME_MAP)
                             .fieldOf("biome_map")
                             .forGetter(MapInfo::biomeMap),
-                    Codec.FLOAT
+                    ExtraCodecs.POSITIVE_FLOAT
                             .optionalFieldOf("horizontal_scale", 1f)
                             .forGetter(MapInfo::horizontalScale),
-                    Codec.FLOAT
+                    ExtraCodecs.POSITIVE_FLOAT
                             .optionalFieldOf("vertical_scale", 1f)
                             .forGetter(MapInfo::verticalScale),
                     Codec.INT
