@@ -7,7 +7,6 @@ import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.NovoAtlasChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.world.gen.biome.LayeredHeightmapBiomeSource;
-import com.thedeathlycow.novoatlas.world.gen.condition.AbovePreliminarySurface;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -42,12 +41,6 @@ public final class NovoAtlasNeoForge {
                 Registries.BIOME_SOURCE,
                 NovoAtlas.loc("layered_heightmap"),
                 () -> LayeredHeightmapBiomeSource.CODEC
-        );
-
-        event.register(
-                Registries.MATERIAL_CONDITION,
-                NovoAtlas.loc("above_preliminary_surface"),
-                AbovePreliminarySurface.CODEC::codec
         );
 
         event.register(

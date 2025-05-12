@@ -33,7 +33,7 @@ public final class ImageManager {
     public void reload(ResourceManager resourceManager) {
         Map<ResourceKey<MapImage>, MapImage> updatedRegistry = new IdentityHashMap<>();
 
-        String regPath = "novoatlas/" + registryKey.location().getPath();
+        String regPath = NovoAtlas.MOD_ID + "/" + registryKey.location().getPath();
         var converter = new FileToIdConverter(regPath, ".png");
         Map<ResourceLocation, Resource> resources = converter.listMatchingResources(resourceManager);
 

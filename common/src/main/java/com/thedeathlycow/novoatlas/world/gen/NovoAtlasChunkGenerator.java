@@ -7,12 +7,9 @@ import com.thedeathlycow.novoatlas.mixin.accessor.NoiseChunkAccessor;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -62,40 +59,6 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types types, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
         return this.sampleElevation(x, z);
-    }
-
-    @Override
-    public void buildSurface(
-            ChunkAccess chunkAccess,
-            WorldGenerationContext worldGenerationContext,
-            RandomState randomState,
-            StructureManager structureManager,
-            BiomeManager biomeManager,
-            Registry<Biome> registry,
-            Blender blender
-    ) {
-        NoiseChunk noiseChunk = chunkAccess.getOrCreateNoiseChunk(chunk -> {
-            return this.createNoiseChunk(
-                    chunk,
-                    structureManager,
-                    blender,
-                    randomState
-            );
-        });
-
-        NoiseGeneratorSettings noiseGeneratorSettings = this.generatorSettings().value();
-        ((NovoAtlasSurfaceSystem) randomState.surfaceSystem())
-                .novoatlas$buildSurface(
-                        randomState,
-                        biomeManager,
-                        registry,
-                        noiseGeneratorSettings.useLegacyRandomSource(),
-                        worldGenerationContext,
-                        chunkAccess,
-                        noiseChunk,
-                        noiseGeneratorSettings.surfaceRule(),
-                        this.mapInfo
-                );
     }
 
     /**
@@ -237,7 +200,11 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
     /**
      * Computes density for structure adapters. If a beardifier wants to apply an adaption, it will return that adaption
      * plus the final density (adding final density softens the edges).
+     *
+     * @deprecated Replaced with a density function type that handles this more elegantly, and incoporates other
+     * features like fluids better. Will be kept for posterity as long as it continues to compile.
      */
+    @Deprecated
     private double computeBeardDensity(int distanceBelowTop, double finalDensity, DensityFunction beardifier, NoiseChunk noiseChunk) {
         double beard = beardifier.compute(noiseChunk);
         if (beard > 0) {

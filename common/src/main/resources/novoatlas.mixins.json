@@ -6,8 +6,6 @@
     "client": [
     ],
     "mixins": [
-        "NovoAtlasSurfaceSystemImpl",
-        "SurfaceRulesContextMixin",
         "accessor.NoiseChunkAccessor",
         "accessor.SurfaceRulesContextAccessor"
     ],
