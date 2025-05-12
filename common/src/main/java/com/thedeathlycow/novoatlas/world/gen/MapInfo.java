@@ -14,8 +14,6 @@ import java.util.Objects;
 public record MapInfo(
         ResourceKey<MapImage> heightMap,
         ResourceKey<MapImage> biomeMap,
-        float horizontalScale,
-        float verticalScale,
         int startingY
 ) {
     public static final Codec<MapInfo> DIRECT_CODEC = RecordCodecBuilder.create(
@@ -26,12 +24,6 @@ public record MapInfo(
                     ResourceKey.codec(NovoAtlasResourceKeys.BIOME_MAP)
                             .fieldOf("biome_map")
                             .forGetter(MapInfo::biomeMap),
-                    ExtraCodecs.POSITIVE_FLOAT
-                            .optionalFieldOf("horizontal_scale", 1f)
-                            .forGetter(MapInfo::horizontalScale),
-                    ExtraCodecs.POSITIVE_FLOAT
-                            .optionalFieldOf("vertical_scale", 1f)
-                            .forGetter(MapInfo::verticalScale),
                     Codec.INT
                             .fieldOf("starting_y")
                             .forGetter(MapInfo::startingY)
@@ -58,5 +50,13 @@ public record MapInfo(
 
     public int getBiomeColor(int x, int z, int fallback) {
         return this.lookupBiomeMap().sample(x, z, this, fallback);
+    }
+
+    public float horizontalScale() {
+        return 1.0f;
+    }
+
+    public float verticalScale() {
+        return 1.0f;
     }
 }

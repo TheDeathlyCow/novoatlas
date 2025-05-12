@@ -45,10 +45,6 @@ public class BoundedMapChunkGenerator extends NoiseBasedChunkGenerator {
     ) {
         super(biomeSource, settings);
         this.mapInfo = mapInfo;
-
-        if (this.mapInfo.value().verticalScale() != 1f) {
-            NovoAtlas.LOGGER.warn("Using non-standard vertical scale, expect weird generation!");
-        }
     }
 
     @Override
