@@ -2,7 +2,6 @@ package com.thedeathlycow.novoatlas.world.gen;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.mixin.accessor.NoiseChunkAccessor;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;

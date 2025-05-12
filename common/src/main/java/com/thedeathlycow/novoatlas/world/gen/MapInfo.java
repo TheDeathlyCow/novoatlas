@@ -7,7 +7,6 @@ import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.ExtraCodecs;
 
 import java.util.Objects;
 

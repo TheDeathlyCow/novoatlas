@@ -2,9 +2,9 @@ package com.thedeathlycow.novoatlas.neoforge;
 
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
+import com.thedeathlycow.novoatlas.world.gen.BoundedMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
-import com.thedeathlycow.novoatlas.world.gen.BoundedMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.world.gen.biome.LayeredHeightmapBiomeSource;
 import net.minecraft.core.registries.Registries;

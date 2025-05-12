@@ -1,7 +1,6 @@
 package com.thedeathlycow.novoatlas.mixin.accessor;
 
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Beardifier;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.NoiseChunk;
