@@ -4,7 +4,7 @@ import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
 import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
-import com.thedeathlycow.novoatlas.world.gen.NovoAtlasChunkGenerator;
+import com.thedeathlycow.novoatlas.world.gen.BoundedMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.world.gen.biome.LayeredHeightmapBiomeSource;
 import net.minecraft.core.registries.Registries;
@@ -27,8 +27,8 @@ public final class NovoAtlasNeoForge {
     private static void register(RegisterEvent event) {
         event.register(
                 Registries.CHUNK_GENERATOR,
-                NovoAtlas.loc("heightmap"),
-                () -> NovoAtlasChunkGenerator.CODEC
+                NovoAtlas.loc("bounded_map"),
+                () -> BoundedMapChunkGenerator.CODEC
         );
 
         event.register(

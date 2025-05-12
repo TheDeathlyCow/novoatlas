@@ -4,7 +4,7 @@ import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
 import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
-import com.thedeathlycow.novoatlas.world.gen.NovoAtlasChunkGenerator;
+import com.thedeathlycow.novoatlas.world.gen.BoundedMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.world.gen.biome.LayeredHeightmapBiomeSource;
 import net.fabricmc.api.ModInitializer;
@@ -21,7 +21,7 @@ public final class NovoAtlasFabric implements ModInitializer {
 
         DynamicRegistries.register(NovoAtlasResourceKeys.MAP_INFO, MapInfo.DIRECT_CODEC);
 
-        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.loc("heightmap"), NovoAtlasChunkGenerator.CODEC);
+        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.loc("bounded_map"), BoundedMapChunkGenerator.CODEC);
         Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.loc("color_map"), ColorMapBiomeSource.CODEC);
         Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.loc("layered_heightmap"), LayeredHeightmapBiomeSource.CODEC);
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("heightmap"), HeightmapDensityFunction.DATA_CODEC);

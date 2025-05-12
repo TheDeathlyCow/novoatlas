@@ -18,27 +18,27 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 
-public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
-    public static final MapCodec<NovoAtlasChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
+public class BoundedMapChunkGenerator extends NoiseBasedChunkGenerator {
+    public static final MapCodec<BoundedMapChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                             BiomeSource.CODEC
                                     .fieldOf("biome_source")
-                                    .forGetter(NovoAtlasChunkGenerator::getBiomeSource),
+                                    .forGetter(BoundedMapChunkGenerator::getBiomeSource),
                             NoiseGeneratorSettings.CODEC
                                     .fieldOf("settings")
-                                    .forGetter(NovoAtlasChunkGenerator::generatorSettings),
+                                    .forGetter(BoundedMapChunkGenerator::generatorSettings),
                             MapInfo.CODEC
                                     .fieldOf("map_info")
-                                    .forGetter(NovoAtlasChunkGenerator::getMapInfo)
+                                    .forGetter(BoundedMapChunkGenerator::getMapInfo)
                     )
-                    .apply(instance, NovoAtlasChunkGenerator::new)
+                    .apply(instance, BoundedMapChunkGenerator::new)
     );
 
     private static final BlockState AIR = Blocks.AIR.defaultBlockState();
 
     private final Holder<MapInfo> mapInfo;
 
-    public NovoAtlasChunkGenerator(
+    public BoundedMapChunkGenerator(
             BiomeSource biomeSource,
             Holder<NoiseGeneratorSettings> settings,
             Holder<MapInfo> mapInfo
@@ -52,7 +52,7 @@ public class NovoAtlasChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     @Override
-    protected MapCodec<? extends NovoAtlasChunkGenerator> codec() {
+    protected MapCodec<? extends BoundedMapChunkGenerator> codec() {
         return CODEC;
     }
 
