@@ -35,7 +35,12 @@ public record HeightmapDensityFunction(
 
     @Override
     public double compute(FunctionContext context) {
-        int elevation = mapInfo.value().getHeightMapElevation(context.blockX(), context.blockZ());
+        int elevation = mapInfo.value().getHeightMapElevation(context.blockX(), context.blockZ(), Integer.MIN_VALUE);
+
+        if (elevation == Integer.MIN_VALUE) {
+            return -1.0;
+        }
+
         int yOffset = elevation - context.blockY();
 
         return Mth.clampedMap(yOffset, -transitionRange, transitionRange, -1.0, 1.0);

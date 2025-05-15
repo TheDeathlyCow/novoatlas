@@ -4,6 +4,7 @@
         "type": "novoatlas:bounded_map",
         "map_info": "test:avila",
         "settings": "novoatlas:default",
+        "enable_carvers": true,
         "biome_source": {
             "type": "novoatlas:layered_heightmap",
             "map_info": "test:avila",

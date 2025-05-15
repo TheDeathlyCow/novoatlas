@@ -1,14 +1,17 @@
 package com.thedeathlycow.novoatlas.world.gen;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.mixin.accessor.NoiseChunkAccessor;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,27 +31,39 @@ public class BoundedMapChunkGenerator extends NoiseBasedChunkGenerator {
                                     .forGetter(BoundedMapChunkGenerator::generatorSettings),
                             MapInfo.CODEC
                                     .fieldOf("map_info")
-                                    .forGetter(BoundedMapChunkGenerator::getMapInfo)
+                                    .forGetter(BoundedMapChunkGenerator::getMapInfo),
+                            Codec.BOOL
+                                    .optionalFieldOf("enable_carvers", true)
+                                    .forGetter(BoundedMapChunkGenerator::isEnableCarvers)
                     )
                     .apply(instance, BoundedMapChunkGenerator::new)
     );
 
-    private static final BlockState AIR = Blocks.AIR.defaultBlockState();
-
     private final Holder<MapInfo> mapInfo;
+
+    private final boolean enableCarvers;
 
     public BoundedMapChunkGenerator(
             BiomeSource biomeSource,
             Holder<NoiseGeneratorSettings> settings,
-            Holder<MapInfo> mapInfo
+            Holder<MapInfo> mapInfo,
+            boolean enableCarvers
     ) {
         super(biomeSource, settings);
         this.mapInfo = mapInfo;
+        this.enableCarvers = enableCarvers;
     }
 
     @Override
     protected MapCodec<? extends BoundedMapChunkGenerator> codec() {
         return CODEC;
+    }
+
+    @Override
+    public void applyCarvers(WorldGenRegion level, long seed, RandomState random, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunk) {
+        if (this.enableCarvers) {
+            super.applyCarvers(level, seed, random, biomeManager, structureManager, chunk);
+        }
     }
 
     @Override
@@ -82,16 +97,6 @@ public class BoundedMapChunkGenerator extends NoiseBasedChunkGenerator {
         );
 
         NoiseChunkAccessor noiseChunkAccessor = (NoiseChunkAccessor) noiseChunk;
-
-        // used for beardifying structures
-        DensityFunction finalDensity = DensityFunctions.cacheAllInCell(
-                randomState.router()
-                        .mapAll(noiseChunkAccessor::invokeWrap)
-                        .finalDensity()
-        ).mapAll(noiseChunkAccessor::invokeWrap);
-        DensityFunction beardifier = DensityFunctions.cacheAllInCell(noiseChunkAccessor.accessBeardifier())
-                .mapAll(noiseChunkAccessor::invokeWrap);
-
 
         Heightmap oceanFloor = chunkAccess.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
         Heightmap worldSurface = chunkAccess.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
@@ -215,6 +220,10 @@ public class BoundedMapChunkGenerator extends NoiseBasedChunkGenerator {
 
     public Holder<MapInfo> getMapInfo() {
         return mapInfo;
+    }
+
+    public boolean isEnableCarvers() {
+        return enableCarvers;
     }
 
     private BlockState sampleState(NoiseChunk noiseChunk) {
