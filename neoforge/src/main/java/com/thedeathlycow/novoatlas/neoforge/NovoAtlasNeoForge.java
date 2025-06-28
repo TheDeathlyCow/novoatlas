@@ -1,12 +1,16 @@
 package com.thedeathlycow.novoatlas.neoforge;
 
 import com.thedeathlycow.novoatlas.NovoAtlas;
+import com.thedeathlycow.novoatlas.registry.NovoAtlasRegistries;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
 import com.thedeathlycow.novoatlas.world.gen.BoundedMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.world.gen.biome.LayeredHeightmapBiomeSource;
+import com.thedeathlycow.novoatlas.world.gen.biome.v2.ColorMapBiomeProvider;
+import com.thedeathlycow.novoatlas.world.gen.biome.v2.LayeredMapBiomeProvider;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.projectile.AbstractThrownPotion;
 import net.neoforged.bus.api.IEventBus;
@@ -14,6 +18,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 @Mod(NovoAtlas.MOD_ID)
@@ -23,6 +28,10 @@ public final class NovoAtlasNeoForge {
         bus.addListener(NovoAtlasNeoForge::registerDatapackRegistries);
         NeoForge.EVENT_BUS.addListener(NovoAtlasNeoForge::registerResourceReloader);
         bus.addListener(NovoAtlasNeoForge::register);
+    }
+
+    private static void createRegistries(NewRegistryEvent event) {
+        event.register(NovoAtlasRegistries.BIOME_MAP_PROVIDER);
     }
 
     private static void register(RegisterEvent event) {
@@ -48,6 +57,18 @@ public final class NovoAtlasNeoForge {
                 Registries.DENSITY_FUNCTION_TYPE,
                 NovoAtlas.loc("heightmap"),
                 () -> HeightmapDensityFunction.DATA_CODEC
+        );
+
+        event.register(
+                NovoAtlasResourceKeys.BIOME_MAP_PROVIDER,
+                NovoAtlas.loc("color_map"),
+                () -> ColorMapBiomeProvider.CODEC
+        );
+
+        event.register(
+                NovoAtlasResourceKeys.BIOME_MAP_PROVIDER,
+                NovoAtlas.loc("layered_map"),
+                () -> LayeredMapBiomeProvider.CODEC
         );
     }
 

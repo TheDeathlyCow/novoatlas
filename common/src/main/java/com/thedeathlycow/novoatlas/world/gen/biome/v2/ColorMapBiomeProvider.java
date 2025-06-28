@@ -52,7 +52,7 @@ public class ColorMapBiomeProvider implements BiomeMapProvider {
         MapImage image = MapInfo.lookupBiomeMap(this.map);
         int color = image.sample(x, z, info, Integer.MIN_VALUE);
 
-        if (color == -1) {
+        if (color == Integer.MIN_VALUE) {
             return null;
         }
 

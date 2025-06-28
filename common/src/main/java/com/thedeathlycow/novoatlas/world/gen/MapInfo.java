@@ -4,15 +4,18 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.registry.ImageManager;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
+import com.thedeathlycow.novoatlas.world.gen.biome.v2.BiomeMapProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public record MapInfo(
         ResourceKey<MapImage> heightMap,
-        ResourceKey<MapImage> biomeMap,
+        BiomeMapProvider biomeMapProvider,
         int startingY
 ) {
     public static final Codec<MapInfo> DIRECT_CODEC = RecordCodecBuilder.create(
@@ -20,9 +23,9 @@ public record MapInfo(
                     ResourceKey.codec(NovoAtlasResourceKeys.HEIGHTMAP)
                             .fieldOf("height_map")
                             .forGetter(MapInfo::heightMap),
-                    ResourceKey.codec(NovoAtlasResourceKeys.BIOME_MAP)
+                    BiomeMapProvider.CODEC
                             .fieldOf("biome_map")
-                            .forGetter(MapInfo::biomeMap),
+                            .forGetter(MapInfo::biomeMapProvider),
                     Codec.INT
                             .fieldOf("starting_y")
                             .forGetter(MapInfo::startingY)
@@ -48,7 +51,14 @@ public record MapInfo(
     }
 
     public int getBiomeColor(int x, int z, int fallback) {
-        return lookupBiomeMap(this.biomeMap).sample(x, z, this, fallback);
+        return -1;
+//        return lookupBiomeMap(this.biomeMap).sample(x, z, this, fallback);
+    }
+
+    @NotNull
+    public Holder<Biome> getBiome(int x, int y, int z, @NotNull Holder<Biome> defaultBiome) {
+        Holder<Biome> biome = this.biomeMapProvider.getBiome(x, y, z, this);
+        return biome != null ? biome : defaultBiome;
     }
 
     public float horizontalScale() {

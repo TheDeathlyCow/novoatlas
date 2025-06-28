@@ -2,6 +2,7 @@ package com.thedeathlycow.novoatlas.world.gen.biome;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.world.gen.biome.v2.ColorMapBiomeProvider;
 import net.minecraft.world.level.biome.BiomeSource;
 
 import java.util.Optional;
@@ -9,16 +10,16 @@ import java.util.function.IntPredicate;
 
 public record BiomeLayerEntry(
         Range offsetRange,
-        BiomeSource biomeSource
+        ColorMapBiomeProvider biomeProvider
 ) {
     public static final Codec<BiomeLayerEntry> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     Range.CODEC
                             .fieldOf("offset_range")
                             .forGetter(BiomeLayerEntry::offsetRange),
-                    BiomeSource.CODEC
-                            .fieldOf("biome_source")
-                            .forGetter(BiomeLayerEntry::biomeSource)
+                    ColorMapBiomeProvider.CODEC.codec()
+                            .fieldOf("biome_provider")
+                            .forGetter(BiomeLayerEntry::biomeProvider)
             ).apply(instance, BiomeLayerEntry::new)
     );
 
