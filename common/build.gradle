@@ -13,9 +13,31 @@ loom {
     accessWidenerPath = file("src/main/resources/novoatlas.accesswidener")
 }
 
+def copyExamplePacksToPlatform = { String name ->
+    def exampleSourceDir = file("$rootDir/examples")
+    def targetDir = file("$rootDir/$name/src/main/resources/resourcepacks")
 
-tasks.register("copyExamplePacks", Copy) {
-    from("$projectDir/examples")
-    into("${rootProject.projectDir}/fabric/src/main/resources/")
-    into("${rootProject.projectDir}/neoforge/src/main/resources/")
+    group = "build"
+
+    tasks.register("copyExamplePacksTo${name.capitalize()}", Copy) {
+        if (targetDir.exists()) {
+            println "Clearing contents of ${targetDir}"
+            targetDir.deleteDir()
+        }
+
+        from(exampleSourceDir) {
+            includeEmptyDirs = false
+            exclude '**/README.md'
+        }
+
+        into(targetDir)
+    }
+}
+
+def copyExamplePacksToFabric = copyExamplePacksToPlatform("fabric")
+def copyExamplePacksToNeoforge = copyExamplePacksToPlatform("neoforge")
+
+def copyExamplePacks = tasks.register("copyExamplePacks") {
+    group = "build"
+    dependsOn(copyExamplePacksToFabric, copyExamplePacksToNeoforge)
 }
