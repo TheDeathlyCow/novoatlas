@@ -12,13 +12,15 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public record MapInfo(
         ResourceKey<MapImage> heightMap,
         ColorMapBiomeProvider surfaceBiomes,
-        LayeredMapBiomeProvider caveBiomes,
+        Optional<LayeredMapBiomeProvider> caveBiomes,
         int startingY,
         int surfaceRange
 ) {
@@ -31,7 +33,7 @@ public record MapInfo(
                             .fieldOf("surface_biomes")
                             .forGetter(MapInfo::surfaceBiomes),
                     LayeredMapBiomeProvider.CODEC.codec()
-                            .fieldOf("cave_biomes")
+                            .optionalFieldOf("cave_biomes")
                             .forGetter(MapInfo::caveBiomes),
                     Codec.INT
                             .fieldOf("starting_y")
@@ -62,14 +64,8 @@ public record MapInfo(
 
     @NotNull
     public Holder<Biome> getBiome(int x, int y, int z, @NotNull Holder<Biome> defaultBiome) {
-        int height = this.getHeightMapElevation(x, z, Integer.MIN_VALUE);
-
-        if (height == Integer.MIN_VALUE) {
-            return defaultBiome;
-        }
-
-        if (y <= height - this.surfaceRange) {
-            Holder<Biome> caveBiome = this.caveBiomes.getBiome(x, y, z, this);
+        if (this.caveBiomes.isPresent()) {
+            Holder<Biome> caveBiome = this.getCaveBiome(x, y, z, this.caveBiomes.orElseThrow());
             if (caveBiome != null) {
                 return caveBiome;
             }
@@ -85,5 +81,23 @@ public record MapInfo(
 
     public float verticalScale() {
         return 1.0f;
+    }
+
+    @Nullable
+    private Holder<Biome> getCaveBiome(int x, int y, int z, LayeredMapBiomeProvider caveBiomes) {
+        int height = this.getHeightMapElevation(x, z, Integer.MIN_VALUE);
+
+        if (height == Integer.MIN_VALUE) {
+            return null;
+        }
+
+        if (y <= height - this.surfaceRange) {
+            Holder<Biome> caveBiome = caveBiomes.getBiome(x, y, z, this);
+            if (caveBiome != null) {
+                return caveBiome;
+            }
+        }
+
+        return null;
     }
 }

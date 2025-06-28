@@ -3,6 +3,7 @@ package com.thedeathlycow.novoatlas.world.gen.biome;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
+import com.thedeathlycow.novoatlas.world.gen.biome.provider.LayeredMapBiomeProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
@@ -10,6 +11,7 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class ColorMapBiomeSource extends BiomeSource {
@@ -40,12 +42,22 @@ public class ColorMapBiomeSource extends BiomeSource {
     @Override
     @NotNull
     protected Stream<Holder<Biome>> collectPossibleBiomes() {
-        Stream<Holder<Biome>> baseBiomes = Stream.concat(
-                mapInfo.value().caveBiomes().collectPossibleBiomes(),
-                mapInfo.value().surfaceBiomes().collectPossibleBiomes()
-        );
+        MapInfo mapInfoValue = this.mapInfo.value();
 
-        return Stream.concat(Stream.of(defaultBiome), baseBiomes);
+        Stream<Holder<Biome>> baseBiomes = mapInfoValue
+                .surfaceBiomes()
+                .collectPossibleBiomes();
+
+        Optional<LayeredMapBiomeProvider> caveBiomes = mapInfoValue.caveBiomes();
+
+        if (caveBiomes.isPresent()) {
+            baseBiomes = Stream.concat(
+                    baseBiomes,
+                    mapInfoValue.caveBiomes().orElseThrow().collectPossibleBiomes()
+            );
+        }
+
+        return Stream.concat(Stream.of(this.defaultBiome), baseBiomes);
     }
 
     @Override
