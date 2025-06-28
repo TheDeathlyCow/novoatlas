@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class ColorMapBiomeProvider implements BiomeMapProvider {
+public final class ColorMapBiomeProvider implements BiomeMapProvider {
     public static final MapCodec<ColorMapBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     ResourceKey.codec(NovoAtlasResourceKeys.BIOME_MAP)
@@ -75,7 +75,7 @@ public class ColorMapBiomeProvider implements BiomeMapProvider {
     }
 
     @Override
-    public MapCodec<? extends ColorMapBiomeProvider> getCodec() {
+    public MapCodec<ColorMapBiomeProvider> getCodec() {
         return CODEC;
     }
 

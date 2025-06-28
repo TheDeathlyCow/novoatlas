@@ -1,10 +1,8 @@
 package com.thedeathlycow.novoatlas.registry;
 
-import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
-import com.thedeathlycow.novoatlas.world.gen.biome.provider.BiomeMapProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 

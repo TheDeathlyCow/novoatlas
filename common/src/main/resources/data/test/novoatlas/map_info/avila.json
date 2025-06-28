@@ -87,7 +87,7 @@
                             "color": "#000000"
                         },
                         {
-                            "biome": "minecraft:dripstone_caves",
+                            "biome": "novoatlas:surface_biome",
                             "color": "#FFFFFF"
                         }
                     ]

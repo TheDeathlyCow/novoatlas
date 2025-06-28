@@ -2,16 +2,24 @@ package com.thedeathlycow.novoatlas.world.gen.biome.provider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.BiomeLayerEntry;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-public class LayeredMapBiomeProvider implements BiomeMapProvider {
+public final class LayeredMapBiomeProvider implements BiomeMapProvider {
+    public static final ResourceKey<Biome> SURFACE_BIOME = ResourceKey.create(
+            Registries.BIOME,
+            NovoAtlas.loc("surface_biome")
+    );
+
     public static final MapCodec<LayeredMapBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     BiomeLayerEntry.CODEC.listOf()
@@ -29,14 +37,9 @@ public class LayeredMapBiomeProvider implements BiomeMapProvider {
     @Override
     @Nullable
     public Holder<Biome> getBiome(int x, int y, int z, MapInfo info) {
-        int elevation = info.getHeightMapElevation(x, z, Integer.MIN_VALUE);
+        Holder<Biome> colorMapBiome = this.getBiomeFromColorMap(x, y, z, info);
 
-        if (elevation == Integer.MIN_VALUE) {
-            return null;
-        }
-
-        BiomeLayerEntry layer = this.getLayer(elevation - y);
-        return layer != null ? layer.biomeProvider().getBiome(x, y, z, info) : null;
+        return colorMapBiome != null && !colorMapBiome.is(SURFACE_BIOME) ? colorMapBiome : null;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class LayeredMapBiomeProvider implements BiomeMapProvider {
     }
 
     @Override
-    public MapCodec<? extends LayeredMapBiomeProvider> getCodec() {
+    public MapCodec<LayeredMapBiomeProvider> getCodec() {
         return CODEC;
     }
 
@@ -64,5 +67,16 @@ public class LayeredMapBiomeProvider implements BiomeMapProvider {
         }
 
         return null;
+    }
+
+    private Holder<Biome> getBiomeFromColorMap(int x, int y, int z, MapInfo info) {
+        int elevation = info.getHeightMapElevation(x, z, Integer.MIN_VALUE);
+
+        if (elevation == Integer.MIN_VALUE) {
+            return null;
+        }
+
+        BiomeLayerEntry layer = this.getLayer(elevation - y);
+        return layer != null ? layer.biomeProvider().getBiome(x, y, z, info) : null;
     }
 }
