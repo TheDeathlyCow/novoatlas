@@ -9,6 +9,9 @@ import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
@@ -26,5 +29,25 @@ public final class NovoAtlasFabric implements ModInitializer {
 
         ResourceManagerHelper serverManager = ResourceManagerHelper.get(PackType.SERVER_DATA);
         serverManager.registerReloadListener(new MapImageLoader());
+
+        ModContainer mod = FabricLoader.getInstance().getModContainer(NovoAtlas.MOD_ID).orElseThrow();
+
+        ResourceManagerHelper.registerBuiltinResourcePack(
+                NovoAtlas.loc("avila-basic-example"),
+                mod,
+                ResourcePackActivationType.NORMAL
+        );
+
+        ResourceManagerHelper.registerBuiltinResourcePack(
+                NovoAtlas.loc("avila-cave-biome-example"),
+                mod,
+                ResourcePackActivationType.NORMAL
+        );
+
+        ResourceManagerHelper.registerBuiltinResourcePack(
+                NovoAtlas.loc("avila-no-caves-example"),
+                mod,
+                ResourcePackActivationType.NORMAL
+        );
     }
 }
