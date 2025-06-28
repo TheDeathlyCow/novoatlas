@@ -20,6 +20,5 @@ public final class NovoAtlasResourceKeys {
     );
 
     private NovoAtlasResourceKeys() {
-
     }
 }

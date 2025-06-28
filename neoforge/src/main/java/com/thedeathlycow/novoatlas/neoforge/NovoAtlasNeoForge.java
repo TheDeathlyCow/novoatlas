@@ -6,7 +6,6 @@ import com.thedeathlycow.novoatlas.world.gen.BoundedMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
-import com.thedeathlycow.novoatlas.world.gen.biome.LayeredHeightmapBiomeSource;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -25,29 +24,9 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void register(RegisterEvent event) {
-        event.register(
-                Registries.CHUNK_GENERATOR,
-                NovoAtlas.loc("bounded_map"),
-                () -> BoundedMapChunkGenerator.CODEC
-        );
-
-        event.register(
-                Registries.BIOME_SOURCE,
-                NovoAtlas.loc("color_map"),
-                () -> ColorMapBiomeSource.CODEC
-        );
-
-        event.register(
-                Registries.BIOME_SOURCE,
-                NovoAtlas.loc("layered_heightmap"),
-                () -> LayeredHeightmapBiomeSource.CODEC
-        );
-
-        event.register(
-                Registries.DENSITY_FUNCTION_TYPE,
-                NovoAtlas.loc("heightmap"),
-                () -> HeightmapDensityFunction.DATA_CODEC
-        );
+        event.register(Registries.CHUNK_GENERATOR, NovoAtlas.loc("bounded_map"), () -> BoundedMapChunkGenerator.CODEC);
+        event.register(Registries.BIOME_SOURCE, NovoAtlas.loc("color_map"), () -> ColorMapBiomeSource.CODEC);
+        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
     }
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
