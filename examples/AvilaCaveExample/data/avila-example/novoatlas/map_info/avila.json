@@ -80,7 +80,7 @@
                     "min": 64
                 },
                 "biomes": {
-                    "map": "avila-example:avila_deep_caves",
+                    "map": "avila-example:avila_caves",
                     "biomes": [
                         {
                             "biome": "minecraft:deep_dark",
@@ -88,20 +88,6 @@
                         },
                         {
                             "biome": "novoatlas:surface_biome",
-                            "color": "#FFFFFF"
-                        }
-                    ]
-                }
-            },
-            {
-                "offset_range": {
-                    "min": 10
-                },
-                "biomes": {
-                    "map": "avila-example:avila_single_biome",
-                    "biomes": [
-                        {
-                            "biome": "minecraft:lush_caves",
                             "color": "#FFFFFF"
                         }
                     ]

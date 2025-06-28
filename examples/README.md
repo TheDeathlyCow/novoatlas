@@ -2,7 +2,7 @@
 
 ## How to Create a NovoAtlas Dimension
 
-The easiest way to create a NovoAtlas dimension is to copy the Avila example back from this repo's [releases page](https://www.github.com/TheDeathlyCow/novoatlas/releases) and replace the [height map](./AvilaExample/data/avila-example/novoatlas/heightmap) and [biome map](./AvilaExample/data/avila-example/novoatlas/biome_map) with your own.
+The easiest way to create a NovoAtlas dimension is to copy an Avila example back from this repo's [releases page](https://www.github.com/TheDeathlyCow/novoatlas/releases) and replace the height and biome maps with your own.
 
 ## Modifying a NovoAtlas Dimension
 

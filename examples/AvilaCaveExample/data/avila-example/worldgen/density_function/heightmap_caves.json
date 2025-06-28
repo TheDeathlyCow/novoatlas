@@ -1,0 +1,5 @@
+{
+    "type": "minecraft:min",
+    "argument1": "novoatlas:caves",
+    "argument2": "avila-example:heightmap"
+}

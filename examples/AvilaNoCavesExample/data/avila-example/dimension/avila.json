@@ -3,8 +3,8 @@
     "generator": {
         "type": "novoatlas:bounded_map",
         "map_info": "avila-example:avila",
-        "settings": "novoatlas:default",
-        "enable_carvers": true,
+        "settings": "novoatlas:no_noise_caves",
+        "enable_carvers": false,
         "biome_source": {
             "type": "novoatlas:color_map",
             "map_info": "avila-example:avila",
