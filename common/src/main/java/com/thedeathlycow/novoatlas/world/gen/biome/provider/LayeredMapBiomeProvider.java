@@ -14,7 +14,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
-public final class LayeredMapBiomeProvider implements BiomeMapProvider {
+public record LayeredMapBiomeProvider(
+        List<BiomeLayerEntry> layers
+) implements BiomeMapProvider {
     public static final ResourceKey<Biome> SURFACE_BIOME = ResourceKey.create(
             Registries.BIOME,
             NovoAtlas.loc("surface_biome")
@@ -24,15 +26,9 @@ public final class LayeredMapBiomeProvider implements BiomeMapProvider {
             instance -> instance.group(
                     BiomeLayerEntry.CODEC.listOf()
                             .fieldOf("layers")
-                            .forGetter(LayeredMapBiomeProvider::getLayers)
+                            .forGetter(LayeredMapBiomeProvider::layers)
             ).apply(instance, LayeredMapBiomeProvider::new)
     );
-
-    private final List<BiomeLayerEntry> layers;
-
-    public LayeredMapBiomeProvider(List<BiomeLayerEntry> layers) {
-        this.layers = layers;
-    }
 
     @Override
     @Nullable
@@ -52,10 +48,6 @@ public final class LayeredMapBiomeProvider implements BiomeMapProvider {
     @Override
     public MapCodec<LayeredMapBiomeProvider> getCodec() {
         return CODEC;
-    }
-
-    public List<BiomeLayerEntry> getLayers() {
-        return layers;
     }
 
     @Nullable
