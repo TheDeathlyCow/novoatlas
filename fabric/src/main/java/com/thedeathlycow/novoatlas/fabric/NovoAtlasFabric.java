@@ -1,11 +1,14 @@
 package com.thedeathlycow.novoatlas.fabric;
 
 import com.thedeathlycow.novoatlas.NovoAtlas;
+import com.thedeathlycow.novoatlas.registry.NovoAtlasRegistries;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
 import com.thedeathlycow.novoatlas.world.gen.BoundedMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
+import com.thedeathlycow.novoatlas.world.gen.biome.provider.ColorMapBiomeProvider;
+import com.thedeathlycow.novoatlas.world.gen.biome.provider.LayeredMapBiomeProvider;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -23,6 +26,9 @@ public final class NovoAtlasFabric implements ModInitializer {
         Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.loc("bounded_map"), BoundedMapChunkGenerator.CODEC);
         Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.loc("color_map"), ColorMapBiomeSource.CODEC);
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("heightmap"), HeightmapDensityFunction.DATA_CODEC);
+
+        Registry.register(NovoAtlasRegistries.BIOME_MAP_PROVIDER, NovoAtlas.loc("color_map"), ColorMapBiomeProvider.CODEC);
+        Registry.register(NovoAtlasRegistries.BIOME_MAP_PROVIDER, NovoAtlas.loc("layered_map"), LayeredMapBiomeProvider.CODEC);
 
         ResourceManagerHelper serverManager = ResourceManagerHelper.get(PackType.SERVER_DATA);
         serverManager.registerReloadListener(new MapImageLoader());

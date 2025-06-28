@@ -17,7 +17,7 @@ public record BiomeLayerEntry(
                             .fieldOf("offset_range")
                             .forGetter(BiomeLayerEntry::offsetRange),
                     ColorMapBiomeProvider.CODEC.codec()
-                            .fieldOf("biome_provider")
+                            .fieldOf("biomes")
                             .forGetter(BiomeLayerEntry::biomeProvider)
             ).apply(instance, BiomeLayerEntry::new)
     );

@@ -32,35 +32,12 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void register(RegisterEvent event) {
-        event.register(
-                Registries.CHUNK_GENERATOR,
-                NovoAtlas.loc("bounded_map"),
-                () -> BoundedMapChunkGenerator.CODEC
-        );
+        event.register(Registries.CHUNK_GENERATOR, NovoAtlas.loc("bounded_map"), () -> BoundedMapChunkGenerator.CODEC);
+        event.register(Registries.BIOME_SOURCE, NovoAtlas.loc("color_map"), () -> ColorMapBiomeSource.CODEC);
+        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
 
-        event.register(
-                Registries.BIOME_SOURCE,
-                NovoAtlas.loc("color_map"),
-                () -> ColorMapBiomeSource.CODEC
-        );
-
-        event.register(
-                Registries.DENSITY_FUNCTION_TYPE,
-                NovoAtlas.loc("heightmap"),
-                () -> HeightmapDensityFunction.DATA_CODEC
-        );
-
-        event.register(
-                NovoAtlasResourceKeys.BIOME_MAP_PROVIDER,
-                NovoAtlas.loc("color_map"),
-                () -> ColorMapBiomeProvider.CODEC
-        );
-
-        event.register(
-                NovoAtlasResourceKeys.BIOME_MAP_PROVIDER,
-                NovoAtlas.loc("layered_map"),
-                () -> LayeredMapBiomeProvider.CODEC
-        );
+        event.register(NovoAtlasResourceKeys.BIOME_MAP_PROVIDER, NovoAtlas.loc("color_map"), () -> ColorMapBiomeProvider.CODEC);
+        event.register(NovoAtlasResourceKeys.BIOME_MAP_PROVIDER, NovoAtlas.loc("layered_map"), () -> LayeredMapBiomeProvider.CODEC);
     }
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
