@@ -2,9 +2,9 @@
     "starting_y": 6,
     "horizontal_scale": 1,
     "vertical_scale": 1,
-    "height_map": "test:avila",
+    "height_map": "avila-example:avila",
     "surface_biomes": {
-        "map": "test:avila",
+        "map": "avila-example:avila",
         "biomes": [
             {
                 "biome": "minecraft:plains",
@@ -80,7 +80,7 @@
                     "min": 64
                 },
                 "biomes": {
-                    "map": "test:avila_deep_caves",
+                    "map": "avila-example:avila_deep_caves",
                     "biomes": [
                         {
                             "biome": "minecraft:deep_dark",
@@ -98,7 +98,7 @@
                     "min": 10
                 },
                 "biomes": {
-                    "map": "test:avila_single_biome",
+                    "map": "avila-example:avila_single_biome",
                     "biomes": [
                         {
                             "biome": "minecraft:lush_caves",
