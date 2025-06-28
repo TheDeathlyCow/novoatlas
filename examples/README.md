@@ -1,4 +1,4 @@
-# NovoAtlas Docs and Examples
+# NovoAtlas Docs and Examples - Version 1.0.0+1.21.5
 
 ## How to Create a NovoAtlas Dimension
 
