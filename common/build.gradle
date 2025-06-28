@@ -27,7 +27,6 @@ def copyExamplePacksToPlatform = { String name ->
 
         from(exampleSourceDir) {
             includeEmptyDirs = false
-            exclude '**/README.md'
         }
 
         into(targetDir)
