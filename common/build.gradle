@@ -12,3 +12,10 @@ dependencies {
 loom {
     accessWidenerPath = file("src/main/resources/novoatlas.accesswidener")
 }
+
+
+tasks.register("copyExamplePacks", Copy) {
+    from("$projectDir/examples")
+    into("${rootProject.projectDir}/fabric/src/main/resources/")
+    into("${rootProject.projectDir}/neoforge/src/main/resources/")
+}
