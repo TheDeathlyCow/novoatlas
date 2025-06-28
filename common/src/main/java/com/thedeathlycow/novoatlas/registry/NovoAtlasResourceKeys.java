@@ -4,10 +4,8 @@ import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
-import com.thedeathlycow.novoatlas.world.gen.biome.v2.BiomeMapProvider;
+import com.thedeathlycow.novoatlas.world.gen.biome.provider.BiomeMapProvider;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 
 public final class NovoAtlasResourceKeys {

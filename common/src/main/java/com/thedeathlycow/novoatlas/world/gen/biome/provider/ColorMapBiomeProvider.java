@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.world.gen.biome.v2;
+package com.thedeathlycow.novoatlas.world.gen.biome.provider;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -15,6 +15,7 @@ import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ColorMapBiomeProvider implements BiomeMapProvider {
     public static final MapCodec<ColorMapBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(
@@ -65,6 +66,12 @@ public class ColorMapBiomeProvider implements BiomeMapProvider {
         } else {
             return this.getClosest(color);
         }
+    }
+
+    @Override
+    public Stream<Holder<Biome>> collectPossibleBiomes() {
+        return this.biomeColors.stream()
+                .map(BiomeColorEntry::biome);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.thedeathlycow.novoatlas.registry;
 
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.world.gen.biome.v2.BiomeMapProvider;
+import com.thedeathlycow.novoatlas.world.gen.biome.provider.BiomeMapProvider;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;

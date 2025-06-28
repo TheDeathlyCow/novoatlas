@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.registry.ImageManager;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
-import com.thedeathlycow.novoatlas.world.gen.biome.v2.BiomeMapProvider;
+import com.thedeathlycow.novoatlas.world.gen.biome.provider.BiomeMapProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
@@ -48,11 +48,6 @@ public record MapInfo(
 
     public int getHeightMapElevation(int x, int z) {
         return lookupHeightmap(this.heightMap).sample(x, z, this);
-    }
-
-    public int getBiomeColor(int x, int z, int fallback) {
-        return -1;
-//        return lookupBiomeMap(this.biomeMap).sample(x, z, this, fallback);
     }
 
     @NotNull

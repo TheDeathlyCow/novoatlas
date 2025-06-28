@@ -2,8 +2,7 @@ package com.thedeathlycow.novoatlas.world.gen.biome;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.world.gen.biome.v2.ColorMapBiomeProvider;
-import net.minecraft.world.level.biome.BiomeSource;
+import com.thedeathlycow.novoatlas.world.gen.biome.provider.ColorMapBiomeProvider;
 
 import java.util.Optional;
 import java.util.function.IntPredicate;

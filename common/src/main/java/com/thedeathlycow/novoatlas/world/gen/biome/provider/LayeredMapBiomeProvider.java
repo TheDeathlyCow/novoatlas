@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.world.gen.biome.v2;
+package com.thedeathlycow.novoatlas.world.gen.biome.provider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -9,6 +9,7 @@ import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class LayeredMapBiomeProvider implements BiomeMapProvider {
     public static final MapCodec<LayeredMapBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(
@@ -36,6 +37,13 @@ public class LayeredMapBiomeProvider implements BiomeMapProvider {
 
         BiomeLayerEntry layer = this.getLayer(elevation - y);
         return layer != null ? layer.biomeProvider().getBiome(x, y, z, info) : null;
+    }
+
+    @Override
+    public Stream<Holder<Biome>> collectPossibleBiomes() {
+        return this.layers.stream()
+                .map(BiomeLayerEntry::biomeProvider)
+                .flatMap(ColorMapBiomeProvider::collectPossibleBiomes);
     }
 
     @Override

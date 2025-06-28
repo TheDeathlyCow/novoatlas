@@ -7,12 +7,9 @@ import com.thedeathlycow.novoatlas.world.gen.BoundedMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
-import com.thedeathlycow.novoatlas.world.gen.biome.LayeredHeightmapBiomeSource;
-import com.thedeathlycow.novoatlas.world.gen.biome.v2.ColorMapBiomeProvider;
-import com.thedeathlycow.novoatlas.world.gen.biome.v2.LayeredMapBiomeProvider;
-import net.minecraft.core.registries.BuiltInRegistries;
+import com.thedeathlycow.novoatlas.world.gen.biome.provider.ColorMapBiomeProvider;
+import com.thedeathlycow.novoatlas.world.gen.biome.provider.LayeredMapBiomeProvider;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.entity.projectile.AbstractThrownPotion;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
@@ -45,12 +42,6 @@ public final class NovoAtlasNeoForge {
                 Registries.BIOME_SOURCE,
                 NovoAtlas.loc("color_map"),
                 () -> ColorMapBiomeSource.CODEC
-        );
-
-        event.register(
-                Registries.BIOME_SOURCE,
-                NovoAtlas.loc("layered_heightmap"),
-                () -> LayeredHeightmapBiomeSource.CODEC
         );
 
         event.register(
