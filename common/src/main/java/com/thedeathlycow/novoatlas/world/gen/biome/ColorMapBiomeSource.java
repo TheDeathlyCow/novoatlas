@@ -40,10 +40,12 @@ public class ColorMapBiomeSource extends BiomeSource {
     @Override
     @NotNull
     protected Stream<Holder<Biome>> collectPossibleBiomes() {
-        return Stream.concat(
-                Stream.of(defaultBiome),
-                mapInfo.value().biomeMapProvider().collectPossibleBiomes()
+        Stream<Holder<Biome>> baseBiomes = Stream.concat(
+                mapInfo.value().caveBiomes().collectPossibleBiomes(),
+                mapInfo.value().surfaceBiomes().collectPossibleBiomes()
         );
+
+        return Stream.concat(Stream.of(defaultBiome), baseBiomes);
     }
 
     @Override

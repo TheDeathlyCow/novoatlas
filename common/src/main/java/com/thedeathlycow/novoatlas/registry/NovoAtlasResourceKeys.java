@@ -21,10 +21,6 @@ public final class NovoAtlasResourceKeys {
             NovoAtlas.loc("biome_map")
     );
 
-    public static final ResourceKey<Registry<MapCodec<? extends BiomeMapProvider>>> BIOME_MAP_PROVIDER = ResourceKey.createRegistryKey(
-            NovoAtlas.loc("biome_map_provider")
-    );
-
     private NovoAtlasResourceKeys() {
     }
 }
