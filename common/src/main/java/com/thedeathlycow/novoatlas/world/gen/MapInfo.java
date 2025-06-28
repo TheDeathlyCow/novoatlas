@@ -31,24 +31,24 @@ public record MapInfo(
 
     public static final Codec<Holder<MapInfo>> CODEC = RegistryFileCodec.create(NovoAtlasResourceKeys.MAP_INFO, DIRECT_CODEC);
 
-    public MapImage lookupHeightmap() {
-        return Objects.requireNonNull(ImageManager.HEIGHTMAP.getImage(this.heightMap), "Missing height map image " + this.heightMap);
+    public static MapImage lookupHeightmap(ResourceKey<MapImage> map) {
+        return Objects.requireNonNull(ImageManager.HEIGHTMAP.getImage(map), "Missing height map image " + map);
     }
 
-    public MapImage lookupBiomeMap() {
-        return Objects.requireNonNull(ImageManager.BIOME_MAP.getImage(this.biomeMap), "Missing biome map image " + this.biomeMap);
+    public static MapImage lookupBiomeMap(ResourceKey<MapImage> map) {
+        return Objects.requireNonNull(ImageManager.BIOME_MAP.getImage(map), "Missing biome map image " + map);
     }
 
     public int getHeightMapElevation(int x, int z, int fallback) {
-        return this.lookupHeightmap().sample(x, z, this, fallback);
+        return lookupHeightmap(this.heightMap).sample(x, z, this, fallback);
     }
 
     public int getHeightMapElevation(int x, int z) {
-        return this.lookupHeightmap().sample(x, z, this);
+        return lookupHeightmap(this.heightMap).sample(x, z, this);
     }
 
     public int getBiomeColor(int x, int z, int fallback) {
-        return this.lookupBiomeMap().sample(x, z, this, fallback);
+        return lookupBiomeMap(this.biomeMap).sample(x, z, this, fallback);
     }
 
     public float horizontalScale() {

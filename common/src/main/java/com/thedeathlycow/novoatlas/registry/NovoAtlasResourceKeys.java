@@ -3,6 +3,7 @@ package com.thedeathlycow.novoatlas.registry;
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
+import com.thedeathlycow.novoatlas.world.gen.biome.v2.BiomeMapProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 
@@ -17,6 +18,10 @@ public final class NovoAtlasResourceKeys {
 
     public static final ResourceKey<Registry<MapImage>> BIOME_MAP = ResourceKey.createRegistryKey(
             NovoAtlas.loc("biome_map")
+    );
+
+    public static final ResourceKey<Registry<BiomeMapProvider>> BIOME_MAP_PROVIDER = ResourceKey.createRegistryKey(
+            NovoAtlas.loc("biome_map_provider")
     );
 
     private NovoAtlasResourceKeys() {
