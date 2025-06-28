@@ -57,6 +57,6 @@ remapJar {
     inputFile.set shadowJar.archiveFile
 }
 
-tasks.withType(ProcessResources).configureEach {
+tasks.matching { it.name == "processResources" }.configureEach {
     dependsOn(":common:copyExamplePacksToFabric")
 }
