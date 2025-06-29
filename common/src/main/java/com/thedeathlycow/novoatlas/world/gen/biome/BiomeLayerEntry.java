@@ -1,6 +1,7 @@
 package com.thedeathlycow.novoatlas.world.gen.biome;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.world.gen.biome.provider.ColorMapBiomeProvider;
 
@@ -22,12 +23,12 @@ public record BiomeLayerEntry(
             ).apply(instance, BiomeLayerEntry::new)
     );
 
-    public boolean isInLayer(int offset) {
-        return offsetRange.test(offset);
+    public boolean isInLayer(int y) {
+        return offsetRange.test(y);
     }
 
     private record Range(Optional<Integer> min, Optional<Integer> max) implements IntPredicate {
-        public static final Codec<Range> CODEC = RecordCodecBuilder.create(
+        public static final Codec<Range> CODEC = RecordCodecBuilder.<Range>create(
                 instance -> instance.group(
                         Codec.INT
                                 .optionalFieldOf("min")
@@ -36,14 +37,23 @@ public record BiomeLayerEntry(
                                 .optionalFieldOf("max")
                                 .forGetter(Range::max)
                 ).apply(instance, Range::new)
-        );
+        ).validate(range -> {
+            int minValue = range.min.orElse(Integer.MIN_VALUE);
+            int maxValue = range.max.orElse(Integer.MAX_VALUE);
+
+            if (minValue >= maxValue) {
+                return DataResult.error(() -> "Min is not less than max in: " + range, range);
+            } else {
+                return DataResult.success(range);
+            }
+        });
 
         @Override
-        public boolean test(int number) {
+        public boolean test(int y) {
             int minValue = this.min.orElse(Integer.MIN_VALUE);
             int maxValue = this.max.orElse(Integer.MAX_VALUE);
 
-            return minValue <= number && number <= maxValue;
+            return minValue <= y && y <= maxValue;
         }
     }
 }

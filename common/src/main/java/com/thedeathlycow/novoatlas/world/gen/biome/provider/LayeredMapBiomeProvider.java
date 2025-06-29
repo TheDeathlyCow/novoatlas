@@ -51,9 +51,9 @@ public record LayeredMapBiomeProvider(
     }
 
     @Nullable
-    private BiomeLayerEntry getLayer(int offset) {
+    private BiomeLayerEntry getLayer(int y) {
         for (BiomeLayerEntry layer : this.layers) {
-            if (layer.isInLayer(offset)) {
+            if (layer.isInLayer(y)) {
                 return layer;
             }
         }
@@ -68,7 +68,7 @@ public record LayeredMapBiomeProvider(
             return null;
         }
 
-        BiomeLayerEntry layer = this.getLayer(elevation - y);
+        BiomeLayerEntry layer = this.getLayer(y);
         return layer != null ? layer.biomeProvider().getBiome(x, y, z, info) : null;
     }
 }

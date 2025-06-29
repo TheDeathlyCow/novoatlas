@@ -77,7 +77,7 @@
         "layers": [
             {
                 "offset_range": {
-                    "min": 64
+                    "max": 0
                 },
                 "biomes": {
                     "map": "avila-example:avila_caves",
