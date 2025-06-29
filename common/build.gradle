@@ -15,8 +15,9 @@ loom {
     accessWidenerPath = file("src/main/resources/novoatlas.accesswidener")
 }
 
+def exampleSourceDir = file("$rootDir/examples")
+
 def copyExamplePacksToPlatform = { String name ->
-    def exampleSourceDir = file("$rootDir/examples")
     def targetDir = file("$rootDir/$name/src/main/resources/resourcepacks")
 
     group = "build"
@@ -37,8 +38,35 @@ def copyExamplePacksToPlatform = { String name ->
 
 def copyExamplePacksToFabric = copyExamplePacksToPlatform("fabric")
 def copyExamplePacksToNeoforge = copyExamplePacksToPlatform("neoforge")
-
 def copyExamplePacks = tasks.register("copyExamplePacks") {
     group = "build"
     dependsOn(copyExamplePacksToFabric, copyExamplePacksToNeoforge)
+}
+
+
+
+def buildDatapacks = tasks.register("buildDatapacks") {
+    group = "build"
+}
+def datapackBuildTarget = file("$rootDir/build/datapacks")
+
+exampleSourceDir.eachDir { dir ->
+    if (dir.isDirectory()) {
+        def taskName = "buildDatapack${dir.name.capitalize().replace("-", "")}"
+
+        def task = tasks.register(taskName, Zip) {
+            group = "build"
+            from(dir)
+            archiveFileName.set("${dir.name}-${rootProject.mod_version}.zip")
+            destinationDirectory.set(datapackBuildTarget)
+        }
+
+        tasks.named("buildDatapacks") {
+            dependsOn(task)
+        }
+    }
+}
+
+tasks.named("build") {
+    dependsOn(buildDatapacks)
 }
