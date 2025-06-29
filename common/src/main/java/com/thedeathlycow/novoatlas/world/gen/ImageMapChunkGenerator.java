@@ -20,26 +20,26 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 
-public class BoundedMapChunkGenerator extends NoiseBasedChunkGenerator {
-    public static final MapCodec<BoundedMapChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
+public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
+    public static final MapCodec<ImageMapChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                             BiomeSource.CODEC
                                     .fieldOf("biome_source")
-                                    .forGetter(BoundedMapChunkGenerator::getBiomeSource),
+                                    .forGetter(ImageMapChunkGenerator::getBiomeSource),
                             NoiseGeneratorSettings.CODEC
                                     .fieldOf("settings")
-                                    .forGetter(BoundedMapChunkGenerator::generatorSettings),
+                                    .forGetter(ImageMapChunkGenerator::generatorSettings),
                             MapInfo.CODEC
                                     .fieldOf("map_info")
-                                    .forGetter(BoundedMapChunkGenerator::getMapInfo),
+                                    .forGetter(ImageMapChunkGenerator::getMapInfo),
                             DensityFunction.HOLDER_HELPER_CODEC
                                     .fieldOf("underground_density_function")
-                                    .forGetter(BoundedMapChunkGenerator::getUndergroundDensityFunction),
+                                    .forGetter(ImageMapChunkGenerator::getUndergroundDensityFunction),
                             Codec.BOOL
                                     .optionalFieldOf("enable_carvers", true)
-                                    .forGetter(BoundedMapChunkGenerator::isEnableCarvers)
+                                    .forGetter(ImageMapChunkGenerator::isEnableCarvers)
                     )
-                    .apply(instance, BoundedMapChunkGenerator::new)
+                    .apply(instance, ImageMapChunkGenerator::new)
     );
 
     private final Holder<MapInfo> mapInfo;
@@ -48,7 +48,7 @@ public class BoundedMapChunkGenerator extends NoiseBasedChunkGenerator {
 
     private final boolean enableCarvers;
 
-    public BoundedMapChunkGenerator(
+    public ImageMapChunkGenerator(
             BiomeSource biomeSource,
             Holder<NoiseGeneratorSettings> settings,
             Holder<MapInfo> mapInfo,
@@ -116,7 +116,7 @@ public class BoundedMapChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     @Override
-    protected MapCodec<? extends BoundedMapChunkGenerator> codec() {
+    protected MapCodec<? extends ImageMapChunkGenerator> codec() {
         return CODEC;
     }
 

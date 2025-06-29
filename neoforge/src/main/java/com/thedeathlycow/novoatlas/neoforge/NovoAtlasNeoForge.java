@@ -2,7 +2,7 @@ package com.thedeathlycow.novoatlas.neoforge;
 
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
-import com.thedeathlycow.novoatlas.world.gen.BoundedMapChunkGenerator;
+import com.thedeathlycow.novoatlas.world.gen.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
@@ -63,7 +63,7 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void register(RegisterEvent event) {
-        event.register(Registries.CHUNK_GENERATOR, NovoAtlas.loc("bounded_map"), () -> BoundedMapChunkGenerator.CODEC);
+        event.register(Registries.CHUNK_GENERATOR, NovoAtlas.loc("image_map"), () -> ImageMapChunkGenerator.CODEC);
         event.register(Registries.BIOME_SOURCE, NovoAtlas.loc("color_map"), () -> ColorMapBiomeSource.CODEC);
         event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
     }

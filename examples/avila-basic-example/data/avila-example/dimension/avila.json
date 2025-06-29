@@ -1,7 +1,7 @@
 {
     "type": "minecraft:overworld",
     "generator": {
-        "type": "novoatlas:bounded_map",
+        "type": "novoatlas:image_map",
         "map_info": "avila-example:avila",
         "settings": "minecraft:overworld",
         "underground_density_function": "novoatlas:caves",
