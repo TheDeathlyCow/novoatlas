@@ -9,14 +9,14 @@ import java.util.Optional;
 import java.util.function.IntPredicate;
 
 public record BiomeLayerEntry(
-        Range offsetRange,
+        Range yRange,
         ColorMapBiomeProvider biomeProvider
 ) {
     public static final Codec<BiomeLayerEntry> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     Range.CODEC
-                            .fieldOf("offset_range")
-                            .forGetter(BiomeLayerEntry::offsetRange),
+                            .fieldOf("y_range")
+                            .forGetter(BiomeLayerEntry::yRange),
                     ColorMapBiomeProvider.CODEC.codec()
                             .fieldOf("biomes")
                             .forGetter(BiomeLayerEntry::biomeProvider)
@@ -24,7 +24,7 @@ public record BiomeLayerEntry(
     );
 
     public boolean isInLayer(int y) {
-        return offsetRange.test(y);
+        return yRange.test(y);
     }
 
     private record Range(Optional<Integer> min, Optional<Integer> max) implements IntPredicate {
