@@ -32,6 +32,9 @@ public class BoundedMapChunkGenerator extends NoiseBasedChunkGenerator {
                             MapInfo.CODEC
                                     .fieldOf("map_info")
                                     .forGetter(BoundedMapChunkGenerator::getMapInfo),
+                            DensityFunction.HOLDER_HELPER_CODEC
+                                    .fieldOf("underground_density_function")
+                                    .forGetter(BoundedMapChunkGenerator::getUndergroundDensityFunction),
                             Codec.BOOL
                                     .optionalFieldOf("enable_carvers", true)
                                     .forGetter(BoundedMapChunkGenerator::isEnableCarvers)
@@ -41,17 +44,75 @@ public class BoundedMapChunkGenerator extends NoiseBasedChunkGenerator {
 
     private final Holder<MapInfo> mapInfo;
 
+    private final DensityFunction undergroundDensityFunction;
+
     private final boolean enableCarvers;
 
     public BoundedMapChunkGenerator(
             BiomeSource biomeSource,
             Holder<NoiseGeneratorSettings> settings,
             Holder<MapInfo> mapInfo,
+            DensityFunction undergroundDensityFunction,
             boolean enableCarvers
     ) {
-        super(biomeSource, settings);
+        super(
+                biomeSource,
+                applyHeightMapToDensityFunctions(settings, mapInfo, undergroundDensityFunction)
+        );
         this.mapInfo = mapInfo;
+        this.undergroundDensityFunction = undergroundDensityFunction;
         this.enableCarvers = enableCarvers;
+    }
+
+    private static Holder<NoiseGeneratorSettings> applyHeightMapToDensityFunctions(
+            Holder<NoiseGeneratorSettings> settings,
+            Holder<MapInfo> mapInfo,
+            DensityFunction undergroundDensityFunction
+    ) {
+        NoiseGeneratorSettings baseSettings = settings.value();
+
+        NoiseRouter baseNoiseRouter = baseSettings.noiseRouter();
+
+        DensityFunction heightMap = new HeightmapDensityFunction(mapInfo);
+
+        DensityFunction finalDensity = DensityFunctions.min(
+                undergroundDensityFunction,
+                heightMap
+        );
+
+        NoiseRouter fixedNoiseRouter = new NoiseRouter(
+                baseNoiseRouter.barrierNoise(),
+                baseNoiseRouter.fluidLevelFloodednessNoise(),
+                baseNoiseRouter.fluidLevelSpreadNoise(),
+                baseNoiseRouter.lavaNoise(),
+                baseNoiseRouter.temperature(),
+                baseNoiseRouter.vegetation(),
+                baseNoiseRouter.continents(),
+                baseNoiseRouter.erosion(),
+                baseNoiseRouter.depth(),
+                baseNoiseRouter.ridges(),
+                heightMap,
+                finalDensity,
+                baseNoiseRouter.veinToggle(),
+                baseNoiseRouter.veinRidged(),
+                baseNoiseRouter.veinGap()
+        );
+
+        NoiseGeneratorSettings fixedSettings = new NoiseGeneratorSettings(
+                baseSettings.noiseSettings(),
+                baseSettings.defaultBlock(),
+                baseSettings.defaultFluid(),
+                fixedNoiseRouter,
+                baseSettings.surfaceRule(),
+                baseSettings.spawnTarget(),
+                baseSettings.seaLevel(),
+                baseSettings.disableMobGeneration(),
+                baseSettings.aquifersEnabled(),
+                baseSettings.oreVeinsEnabled(),
+                baseSettings.useLegacyRandomSource()
+        );
+
+        return Holder.direct(fixedSettings);
     }
 
     @Override
@@ -220,6 +281,10 @@ public class BoundedMapChunkGenerator extends NoiseBasedChunkGenerator {
 
     public Holder<MapInfo> getMapInfo() {
         return mapInfo;
+    }
+
+    public DensityFunction getUndergroundDensityFunction() {
+        return undergroundDensityFunction;
     }
 
     public boolean isEnableCarvers() {

@@ -33,6 +33,10 @@ public record HeightmapDensityFunction(
 
     public static final KeyDispatchDataCodec<HeightmapDensityFunction> CODEC = KeyDispatchDataCodec.of(DATA_CODEC);
 
+    public HeightmapDensityFunction(Holder<MapInfo> mapInfo) {
+        this(mapInfo, 10);
+    }
+
     @Override
     public double compute(FunctionContext context) {
         int elevation = mapInfo.value().getHeightMapElevation(context.blockX(), context.blockZ(), Integer.MIN_VALUE);
