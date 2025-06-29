@@ -7,9 +7,14 @@ import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -18,9 +23,43 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 public final class NovoAtlasNeoForge {
     public NovoAtlasNeoForge(IEventBus bus) {
         NovoAtlas.init();
-        bus.addListener(NovoAtlasNeoForge::registerDatapackRegistries);
+
         NeoForge.EVENT_BUS.addListener(NovoAtlasNeoForge::registerResourceReloader);
+
+        bus.addListener(NovoAtlasNeoForge::registerDatapackRegistries);
         bus.addListener(NovoAtlasNeoForge::register);
+        bus.addListener(NovoAtlasNeoForge::addExamplePacks);
+    }
+
+    private static void addExamplePacks(AddPackFindersEvent event) {
+        if (event.getPackType() == PackType.SERVER_DATA) {
+            event.addPackFinders(
+                    NovoAtlas.loc("resourcepacks/avila-basic-example"),
+                    PackType.SERVER_DATA,
+                    Component.literal("novoatlas/avila-basic-example"),
+                    PackSource.FEATURE,
+                    false,
+                    Pack.Position.BOTTOM
+            );
+
+            event.addPackFinders(
+                    NovoAtlas.loc("resourcepacks/avila-cave-biome-example"),
+                    PackType.SERVER_DATA,
+                    Component.literal("novoatlas/avila-cave-biome-example"),
+                    PackSource.FEATURE,
+                    false,
+                    Pack.Position.BOTTOM
+            );
+
+            event.addPackFinders(
+                    NovoAtlas.loc("resourcepacks/avila-no-caves-example"),
+                    PackType.SERVER_DATA,
+                    Component.literal("novoatlas/avila-no-caves-example"),
+                    PackSource.FEATURE,
+                    false,
+                    Pack.Position.BOTTOM
+            );
+        }
     }
 
     private static void register(RegisterEvent event) {

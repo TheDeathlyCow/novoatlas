@@ -59,9 +59,6 @@ remapJar {
     inputFile.set shadowJar.archiveFile
 }
 
-tasks {
-    remapJar {
-        atAccessWideners.add("novoatlas.accesswidener")
-        archiveClassifier.set("neoforge")
-    }
+tasks.matching { it.name == "processResources" }.configureEach {
+    dependsOn(":common:copyExamplePacksToNeoforge")
 }

@@ -3,7 +3,7 @@
     "generator": {
         "type": "novoatlas:bounded_map",
         "map_info": "avila-example:avila",
-        "settings": "novoatlas:noise_caves",
+        "settings": "avila-example:noise_caves",
         "biome_source": {
             "type": "novoatlas:color_map",
             "map_info": "avila-example:avila",
