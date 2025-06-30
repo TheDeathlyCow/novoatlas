@@ -11,7 +11,7 @@ authors = "TheDeathlyCow, itsmiir (Original Atlas mod)"
 description = '''
 A data-driven image based world generator for Minecraft.
 '''
-logoFile = "icon.png"
+logoFile = "assets/novoatlas/icon.png"
 
 [[dependencies.novoatlas]]
 modId = "neoforge"
