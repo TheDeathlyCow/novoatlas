@@ -51,9 +51,9 @@ public abstract class LevelUtilsMixin {
                     IExtendedNoiseGeneratorSettings extendedNoiseGeneratorSettings = (IExtendedNoiseGeneratorSettings) (Object) generatorSettings;
                     extendedNoiseGeneratorSettings.setRuleCategory(ruleCategory);
                 }
-            }
 
-            ci.cancel();
+                ci.cancel();
+            }
         }
     }
 }
