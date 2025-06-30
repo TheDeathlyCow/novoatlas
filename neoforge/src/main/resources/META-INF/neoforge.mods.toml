@@ -16,14 +16,14 @@ A data-driven image based world generator for Minecraft.
 [[dependencies.novoatlas]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.5,)"
+versionRange = "[21.4,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.novoatlas]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.5,)"
+versionRange = "[1.21.4,)"
 ordering = "NONE"
 side = "BOTH"
 
