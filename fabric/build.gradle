@@ -45,6 +45,10 @@ processResources {
         include("novoatlas.accesswidener")
     }
 
+    from(rootProject.file("common/src/main/resources")) {
+        include("resourcepacks/**")
+    }
+
     filesMatching('fabric.mod.json') {
         expand version: project.version
     }
@@ -57,8 +61,4 @@ shadowJar {
 
 remapJar {
     inputFile.set shadowJar.archiveFile
-}
-
-tasks.matching { it.name == "processResources" }.configureEach {
-    dependsOn(":common:copyExamplePacksToFabric")
 }

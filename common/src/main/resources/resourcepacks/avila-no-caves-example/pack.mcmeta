@@ -1,7 +1,8 @@
 {
     "pack": {
         "description": "Avila mountains example dimension created using NovoAtlas with no caves",
-        "pack_format": {
+        "pack_format": 71,
+        "supported_formats": {
             "min_inclusive": 57,
             "max_inclusive": 81
         }
