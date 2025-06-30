@@ -25,7 +25,7 @@ configurations {
 }
 
 loom {
-    accessWidenerPath = project(":common").file("src/main/resources/novoatlas.accesswidener")
+    accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
 repositories {
@@ -57,6 +57,8 @@ shadowJar {
 
 remapJar {
     inputFile.set shadowJar.archiveFile
+
+    atAccessWideners.add "novoatlas.accesswidener"
 }
 
 tasks.matching { it.name == "processResources" }.configureEach {
