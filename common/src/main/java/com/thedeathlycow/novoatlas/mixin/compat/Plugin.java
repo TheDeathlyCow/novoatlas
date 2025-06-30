@@ -1,6 +1,6 @@
 package com.thedeathlycow.novoatlas.mixin.compat;
 
-import net.fabricmc.loader.api.FabricLoader;
+import com.thedeathlycow.novoatlas.NovoAtlasPlatform;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -11,7 +11,6 @@ import java.util.Set;
 public class Plugin implements IMixinConfigPlugin {
     private static final String COMPAT_PACKAGE_ROOT;
     private static final String COMPAT_PRESENT_KEY = "present";
-    private static final FabricLoader LOADER = FabricLoader.getInstance();
 
     static {
         // Shorthand getting the plugin package to ensure not making trouble with other mixins
@@ -41,9 +40,9 @@ public class Plugin implements IMixinConfigPlugin {
 
         if (isPresentMixin) {
             // We only load the mixin if the mod we want to be present is found
-            return LOADER.isModLoaded(compatModId);
+            return NovoAtlasPlatform.isModLoaded(compatModId);
         }
-        return !LOADER.isModLoaded(compatModId);
+        return !NovoAtlasPlatform.isModLoaded(compatModId);
     }
 
     @Override
