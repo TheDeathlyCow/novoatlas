@@ -75,7 +75,7 @@
     "cave_biomes": {
         "layers": [
             {
-                "offset_range": {
+                "y_range": {
                     "max": 0
                 },
                 "biomes": {
