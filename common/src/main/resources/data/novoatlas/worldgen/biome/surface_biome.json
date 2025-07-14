@@ -1,5 +1,5 @@
 {
-    "carvers": [],
+    "carvers": {},
     "downfall": 0.5,
     "effects": {
         "fog_color": 12638463,
@@ -25,7 +25,9 @@
         [],
         [],
         [],
-        []
+        [
+            "minecraft:void_start_platform"
+        ]
     ],
     "has_precipitation": false,
     "spawn_costs": {},

@@ -121,9 +121,17 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     @Override
-    public void applyCarvers(WorldGenRegion level, long seed, RandomState random, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunk) {
+    public void applyCarvers(
+            WorldGenRegion level,
+            long seed,
+            RandomState random,
+            BiomeManager biomeManager,
+            StructureManager structureManager,
+            ChunkAccess chunk,
+            GenerationStep.Carving carvingStep
+    ) {
         if (this.enableCarvers) {
-            super.applyCarvers(level, seed, random, biomeManager, structureManager, chunk);
+            super.applyCarvers(level, seed, random, biomeManager, structureManager, chunk, carvingStep);
         }
     }
 
