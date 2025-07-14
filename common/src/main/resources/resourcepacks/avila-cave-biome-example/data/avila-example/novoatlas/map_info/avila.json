@@ -73,7 +73,6 @@
         ]
     },
     "cave_biomes": {
-        "type": "novoatlas:layered_map",
         "layers": [
             {
                 "offset_range": {
