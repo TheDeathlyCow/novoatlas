@@ -2,8 +2,8 @@ package com.thedeathlycow.novoatlas.neoforge;
 
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
-import com.thedeathlycow.novoatlas.world.gen.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
+import com.thedeathlycow.novoatlas.world.gen.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
 import net.minecraft.core.registries.Registries;
@@ -15,7 +15,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
-import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -72,7 +72,7 @@ public final class NovoAtlasNeoForge {
         event.dataPackRegistry(NovoAtlasResourceKeys.MAP_INFO, MapInfo.DIRECT_CODEC);
     }
 
-    private static void registerResourceReloader(AddServerReloadListenersEvent event) {
-        event.addListener(MapImageLoader.ID, new MapImageLoader());
+    private static void registerResourceReloader(AddReloadListenerEvent event) {
+        event.addListener(new MapImageLoader());
     }
 }
