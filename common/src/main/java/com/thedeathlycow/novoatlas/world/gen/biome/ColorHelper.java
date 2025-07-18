@@ -2,13 +2,13 @@ package com.thedeathlycow.novoatlas.world.gen.biome;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.thedeathlycow.novoatlas.util.CodecUtil;
 import net.minecraft.util.ExtraCodecs;
 
 public final class ColorHelper {
-    public static final Codec<Integer> CODEC = Codec.withAlternative(
+    public static final Codec<Integer> CODEC = CodecUtil.withAlternative(
             ExtraCodecs.intRange(0, 0xFFFFFF),
-            Codec.STRING
-                    .validate(ColorHelper::isValidColor)
+            ExtraCodecs.validate(Codec.STRING, ColorHelper::isValidColor)
                     .xmap(ColorHelper::toRGB, ColorHelper::fromRGB)
     );
 

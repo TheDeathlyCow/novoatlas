@@ -1,5 +1,6 @@
 package com.thedeathlycow.novoatlas.world.gen.biome;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
@@ -15,7 +16,17 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class ColorMapBiomeSource extends BiomeSource {
-    public static final MapCodec<ColorMapBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
+//    public static final MapCodec<ColorMapBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
+//            instance -> instance.group(
+//                    MapInfo.CODEC
+//                            .fieldOf("map_info")
+//                            .forGetter(ColorMapBiomeSource::getMapInfo),
+//                    Biome.CODEC
+//                            .fieldOf("default_biome")
+//                            .forGetter(ColorMapBiomeSource::getDefaultBiome)
+//            ).apply(instance, ColorMapBiomeSource::new)
+//    );
+    public static final Codec<ColorMapBiomeSource> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     MapInfo.CODEC
                             .fieldOf("map_info")
@@ -35,7 +46,7 @@ public class ColorMapBiomeSource extends BiomeSource {
     }
 
     @Override
-    protected MapCodec<? extends ColorMapBiomeSource> codec() {
+    protected Codec<? extends ColorMapBiomeSource> codec() {
         return CODEC;
     }
 

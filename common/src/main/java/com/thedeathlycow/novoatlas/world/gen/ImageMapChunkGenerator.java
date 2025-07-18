@@ -16,28 +16,39 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 
 public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
-    public static final MapCodec<ImageMapChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
+//    public static final MapCodec<ImageMapChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
+//            instance -> instance.group(
+//                            BiomeSource.CODEC
+//                                    .fieldOf("biome_source")
+//                                    .forGetter(ImageMapChunkGenerator::getBiomeSource),
+//                            NoiseGeneratorSettings.CODEC
+//                                    .fieldOf("settings")
+//                                    .forGetter(ImageMapChunkGenerator::generatorSettings),
+//                            MapInfo.CODEC
+//                                    .fieldOf("map_info")
+//                                    .forGetter(ImageMapChunkGenerator::getMapInfo),
+//                            DensityFunction.HOLDER_HELPER_CODEC
+//                                    .fieldOf("underground_density_function")
+//                                    .forGetter(ImageMapChunkGenerator::getUndergroundDensityFunction),
+//                            Codec.BOOL
+//                                    .optionalFieldOf("enable_carvers", true)
+//                                    .forGetter(ImageMapChunkGenerator::isEnableCarvers)
+//                    )
+//                    .apply(instance, ImageMapChunkGenerator::new)
+//    );
+    public static final Codec<ImageMapChunkGenerator> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                            BiomeSource.CODEC
-                                    .fieldOf("biome_source")
-                                    .forGetter(ImageMapChunkGenerator::getBiomeSource),
-                            NoiseGeneratorSettings.CODEC
-                                    .fieldOf("settings")
-                                    .forGetter(ImageMapChunkGenerator::generatorSettings),
-                            MapInfo.CODEC
-                                    .fieldOf("map_info")
-                                    .forGetter(ImageMapChunkGenerator::getMapInfo),
-                            DensityFunction.HOLDER_HELPER_CODEC
-                                    .fieldOf("underground_density_function")
-                                    .forGetter(ImageMapChunkGenerator::getUndergroundDensityFunction),
-                            Codec.BOOL
-                                    .optionalFieldOf("enable_carvers", true)
-                                    .forGetter(ImageMapChunkGenerator::isEnableCarvers)
+                            BiomeSource.CODEC.fieldOf("biome_source").forGetter(ImageMapChunkGenerator::getBiomeSource),
+                            NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(ImageMapChunkGenerator::generatorSettings),
+                            MapInfo.CODEC.fieldOf("map_info").forGetter(ImageMapChunkGenerator::getMapInfo),
+                            DensityFunction.HOLDER_HELPER_CODEC.fieldOf("underground_density_function").forGetter(ImageMapChunkGenerator::getUndergroundDensityFunction),
+                            Codec.BOOL.optionalFieldOf("enable_carvers", true).forGetter(ImageMapChunkGenerator::isEnableCarvers)
                     )
                     .apply(instance, ImageMapChunkGenerator::new)
     );
@@ -116,7 +127,7 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     @Override
-    protected MapCodec<? extends ImageMapChunkGenerator> codec() {
+    protected Codec<? extends ImageMapChunkGenerator> codec() {
         return CODEC;
     }
 

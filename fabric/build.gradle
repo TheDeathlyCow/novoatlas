@@ -47,6 +47,7 @@ processResources {
 
     from(rootProject.file("common/src/main/resources")) {
         include("resourcepacks/**")
+        include("pack.mcmeta")
     }
 
     filesMatching('fabric.mod.json') {
