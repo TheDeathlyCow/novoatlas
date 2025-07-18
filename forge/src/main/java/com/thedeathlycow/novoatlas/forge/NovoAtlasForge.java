@@ -49,60 +49,45 @@ public final class NovoAtlasForge {
 
     private static void addExamplePacks(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.SERVER_DATA) {
-//            event.addPackFinders(
-//                    NovoAtlas.loc("resourcepacks/avila-basic-example"),
-//                    PackType.SERVER_DATA,
-//                    Component.literal("novoatlas/avila-basic-example"),
-//                    PackSource.FEATURE,
-//                    false,
-//                    Pack.Position.BOTTOM
-//            );
             event.addRepositorySource(source -> {
                 source.accept(Pack.readMetaAndCreate(
                         NovoAtlas.loc("resourcepacks/avila-basic-example").toString(),
                         Component.literal("novoatlas/avila-basic-example"),
                         false,
-                        id -> new PathPackResources(id, ModList.get().getModFileById(NovoAtlas.MOD_ID).getFile().findResource("resourcepacks/avila-basic-example"), false),
+                        id -> new PathPackResources(
+                                id,
+                                ModList.get().getModFileById(NovoAtlas.MOD_ID).getFile().findResource("resourcepacks/avila-basic-example"),
+                                false
+                        ),
                         PackType.SERVER_DATA,
                         Pack.Position.BOTTOM,
                         PackSource.FEATURE
                 ));
             });
-//
-//            event.addPackFinders(
-//                    NovoAtlas.loc("resourcepacks/avila-cave-biome-example"),
-//                    PackType.SERVER_DATA,
-//                    Component.literal("novoatlas/avila-cave-biome-example"),
-//                    PackSource.FEATURE,
-//                    false,
-//                    Pack.Position.BOTTOM
-//            );
             event.addRepositorySource(source -> {
                 source.accept(Pack.readMetaAndCreate(
                         NovoAtlas.loc("resourcepacks/avila-cave-biome-example").toString(),
                         Component.literal("novoatlas/avila-cave-biome-example"),
                         false,
-                        id -> new PathPackResources(id, ModList.get().getModFileById(NovoAtlas.MOD_ID).getFile().findResource("resourcepacks/avila-cave-biome-example"), false),
+                        id -> new PathPackResources(
+                                id, ModList.get().getModFileById(NovoAtlas.MOD_ID).getFile().findResource("resourcepacks/avila-cave-biome-example"),
+                                false
+                        ),
                         PackType.SERVER_DATA,
                         Pack.Position.BOTTOM,
                         PackSource.FEATURE
                 ));
             });
-//
-//            event.addPackFinders(
-//                    NovoAtlas.loc("resourcepacks/avila-no-caves-example"),
-//                    PackType.SERVER_DATA,
-//                    Component.literal("novoatlas/avila-no-caves-example"),
-//                    PackSource.FEATURE,
-//                    false,
-//                    Pack.Position.BOTTOM
-//            );
             event.addRepositorySource(source -> {
                 source.accept(Pack.readMetaAndCreate(
                         NovoAtlas.loc("resourcepacks/avila-no-caves-example").toString(),
                         Component.literal("novoatlas/avila-no-caves-example"),
                         false,
-                        id -> new PathPackResources(id, ModList.get().getModFileById(NovoAtlas.MOD_ID).getFile().findResource("resourcepacks/avila-no-caves-example"), false),
+                        id -> new PathPackResources(
+                                id,
+                                ModList.get().getModFileById(NovoAtlas.MOD_ID).getFile().findResource("resourcepacks/avila-no-caves-example"),
+                                false
+                        ),
                         PackType.SERVER_DATA,
                         Pack.Position.BOTTOM,
                         PackSource.FEATURE
@@ -110,12 +95,6 @@ public final class NovoAtlasForge {
             });
         }
     }
-
-//    private static void register(RegisterEvent event) {
-//        event.register(Registries.CHUNK_GENERATOR, NovoAtlas.loc("image_map"), () -> ImageMapChunkGenerator.CODEC);
-//        event.register(Registries.BIOME_SOURCE, NovoAtlas.loc("color_map"), () -> ColorMapBiomeSource.CODEC);
-//        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
-//    }
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(NovoAtlasResourceKeys.MAP_INFO, MapInfo.DIRECT_CODEC);

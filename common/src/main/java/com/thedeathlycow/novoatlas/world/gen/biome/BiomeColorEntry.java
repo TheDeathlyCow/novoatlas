@@ -26,9 +26,6 @@ public record BiomeColorEntry(
             ).apply(instance, BiomeColorEntry::new)
     );
 
-//    public static final Codec<List<BiomeColorEntry>> LIST_CODEC = CODEC.listOf()
-//            .validate(BiomeColorEntry::validateList);
-
     public static final Codec<List<BiomeColorEntry>> LIST_CODEC = ExtraCodecs.validate(
             CODEC.listOf(),
             BiomeColorEntry::validateList
