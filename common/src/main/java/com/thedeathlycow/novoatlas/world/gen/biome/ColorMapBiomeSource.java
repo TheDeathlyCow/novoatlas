@@ -16,16 +16,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class ColorMapBiomeSource extends BiomeSource {
-//    public static final MapCodec<ColorMapBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
-//            instance -> instance.group(
-//                    MapInfo.CODEC
-//                            .fieldOf("map_info")
-//                            .forGetter(ColorMapBiomeSource::getMapInfo),
-//                    Biome.CODEC
-//                            .fieldOf("default_biome")
-//                            .forGetter(ColorMapBiomeSource::getDefaultBiome)
-//            ).apply(instance, ColorMapBiomeSource::new)
-//    );
     public static final Codec<ColorMapBiomeSource> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     MapInfo.CODEC
