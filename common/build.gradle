@@ -1,3 +1,7 @@
+plugins {
+    id "me.modmuss50.mod-publish-plugin" version "0.8.4"
+}
+
 architectury {
     common rootProject.enabled_platforms.split(',')
 }
@@ -22,6 +26,8 @@ def buildDatapacks = tasks.register("buildDatapacks") {
 }
 def datapackBuildTarget = file("$rootDir/build/datapacks")
 
+def datapackArchives = []
+
 exampleSourceDir.eachDir { dir ->
     if (dir.isDirectory()) {
         def taskName = "buildDatapack${dir.name.capitalize().replace("-", "")}"
@@ -36,9 +42,40 @@ exampleSourceDir.eachDir { dir ->
         tasks.named("buildDatapacks") {
             dependsOn(task)
         }
+
+        datapackArchives << task.flatMap { it.archiveFile }
     }
 }
 
 tasks.named("build") {
     dependsOn(buildDatapacks)
+}
+
+
+publishMods {
+    changelog = file("../changelogs/${mod_version}.md").text
+
+    def fabricChangelog = file("./changelogs/fabric/${mod_version}.md")
+    def neoforgeChangelog = file("./changelogs/neoforge/${mod_version}.md")
+
+    if (fabricChangelog.exists()) {
+        changelog += "\n" + fabricChangelog.text
+    }
+
+    if (neoforgeChangelog.exists()) {
+        changelog += "\n" + neoforgeChangelog.text
+    }
+
+    type = STABLE
+
+    additionalFiles.from(datapackArchives)
+
+    github {
+        repository = "TheDeathlyCow/novoatlas"
+        accessToken = providers.environmentVariable("RELEASE_GITHUB_TOKEN")
+        commitish = "1.21.5"
+        tagName = "${mod_version}"
+
+        displayName = "[1.21.2+] NovoAtlas Example Datapacks ${mod_version}"
+    }
 }

@@ -22,7 +22,8 @@ public record MapInfo(
         ColorMapBiomeProvider surfaceBiomes,
         Optional<LayeredMapBiomeProvider> caveBiomes,
         int startingY,
-        int surfaceRange
+        int surfaceRange,
+        Optional<MapScaleConfig> scaling
 ) {
     public static final Codec<MapInfo> DIRECT_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
@@ -40,7 +41,10 @@ public record MapInfo(
                             .forGetter(MapInfo::startingY),
                     ExtraCodecs.POSITIVE_INT
                             .optionalFieldOf("surface_range", 16)
-                            .forGetter(MapInfo::surfaceRange)
+                            .forGetter(MapInfo::surfaceRange),
+                    MapScaleConfig.CODEC
+                            .optionalFieldOf("scaling")
+                            .forGetter(MapInfo::scaling)
             ).apply(instance, MapInfo::new)
     );
 
@@ -80,7 +84,11 @@ public record MapInfo(
     }
 
     public float verticalScale() {
-        return 1.0f;
+        if (this.scaling.isPresent()) {
+            return this.scaling.orElseThrow().verticalScale();
+        } else {
+            return 1.0f;
+        }
     }
 
     @Nullable
