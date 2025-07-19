@@ -1,3 +1,7 @@
+plugins {
+    id "me.modmuss50.mod-publish-plugin" version "0.8.4"
+}
+
 architectury {
     common rootProject.enabled_platforms.split(',')
 }
@@ -41,4 +45,33 @@ exampleSourceDir.eachDir { dir ->
 
 tasks.named("build") {
     dependsOn(buildDatapacks)
+}
+
+
+publishMods {
+    changelog = file("../changelogs/${mod_version}.md").text
+
+    def fabricChangelog = file("./changelogs/fabric/${mod_version}.md")
+    def neoforgeChangelog = file("./changelogs/neoforge/${mod_version}.md")
+
+    if (fabricChangelog.exists()) {
+        changelog += "\n" + fabricChangelog.text
+    }
+
+    if (neoforgeChangelog.exists()) {
+        changelog += "\n" + neoforgeChangelog.text
+    }
+
+    type = STABLE
+
+    github {
+        repository = "TheDeathlyCow/novoatlas"
+        accessToken = providers.environmentVariable("RELEASE_GITHUB_TOKEN")
+        commitish = "1.21.8"
+        tagName = "${mod_version}"
+
+        additionalFiles.builtBy(buildDatapacks)
+
+        displayName = "[1.21.2+] NovoAtlas Example Datapacks ${mod_version}"
+    }
 }
