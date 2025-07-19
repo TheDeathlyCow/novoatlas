@@ -26,6 +26,8 @@ def buildDatapacks = tasks.register("buildDatapacks") {
 }
 def datapackBuildTarget = file("$rootDir/build/datapacks")
 
+def datapackArchives = []
+
 exampleSourceDir.eachDir { dir ->
     if (dir.isDirectory()) {
         def taskName = "buildDatapack${dir.name.capitalize().replace("-", "")}"
@@ -40,6 +42,8 @@ exampleSourceDir.eachDir { dir ->
         tasks.named("buildDatapacks") {
             dependsOn(task)
         }
+
+        datapackArchives << task.flatMap { it.archiveFile }
     }
 }
 
@@ -64,13 +68,13 @@ publishMods {
 
     type = STABLE
 
+    additionalFiles.from(datapackArchives)
+
     github {
         repository = "TheDeathlyCow/novoatlas"
         accessToken = providers.environmentVariable("RELEASE_GITHUB_TOKEN")
-        commitish = "1.21.8"
+        commitish = "1.21.5"
         tagName = "${mod_version}"
-
-        additionalFiles.builtBy(buildDatapacks)
 
         displayName = "[1.21.2+] NovoAtlas Example Datapacks ${mod_version}"
     }
