@@ -26,6 +26,11 @@ configurations {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+    forge {
+        mixinConfigs = [
+                "novoatlas.mixins.json"
+        ]
+    }
 }
 
 repositories {
