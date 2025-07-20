@@ -1,5 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow'
+    id "me.modmuss50.mod-publish-plugin" version "0.8.4"
 }
 
 architectury {
@@ -69,4 +70,42 @@ remapJar {
     inputFile.set shadowJar.archiveFile
 
     atAccessWideners.add "novoatlas.accesswidener"
+}
+
+publishMods {
+    type = STABLE
+    def changelogFile = file("../changelogs/${mod_version}.md")
+    def changelogNeoForgeFile = file("./changelogs/${mod_version}.md")
+
+    changelog = changelogFile.text
+
+    if (changelogNeoForgeFile.exists()) {
+        changelog += "\n" + changelogNeoForgeFile.text
+    }
+
+    file = remapJar.archiveFile
+    displayName = "NovoAtlas Forge ${mod_version}"
+
+    modLoaders.addAll("forge")
+
+    curseforge {
+        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+        projectId = "1297254"
+        minecraftVersions.addAll("1.20", "1.20.1")
+
+        javaVersions.add(JavaVersion.VERSION_17)
+
+        clientRequired = false
+        serverRequired = true
+
+        optional("terrablender")
+    }
+
+    modrinth {
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        projectId = "yh3a3Yc8"
+        minecraftVersions.addAll("1.20", "1.20.1")
+
+        optional("terrablender")
+    }
 }
