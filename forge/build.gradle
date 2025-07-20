@@ -75,12 +75,12 @@ remapJar {
 publishMods {
     type = STABLE
     def changelogFile = file("../changelogs/${mod_version}.md")
-    def changelogNeoForgeFile = file("./changelogs/${mod_version}.md")
+    def changelogForgeFile = file("./changelogs/${mod_version}.md")
 
     changelog = changelogFile.text
 
-    if (changelogNeoForgeFile.exists()) {
-        changelog += "\n" + changelogNeoForgeFile.text
+    if (changelogForgeFile.exists()) {
+        changelog += "\n" + changelogForgeFile.text
     }
 
     file = remapJar.archiveFile
