@@ -5,7 +5,7 @@ jobs:
   curseforge-fabric:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/openjdk/jdk:21-ubuntu
+      image: mcr.microsoft.com/openjdk/jdk:17-ubuntu
       options: --user root
     steps:
       - name: checkout repository
@@ -19,7 +19,7 @@ jobs:
   modrinth-fabric:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/openjdk/jdk:21-ubuntu
+      image: mcr.microsoft.com/openjdk/jdk:17-ubuntu
       options: --user root
     steps:
       - name: checkout repository
@@ -30,10 +30,10 @@ jobs:
         run: ./gradlew fabric:build fabric:publishModrinth
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-  curseforge-neoforge:
+  curseforge-forge:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/openjdk/jdk:21-ubuntu
+      image: mcr.microsoft.com/openjdk/jdk:17-ubuntu
       options: --user root
     steps:
       - name: checkout repository
@@ -41,13 +41,13 @@ jobs:
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: publish
-        run: ./gradlew neoforge:build neoforge:publishCurseforge
+        run: ./gradlew forge:build forge:publishCurseforge
         env:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
-  modrinth-neoforge:
+  modrinth-forge:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/openjdk/jdk:21-ubuntu
+      image: mcr.microsoft.com/openjdk/jdk:17-ubuntu
       options: --user root
     steps:
       - name: checkout repository
@@ -55,13 +55,13 @@ jobs:
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: publish
-        run: ./gradlew neoforge:build neoforge:publishModrinth
+        run: ./gradlew forge:build forge:publishModrinth
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
   github-datapack:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/openjdk/jdk:21-ubuntu
+      image: mcr.microsoft.com/openjdk/jdk:17-ubuntu
       options: --user root
     steps:
       - name: checkout repository
