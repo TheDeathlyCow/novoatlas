@@ -73,7 +73,7 @@ remapJar {
 }
 
 publishMods {
-    type = STABLE
+    type = BETA
     def changelogFile = file("../changelogs/${mod_version}.md")
     def changelogForgeFile = file("./changelogs/${mod_version}.md")
 
