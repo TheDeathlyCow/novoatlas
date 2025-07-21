@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.core.Holder;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.List;
@@ -25,8 +26,10 @@ public record BiomeColorEntry(
             ).apply(instance, BiomeColorEntry::new)
     );
 
-    public static final Codec<List<BiomeColorEntry>> LIST_CODEC = CODEC.listOf()
-            .validate(BiomeColorEntry::validateList);
+    public static final Codec<List<BiomeColorEntry>> LIST_CODEC = ExtraCodecs.validate(
+            CODEC.listOf(),
+            BiomeColorEntry::validateList
+    );
 
     private static DataResult<List<BiomeColorEntry>> validateList(List<BiomeColorEntry> entries) {
         if (entries.isEmpty()) {

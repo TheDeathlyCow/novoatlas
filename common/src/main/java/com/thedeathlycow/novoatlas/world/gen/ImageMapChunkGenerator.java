@@ -21,7 +21,7 @@ import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 
 public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
-    public static final MapCodec<ImageMapChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
+    public static final Codec<ImageMapChunkGenerator> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                             BiomeSource.CODEC
                                     .fieldOf("biome_source")
@@ -116,7 +116,7 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     @Override
-    protected MapCodec<? extends ImageMapChunkGenerator> codec() {
+    protected Codec<? extends ImageMapChunkGenerator> codec() {
         return CODEC;
     }
 

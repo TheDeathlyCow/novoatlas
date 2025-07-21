@@ -3,7 +3,9 @@ package com.thedeathlycow.novoatlas.world.gen.biome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.util.CodecUtil;
 import com.thedeathlycow.novoatlas.world.gen.biome.provider.ColorMapBiomeProvider;
+import net.minecraft.util.ExtraCodecs;
 
 import java.util.Optional;
 import java.util.function.IntPredicate;
@@ -28,7 +30,7 @@ public record BiomeLayerEntry(
     }
 
     private record Range(Optional<Integer> min, Optional<Integer> max) implements IntPredicate {
-        public static final Codec<Range> CODEC = RecordCodecBuilder.<Range>create(
+        public static final Codec<Range> CODEC = ExtraCodecs.validate(RecordCodecBuilder.<Range>create(
                 instance -> instance.group(
                         Codec.INT
                                 .optionalFieldOf("min")
@@ -37,7 +39,7 @@ public record BiomeLayerEntry(
                                 .optionalFieldOf("max")
                                 .forGetter(Range::max)
                 ).apply(instance, Range::new)
-        ).validate(range -> {
+        ), range -> {
             int minValue = range.min.orElse(Integer.MIN_VALUE);
             int maxValue = range.max.orElse(Integer.MAX_VALUE);
 

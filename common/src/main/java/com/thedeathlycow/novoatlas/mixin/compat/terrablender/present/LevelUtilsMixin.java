@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import terrablender.api.RegionType;
-import terrablender.api.SurfaceRuleManager;
 import terrablender.util.LevelUtils;
 import terrablender.worldgen.IExtendedNoiseGeneratorSettings;
 
@@ -39,15 +38,10 @@ public abstract class LevelUtilsMixin {
 
             if (chunkGenerator.getBiomeSource() instanceof ColorMapBiomeSource) {
                 RegionType regionType = LevelUtils.getRegionTypeForDimension(dimensionType);
-                SurfaceRuleManager.RuleCategory ruleCategory = switch (regionType) {
-                    case OVERWORLD -> SurfaceRuleManager.RuleCategory.OVERWORLD;
-                    case NETHER -> SurfaceRuleManager.RuleCategory.NETHER;
-                    case null -> null;
-                };
 
-                if (ruleCategory != null) {
+                if (regionType != null) {
                     IExtendedNoiseGeneratorSettings extendedNoiseGeneratorSettings = (IExtendedNoiseGeneratorSettings) (Object) generatorSettings;
-                    extendedNoiseGeneratorSettings.setRuleCategory(ruleCategory);
+                    extendedNoiseGeneratorSettings.setRegionType(regionType);
                 }
             }
 

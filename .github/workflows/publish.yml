@@ -1,0 +1,74 @@
+name: Publish Mod
+on: [workflow_dispatch] # Manual trigger
+
+jobs:
+  curseforge-fabric:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/openjdk/jdk:17-ubuntu
+      options: --user root
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: publish
+        run: ./gradlew fabric:build fabric:publishCurseforge
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+  modrinth-fabric:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/openjdk/jdk:17-ubuntu
+      options: --user root
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: publish
+        run: ./gradlew fabric:build fabric:publishModrinth
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+  curseforge-forge:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/openjdk/jdk:17-ubuntu
+      options: --user root
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: publish
+        run: ./gradlew forge:build forge:publishCurseforge
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+  modrinth-forge:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/openjdk/jdk:17-ubuntu
+      options: --user root
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: publish
+        run: ./gradlew forge:build forge:publishModrinth
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+  github-datapack:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/openjdk/jdk:17-ubuntu
+      options: --user root
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: publish
+        run: ./gradlew build common:publishGithub
+        env:
+          RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}

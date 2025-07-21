@@ -20,7 +20,7 @@ public record HeightmapDensityFunction(
         Holder<MapInfo> mapInfo,
         double transitionRange
 ) implements DensityFunction.SimpleFunction {
-    public static final MapCodec<HeightmapDensityFunction> DATA_CODEC = RecordCodecBuilder.mapCodec(
+    public static final Codec<HeightmapDensityFunction> DATA_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     MapInfo.CODEC
                             .fieldOf("map_info")

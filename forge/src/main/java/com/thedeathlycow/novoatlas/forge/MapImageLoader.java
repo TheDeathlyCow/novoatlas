@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.neoforge;
+package com.thedeathlycow.novoatlas.forge;
 
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.ImageManager;
