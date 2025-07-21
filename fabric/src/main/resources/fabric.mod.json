@@ -8,6 +8,9 @@
         "TheDeathlyCow",
         "itsmiir (Original Atlas mod)"
     ],
+    "contributors": [
+        "squoshi (1.20.1 backport)"
+    ],
     "contact": {
         "homepage": "https://github.com/TheDeathlyCow/novo-atlas/wiki",
         "sources": "https://github.com/TheDeathlyCow/novo-atlas",
