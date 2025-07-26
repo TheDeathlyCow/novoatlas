@@ -103,7 +103,8 @@ public record MapImage(
             double r = Mth.lerp2(deltaX, deltaZ, getRed(i00), getRed(i01), getRed(i10), getRed(i11));
             double g = Mth.lerp2(deltaX, deltaZ, getGreen(i00), getGreen(i01), getGreen(i10), getGreen(i11));
             double b = Mth.lerp2(deltaX, deltaZ, getBlue(i00), getBlue(i01), getBlue(i10), getBlue(i11));
-            return rgbToInt((int) r, (int) g, (int) b);
+            int interpolatedColor = rgbToInt((int) r, (int) g, (int) b);
+            return findClosestColor(interpolatedColor, (int) i00, (int) i01, (int) i10, (int) i11);
         }
     }
 
@@ -121,5 +122,31 @@ public record MapImage(
 
     private int rgbToInt(int r, int g, int b) {
         return (r << 16) | (g << 8) | b;
+    }
+
+    private static double colorDistanceSq(int c1, int c2) {
+        int r1 = (c1 >> 16) & 0xFF;
+        int g1 = (c1 >> 8) & 0xFF;
+        int b1 = c1 & 0xFF;
+
+        int r2 = (c2 >> 16) & 0xFF;
+        int g2 = (c2 >> 8) & 0xFF;
+        int b2 = c2 & 0xFF;
+
+        return Math.pow(r1 - r2, 2) + Math.pow(g1 - g2, 2) + Math.pow(b1 - b2, 2);
+    }
+
+    private static int findClosestColor(int targetColor, int... colors) {
+        int closestColor = colors[0];
+        double minDistance = colorDistanceSq(targetColor, closestColor);
+
+        for (int i = 1; i < colors.length; i++) {
+            double distance = colorDistanceSq(targetColor, colors[i]);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestColor = colors[i];
+            }
+        }
+        return closestColor;
     }
 }
