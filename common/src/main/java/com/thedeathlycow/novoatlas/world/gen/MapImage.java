@@ -62,8 +62,9 @@ public record MapImage(
     }
 
     public int sample(int x, int z, MapInfo info, int fallback) {
-        double xR = (x / info.horizontalScale()) + this.width() / 2.0; // these will always be even numbers
-        double zR = (z / info.horizontalScale()) + this.height() / 2.0;
+        double horizontalScale = info.horizontalScale();
+        double xR = (x / horizontalScale) + this.width() / 2.0; // these will always be even numbers
+        double zR = (z / horizontalScale) + this.height() / 2.0;
 
         if (xR < 0 || zR < 0 || xR >= this.width() || zR >= this.height()) {
             return fallback;
@@ -72,31 +73,53 @@ public record MapImage(
         int truncatedX = Mth.floor(xR);
         int truncatedZ = Mth.floor(zR);
 
+        // xR - truncatedX gets the fractional part of the sampled point, to use for lerp deltas
+        double deltaX = xR - truncatedX;
+        double deltaZ = zR - truncatedZ;
+
         if (this.type == Type.HEIGHTMAP) {
-            // xR - truncatedX gets the fractional part of the sampled point, to use for lerp deltas
-            double deltaX = xR - truncatedX;
-            double deltaZ = zR - truncatedZ;
-
-            double height = this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ);
-
+            double height = this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ, this.type);
             return Mth.floor(info.verticalScale() * height + info.startingY());
-        } else {
-            return this.pixels[truncatedX][truncatedZ];
+        } else { // BIOME_MAP
+            double color = this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ, this.type);
+            return (int) color;
         }
     }
 
-    private double bilerp(int x, double deltaX, int z, double deltaZ) {
-        int u0 = Math.max(0, x);
-        int v0 = Math.max(0, z);
+    private double bilerp(int x, double deltaX, int z, double deltaZ, Type type) {
+        // x and z are the truncated (floor) coordinates
+        // deltaX and deltaZ are the fractional parts
 
-        int u1 = Math.min(width - 1, u0 + 1);
-        int v1 = Math.min(v0 + 1, height - 1);
+        // Get the four corner pixel values
+        double i00 = pixels[x][z];
+        double i01 = pixels[Math.min(x + 1, width - 1)][z]; // Value at (x+1, z)
+        double i10 = pixels[x][Math.min(z + 1, height - 1)]; // Value at (x, z+1)
+        double i11 = pixels[Math.min(x + 1, width - 1)][Math.min(z + 1, height - 1)]; // Value at (x+1, z+1)
 
-        double i00 = pixels[u0][v0];
-        double i01 = pixels[u1][v0];
-        double i10 = pixels[u0][v1];
-        double i11 = pixels[u1][v1];
+        if (type == Type.HEIGHTMAP) {
+            return Mth.lerp2(deltaX, deltaZ, i00, i01, i10, i11);
+        } else { // BIOME_MAP
+            // Interpolate each color channel separately
+            double r = Mth.lerp2(deltaX, deltaZ, getRed(i00), getRed(i01), getRed(i10), getRed(i11));
+            double g = Mth.lerp2(deltaX, deltaZ, getGreen(i00), getGreen(i01), getGreen(i10), getGreen(i11));
+            double b = Mth.lerp2(deltaX, deltaZ, getBlue(i00), getBlue(i01), getBlue(i10), getBlue(i11));
+            return rgbToInt((int) r, (int) g, (int) b);
+        }
+    }
 
-        return Mth.lerp2(Math.abs(deltaX), Math.abs(deltaZ), i00, i10, i01, i11);
+    private int getRed(double rgb) {
+        return ((int) rgb >> 16) & 0xFF;
+    }
+
+    private int getGreen(double rgb) {
+        return ((int) rgb >> 8) & 0xFF;
+    }
+
+    private int getBlue(double rgb) {
+        return (int) rgb & 0xFF;
+    }
+
+    private int rgbToInt(int r, int g, int b) {
+        return (r << 16) | (g << 8) | b;
     }
 }
