@@ -94,34 +94,35 @@ public final class ColorMapBiomeProvider implements BiomeMapProvider {
     @Nullable
     private Holder<Biome> getClosest(int color) {
         double closestDistance = Integer.MAX_VALUE;
-        int closest = -1;
+        Holder<Biome> closestBiome = null;
 
         int red = red(color);
         int green = green(color);
         int blue = blue(color);
 
-        for (int candidate : this.biomeToColorCache.keySet()) {
-            int dRed = red(candidate) - red;
-            int dGreen = green(candidate) - green;
-            int dBlue = blue(candidate) - blue;
+        for (BiomeColorEntry entry : this.biomeColors) {
+            int candidateColor = entry.color();
+            int dRed = red(candidateColor) - red;
+            int dGreen = green(candidateColor) - green;
+            int dBlue = blue(candidateColor) - blue;
 
             double candidateDistance = dRed * dRed + dGreen * dGreen + dBlue * dBlue;
 
             if (candidateDistance < closestDistance) {
                 closestDistance = candidateDistance;
-                closest = candidate;
+                closestBiome = entry.biome();
             }
         }
 
-        return this.biomeToColorCache.getOrDefault(closest, null);
+        return closestBiome;
     }
 
     private static int red(int color) {
-        return color & 0xFF0000 >> 16;
+        return (color >> 16) & 0xFF;
     }
 
     private static int green(int color) {
-        return color & 0xFF00 >> 8;
+        return (color >> 8) & 0xFF;
     }
 
     private static int blue(int color) {

@@ -13,6 +13,15 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
     modCompileOnly("com.github.glitchfiend:TerraBlender-fabric:$rootProject.minecraft_version-$rootProject.terrablender_version")
+
+    implementation "com.twelvemonkeys.imageio:imageio-core:3.10.1"
+    implementation "com.twelvemonkeys.imageio:imageio-jpeg:3.10.1"
+    implementation "com.twelvemonkeys.imageio:imageio-pnm:3.10.1"
+    implementation "com.twelvemonkeys.imageio:imageio-tiff:3.10.1"
+    implementation "com.twelvemonkeys.imageio:imageio-bmp:3.10.1"
+    implementation "com.twelvemonkeys.imageio:imageio-psd:3.10.1"
+    implementation "com.twelvemonkeys.imageio:imageio-tga:3.10.1"
+
 }
 
 loom {
