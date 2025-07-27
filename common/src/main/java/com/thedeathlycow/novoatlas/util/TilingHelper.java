@@ -6,7 +6,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -64,15 +63,10 @@ public class TilingHelper {
 
     private static String generateSha512(BufferedImage image) throws NoSuchAlgorithmException, IOException {
         MessageDigest sha512 = MessageDigest.getInstance(HASH_ALGORITHM);
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        boolean success = ImageIO.write(image, "png", outputStream);
-
-        if (!success) {
+        byte[] imageBytes = ImageIO.write(image, "png", new java.io.ByteArrayOutputStream()) ? ( new java.io.ByteArrayOutputStream()).toByteArray() : null;
+        if (imageBytes == null) {
             throw new IOException("Could not convert image to byte array for hashing.");
         }
-
-        byte[] imageBytes = outputStream.toByteArray();
         byte[] digest = sha512.digest(imageBytes);
         return Base64.getEncoder().encodeToString(digest);
     }
