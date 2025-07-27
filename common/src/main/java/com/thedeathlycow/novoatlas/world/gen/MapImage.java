@@ -75,15 +75,15 @@ public record MapImage(
         double deltaZ = zR - truncatedZ;
 
         if (this.type == Type.HEIGHTMAP) {
-            double height = this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ, this.type);
+            double height = this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ);
             return Mth.floor(info.verticalScale() * height + info.startingY());
         } else { // BIOME_MAP
-            double color = this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ, this.type);
+            double color = this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ);
             return (int) color;
         }
     }
 
-    private double bilerp(int x, double deltaX, int z, double deltaZ, Type type) {
+    private double bilerp(int x, double deltaX, int z, double deltaZ) {
         // x and z are the truncated (floor) coordinates
         // deltaX and deltaZ are the fractional parts
 
@@ -93,7 +93,7 @@ public record MapImage(
         double i10 = pixels[x][Math.min(z + 1, height - 1)]; // Value at (x, z+1)
         double i11 = pixels[Math.min(x + 1, width - 1)][Math.min(z + 1, height - 1)]; // Value at (x+1, z+1)
 
-        if (type == Type.HEIGHTMAP) {
+        if (this.type == Type.HEIGHTMAP) {
             return Mth.lerp2(deltaX, deltaZ, i00, i01, i10, i11);
         } else { // BIOME_MAP
             // Interpolate each color channel separately
