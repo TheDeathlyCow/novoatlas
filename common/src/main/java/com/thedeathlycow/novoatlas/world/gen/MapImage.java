@@ -1,6 +1,5 @@
 package com.thedeathlycow.novoatlas.world.gen;
 
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 import java.awt.image.BufferedImage;
