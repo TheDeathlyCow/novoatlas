@@ -64,9 +64,6 @@ public class TilingHelper {
 
     private static String generateSha512(BufferedImage image) throws NoSuchAlgorithmException, IOException {
         MessageDigest sha512 = MessageDigest.getInstance(HASH_ALGORITHM);
-        // Convert BufferedImage to byte array for hashing
-        // This is a simplified approach, for production, consider a more robust serialization
-        // or hashing directly from the image's pixel data.
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         boolean success = ImageIO.write(image, "png", outputStream);
