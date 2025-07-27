@@ -1,5 +1,9 @@
 {
     "starting_y": 6,
+    "scaling": {
+        "horizontal_scale": 1,
+        "vertical_scale": 1
+    },
     "height_map": "avila-example:avila",
     "surface_biomes": {
         "map": "avila-example:avila",
