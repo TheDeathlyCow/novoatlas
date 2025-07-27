@@ -90,7 +90,7 @@ public record MapImage(
         if (this.type == Type.HEIGHTMAP) {
             double height = Mth.lerp2(deltaX, deltaZ, i00, i01, i10, i11);
             return Mth.floor(info.verticalScale() * height + info.startingY());
-        } else { // BIOME_MAP
+        } else {
             // Interpolate each color channel separately
             double r = Mth.lerp2(deltaX, deltaZ, ARGB.red((int) i00), ARGB.red((int) i01), ARGB.red((int) i10), ARGB.red((int) i11));
             double g = Mth.lerp2(deltaX, deltaZ, ARGB.green((int) i00), ARGB.green((int) i01), ARGB.green((int) i10), ARGB.green((int) i11));
