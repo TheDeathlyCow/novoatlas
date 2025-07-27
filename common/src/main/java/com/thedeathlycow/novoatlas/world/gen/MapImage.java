@@ -91,38 +91,7 @@ public record MapImage(
             double height = Mth.lerp2(deltaX, deltaZ, i00, i01, i10, i11);
             return Mth.floor(info.verticalScale() * height + info.startingY());
         } else {
-            // Interpolate each color channel separately
-            double r = Mth.lerp2(deltaX, deltaZ, ARGB.red((int) i00), ARGB.red((int) i01), ARGB.red((int) i10), ARGB.red((int) i11));
-            double g = Mth.lerp2(deltaX, deltaZ, ARGB.green((int) i00), ARGB.green((int) i01), ARGB.green((int) i10), ARGB.green((int) i11));
-            double b = Mth.lerp2(deltaX, deltaZ, ARGB.blue((int) i00), ARGB.blue((int) i01), ARGB.blue((int) i10), ARGB.blue((int) i11));
-            int interpolatedColor = ARGB.color((int) r, (int) g, (int) b);
-            return findClosestColor(interpolatedColor, (int) i00, (int) i01, (int) i10, (int) i11);
+            return this.pixels[x][z];
         }
-    }
-
-    private static double colorDistanceSq(int c1, int c2) {
-        int r1 = (c1 >> 16) & 0xFF;
-        int g1 = (c1 >> 8) & 0xFF;
-        int b1 = c1 & 0xFF;
-
-        int r2 = (c2 >> 16) & 0xFF;
-        int g2 = (c2 >> 8) & 0xFF;
-        int b2 = c2 & 0xFF;
-
-        return Mth.square(r1 - r2) + Mth.square(g1 - g2) + Mth.square(b1 - b2);
-    }
-
-    private static int findClosestColor(int targetColor, int... colors) {
-        int closestColor = colors[0];
-        double minDistance = colorDistanceSq(targetColor, closestColor);
-
-        for (int i = 1; i < colors.length; i++) {
-            double distance = colorDistanceSq(targetColor, colors[i]);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestColor = colors[i];
-            }
-        }
-        return closestColor;
     }
 }
