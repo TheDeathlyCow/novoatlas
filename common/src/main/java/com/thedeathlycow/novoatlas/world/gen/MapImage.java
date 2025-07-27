@@ -1,5 +1,6 @@
 package com.thedeathlycow.novoatlas.world.gen;
 
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 import java.awt.image.BufferedImage;
@@ -57,10 +58,6 @@ public record MapImage(
         return pixels;
     }
 
-    public int sample(int x, int z, MapInfo info) {
-        return this.sample(x, z, info, Integer.MIN_VALUE);
-    }
-
     public int sample(int x, int z, MapInfo info, int fallback) {
         double horizontalScale = info.horizontalScale();
         double xR = (x / horizontalScale) + this.width() / 2.0; // these will always be even numbers
@@ -100,28 +97,12 @@ public record MapImage(
             return Mth.lerp2(deltaX, deltaZ, i00, i01, i10, i11);
         } else { // BIOME_MAP
             // Interpolate each color channel separately
-            double r = Mth.lerp2(deltaX, deltaZ, getRed(i00), getRed(i01), getRed(i10), getRed(i11));
-            double g = Mth.lerp2(deltaX, deltaZ, getGreen(i00), getGreen(i01), getGreen(i10), getGreen(i11));
-            double b = Mth.lerp2(deltaX, deltaZ, getBlue(i00), getBlue(i01), getBlue(i10), getBlue(i11));
-            int interpolatedColor = rgbToInt((int) r, (int) g, (int) b);
+            double r = Mth.lerp2(deltaX, deltaZ, ARGB.red((int) i00), ARGB.red((int) i01), ARGB.red((int) i10), ARGB.red((int) i11));
+            double g = Mth.lerp2(deltaX, deltaZ, ARGB.green((int) i00), ARGB.green((int) i01), ARGB.green((int) i10), ARGB.green((int) i11));
+            double b = Mth.lerp2(deltaX, deltaZ, ARGB.blue((int) i00), ARGB.blue((int) i01), ARGB.blue((int) i10), ARGB.blue((int) i11));
+            int interpolatedColor = ARGB.color((int) r, (int) g, (int) b);
             return findClosestColor(interpolatedColor, (int) i00, (int) i01, (int) i10, (int) i11);
         }
-    }
-
-    private int getRed(double rgb) {
-        return ((int) rgb >> 16) & 0xFF;
-    }
-
-    private int getGreen(double rgb) {
-        return ((int) rgb >> 8) & 0xFF;
-    }
-
-    private int getBlue(double rgb) {
-        return (int) rgb & 0xFF;
-    }
-
-    private int rgbToInt(int r, int g, int b) {
-        return (r << 16) | (g << 8) | b;
     }
 
     private static double colorDistanceSq(int c1, int c2) {
@@ -133,7 +114,7 @@ public record MapImage(
         int g2 = (c2 >> 8) & 0xFF;
         int b2 = c2 & 0xFF;
 
-        return Math.pow(r1 - r2, 2) + Math.pow(g1 - g2, 2) + Math.pow(b1 - b2, 2);
+        return Mth.square(r1 - r2) + Mth.square(g1 - g2) + Mth.square(b1 - b2);
     }
 
     private static int findClosestColor(int targetColor, int... colors) {

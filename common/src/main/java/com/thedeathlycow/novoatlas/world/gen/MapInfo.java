@@ -62,10 +62,6 @@ public record MapInfo(
         return lookupHeightmap(this.heightMap).sample(x, z, this, fallback);
     }
 
-    public int getHeightMapElevation(int x, int z) {
-        return lookupHeightmap(this.heightMap).sample(x, z, this);
-    }
-
     @NotNull
     public Holder<Biome> getBiome(int x, int y, int z, @NotNull Holder<Biome> defaultBiome) {
         if (this.caveBiomes.isPresent()) {
