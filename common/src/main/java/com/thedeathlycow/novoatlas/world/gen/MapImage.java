@@ -73,10 +73,10 @@ public record MapImage(
         double deltaX = xR - truncatedX;
         double deltaZ = zR - truncatedZ;
 
-        return (int) this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ, info);
+        return this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ, info);
     }
 
-    private double bilerp(int x, double deltaX, int z, double deltaZ, MapInfo info) {
+    private int bilerp(int x, double deltaX, int z, double deltaZ, MapInfo info) {
         // x and z are the truncated (floor) coordinates
         // deltaX and deltaZ are the fractional parts
 
@@ -90,7 +90,7 @@ public record MapImage(
             double height = Mth.lerp2(deltaX, deltaZ, i00, i01, i10, i11);
             return Mth.floor(info.verticalScale() * height + info.startingY());
         } else {
-            return this.pixels[x][z];
+            return (int) i00;
         }
     }
 }
