@@ -57,6 +57,10 @@ public record MapImage(
         return pixels;
     }
 
+    public int sample(int x, int z, MapInfo info) {
+        return this.sample(x, z, info, Integer.MIN_VALUE);
+    }
+
     public int sample(int x, int z, MapInfo info, int fallback) {
         double horizontalScale = info.horizontalScale();
         double xR = (x / horizontalScale) + this.width() / 2.0; // these will always be even numbers
