@@ -81,16 +81,16 @@ public record MapImage(
         // deltaX and deltaZ are the fractional parts
 
         // Get the four corner pixel values
-        double i00 = pixels[x][z];
-        double i01 = pixels[Math.min(x + 1, width - 1)][z]; // Value at (x+1, z)
-        double i10 = pixels[x][Math.min(z + 1, height - 1)]; // Value at (x, z+1)
-        double i11 = pixels[Math.min(x + 1, width - 1)][Math.min(z + 1, height - 1)]; // Value at (x+1, z+1)
+        double topLeft = pixels[x][z];
+        double topRight = pixels[Math.min(x + 1, width - 1)][z];
+        double bottomLeft = pixels[x][Math.min(z + 1, height - 1)];
+        double bottomRight = pixels[Math.min(x + 1, width - 1)][Math.min(z + 1, height - 1)];
 
         if (this.type == Type.HEIGHTMAP) {
-            double height = Mth.lerp2(deltaX, deltaZ, i00, i01, i10, i11);
+            double height = Mth.lerp2(deltaX, deltaZ, topLeft, topRight, bottomLeft, bottomRight);
             return Mth.floor(info.verticalScale() * height + info.startingY());
         } else {
-            return (int) i00;
+            return (int) topLeft;
         }
     }
 }
