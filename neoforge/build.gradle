@@ -39,7 +39,7 @@ repositories {
 dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
 
-    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    common(project(path: ':common', configuration: 'namedElements'))
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 }
 

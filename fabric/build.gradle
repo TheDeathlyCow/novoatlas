@@ -35,7 +35,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
 
-    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    common(project(path: ':common', configuration: 'namedElements'))
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 }
 

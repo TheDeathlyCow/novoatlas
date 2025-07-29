@@ -34,21 +34,26 @@ public final class ImageManager {
         Map<ResourceKey<MapImage>, MapImage> updatedRegistry = new IdentityHashMap<>();
 
         String regPath = NovoAtlas.MOD_ID + "/" + registryKey.location().getPath();
-        var converter = new FileToIdConverter(regPath, ".png");
-        Map<ResourceLocation, Resource> resources = converter.listMatchingResources(resourceManager);
 
-        for (Map.Entry<ResourceLocation, Resource> entry : resources.entrySet()) {
-            BufferedImage image;
-            try (InputStream stream = entry.getValue().open()) {
-                image = ImageIO.read(stream);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        for (String suffix : ImageIO.getReaderFileSuffixes()) {
+            FileToIdConverter converter = new FileToIdConverter(regPath, "." + suffix);
+            Map<ResourceLocation, Resource> resources = converter.listMatchingResources(resourceManager);
+
+            for (Map.Entry<ResourceLocation, Resource> entry : resources.entrySet()) {
+                BufferedImage image;
+                try (InputStream stream = entry.getValue().open()) {
+                    image = ImageIO.read(stream);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                if (image != null) {
+                    MapImage map = MapImage.fromBufferedImage(image, this.type);
+                    ResourceKey<MapImage> key = ResourceKey.create(registryKey, converter.fileToId(entry.getKey()));
+
+                    updatedRegistry.put(key, map);
+                }
             }
-
-            MapImage map = MapImage.fromBufferedImage(image, this.type);
-            ResourceKey<MapImage> key = ResourceKey.create(registryKey, converter.fileToId(entry.getKey()));
-
-            updatedRegistry.put(key, map);
         }
 
         this.registry.clear();

@@ -12,6 +12,14 @@ dependencies {
     // Do NOT use other classes from Fabric Loader.
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
+    api "com.twelvemonkeys.imageio:imageio-core:3.12.0"
+    api "com.twelvemonkeys.imageio:imageio-metadata:3.12.0"
+    api "com.twelvemonkeys.imageio:imageio-jpeg:3.12.0"
+    api "com.twelvemonkeys.imageio:imageio-pdf:3.12.0"
+    api "com.twelvemonkeys.imageio:imageio-psd:3.12.0"
+    api "com.twelvemonkeys.imageio:imageio-tiff:3.12.0"
+    api "com.twelvemonkeys.imageio:imageio-webp:3.12.0"
+
     modCompileOnly("com.github.glitchfiend:TerraBlender-fabric:$rootProject.minecraft_version-$rootProject.terrablender_version")
 }
 
