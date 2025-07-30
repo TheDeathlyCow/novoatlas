@@ -62,7 +62,7 @@ public record MapImage(
     }
 
     public int sample(int x, int z, MapInfo info, int fallback) {
-        double horizontalScale = info.horizontalScale();
+        float horizontalScale = info.horizontalScale().value();
         double xR = (x / horizontalScale) + this.width() / 2.0; // these will always be even numbers
         double zR = (z / horizontalScale) + this.height() / 2.0;
 
@@ -70,31 +70,21 @@ public record MapImage(
             return fallback;
         }
 
-        int truncatedX = Mth.floor(xR);
-        int truncatedZ = Mth.floor(zR);
-
-        // xR - truncatedX gets the fractional part of the sampled point, to use for lerp deltas
-        double deltaX = xR - truncatedX;
-        double deltaZ = zR - truncatedZ;
-
-        return this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ, info);
+        return this.sampleDirect(xR, zR, info);
     }
 
-    private int bilerp(int x, double deltaX, int z, double deltaZ, MapInfo info) {
-        // x and z are the truncated (floor) coordinates
-        // deltaX and deltaZ are the fractional parts
-
-        // Get the four corner pixel values
-        double topLeft = pixels[x][z];
-        double topRight = pixels[Math.min(x + 1, width - 1)][z];
-        double bottomLeft = pixels[x][Math.min(z + 1, height - 1)];
-        double bottomRight = pixels[Math.min(x + 1, width - 1)][Math.min(z + 1, height - 1)];
-
+    private int sampleDirect(double x, double z, MapInfo info) {
         if (this.type == Type.HEIGHTMAP) {
-            double height = Mth.lerp2(deltaX, deltaZ, topLeft, topRight, bottomLeft, bottomRight);
+            double height = info.horizontalScale().interpolation().interpolate(x, z, this);
             return Mth.floor(info.verticalScale() * height + info.startingY());
         } else {
-            return (int) topLeft;
+            return this.getTruncated(x, z);
         }
+    }
+
+    public int getTruncated(double x, double z) {
+        int truncatedX = Mth.floor(x);
+        int truncatedZ = Mth.floor(z);
+        return this.pixels[truncatedX][truncatedZ];
     }
 }

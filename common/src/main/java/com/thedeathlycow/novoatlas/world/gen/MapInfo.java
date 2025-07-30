@@ -79,11 +79,11 @@ public record MapInfo(
         return surfaceBiome != null ? surfaceBiome : defaultBiome;
     }
 
-    public float horizontalScale() {
+    public MapScaleConfig.HorizontalConfig horizontalScale() {
         if (this.scaling.isPresent()) {
             return this.scaling.orElseThrow().horizontalScale();
         } else {
-            return 1.0f;
+            return MapScaleConfig.HorizontalConfig.DEFAULT;
         }
     }
 
