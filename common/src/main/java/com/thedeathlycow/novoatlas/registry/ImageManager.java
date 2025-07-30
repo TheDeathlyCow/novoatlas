@@ -38,7 +38,7 @@ public final class ImageManager {
         if (NovoAtlas.LOGGER.isInfoEnabled()) {
             NovoAtlas.LOGGER.info(
                     "Reloading map images for {}, supported image formats are: {}",
-                    registryKey,
+                    registryKey.location(),
                     Arrays.toString(converter.getExtensions())
             );
         }
@@ -56,12 +56,16 @@ public final class ImageManager {
             MapImage map = MapImage.fromBufferedImage(image, this.type);
             ResourceKey<MapImage> key = ResourceKey.create(registryKey, converter.fileToId(entry.getKey()));
 
-            updatedRegistry.put(key, map);
+            if (updatedRegistry.put(key, map) != null) {
+                final String message = "Found duplicate image files for {}, overriding with {} " +
+                        "(images of the different types should have different names)";
+                NovoAtlas.LOGGER.warn(message, key.location(), entry.getKey());
+            }
         }
 
         this.registry.clear();
         this.registry.putAll(updatedRegistry);
-        NovoAtlas.LOGGER.info("Loaded {} map images for {}", this.registry.size(), registryKey);
+        NovoAtlas.LOGGER.info("Loaded {} map image(s) for {}", this.registry.size(), registryKey.location());
     }
 
     @Nullable
