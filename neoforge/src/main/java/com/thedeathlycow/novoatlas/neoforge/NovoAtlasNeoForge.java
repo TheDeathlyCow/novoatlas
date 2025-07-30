@@ -13,6 +13,7 @@ import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
@@ -33,11 +34,15 @@ public final class NovoAtlasNeoForge {
 
     private static void addExamplePacks(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.SERVER_DATA) {
+            PackSource packSource = FMLEnvironment.production
+                    ? PackSource.FEATURE
+                    : PackSource.WORLD;
+
             event.addPackFinders(
                     NovoAtlas.loc("resourcepacks/avila-basic-example"),
                     PackType.SERVER_DATA,
                     Component.literal("novoatlas/avila-basic-example"),
-                    PackSource.FEATURE,
+                    packSource,
                     false,
                     Pack.Position.BOTTOM
             );

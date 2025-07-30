@@ -32,10 +32,14 @@ public final class NovoAtlasFabric implements ModInitializer {
 
         ModContainer mod = FabricLoader.getInstance().getModContainer(NovoAtlas.MOD_ID).orElseThrow();
 
+        ResourcePackActivationType activationType = FabricLoader.getInstance().isDevelopmentEnvironment()
+                ? ResourcePackActivationType.DEFAULT_ENABLED
+                : ResourcePackActivationType.NORMAL;
+
         ResourceManagerHelper.registerBuiltinResourcePack(
                 NovoAtlas.loc("avila-basic-example"),
                 mod,
-                ResourcePackActivationType.NORMAL
+                activationType
         );
 
         ResourceManagerHelper.registerBuiltinResourcePack(

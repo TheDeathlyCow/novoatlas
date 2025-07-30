@@ -6,7 +6,7 @@ This documentation provides contribution guidelines for NovoAtlas. This can be u
 when working on any contribution even if you have contributed before.
 
 I appreciate all contributions, but I prefer to discuss changes before you open a PR, especially for large changes
-or new features. Large, unsolicited PRs **are likely to be rejected**.
+or new features. Large, unsolicited PRs **are likely to be rejected**. You can contact me in any of my [contact channels](#contact-me).
 
 Each PR should focus on just one thing, and the diff should be as small as possible. When you make a PR, clearly define
 its scope in the description and keep all changes *strictly limited* to that scope. Your PR should not combine multiple
