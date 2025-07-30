@@ -3,7 +3,6 @@ package com.thedeathlycow.novoatlas.registry;
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -14,6 +13,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -33,8 +34,15 @@ public final class ImageManager {
     public void reload(ResourceManager resourceManager) {
         Map<ResourceKey<MapImage>, MapImage> updatedRegistry = new IdentityHashMap<>();
 
-        String regPath = NovoAtlas.MOD_ID + "/" + registryKey.location().getPath();
-        var converter = new FileToIdConverter(regPath, ".png");
+        var converter = MultiFileTypeToIdConverter.imageRegistry(registryKey);
+        if (NovoAtlas.LOGGER.isInfoEnabled()) {
+            NovoAtlas.LOGGER.info(
+                    "Reloading map images for {}, supported image formats are: {}",
+                    registryKey.location(),
+                    Arrays.toString(converter.getExtensions())
+            );
+        }
+
         Map<ResourceLocation, Resource> resources = converter.listMatchingResources(resourceManager);
 
         for (Map.Entry<ResourceLocation, Resource> entry : resources.entrySet()) {
@@ -42,18 +50,22 @@ public final class ImageManager {
             try (InputStream stream = entry.getValue().open()) {
                 image = ImageIO.read(stream);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new UncheckedIOException(e);
             }
 
             MapImage map = MapImage.fromBufferedImage(image, this.type);
             ResourceKey<MapImage> key = ResourceKey.create(registryKey, converter.fileToId(entry.getKey()));
 
-            updatedRegistry.put(key, map);
+            if (updatedRegistry.put(key, map) != null) {
+                final String message = "Found duplicate image files for {}, overriding with {} " +
+                        "(images of the different types should have different names)";
+                NovoAtlas.LOGGER.warn(message, key.location(), entry.getKey());
+            }
         }
 
         this.registry.clear();
         this.registry.putAll(updatedRegistry);
-        NovoAtlas.LOGGER.info("Reloaded map images for {}", registryKey);
+        NovoAtlas.LOGGER.info("Loaded {} map image(s) for {}", this.registry.size(), registryKey.location());
     }
 
     @Nullable
