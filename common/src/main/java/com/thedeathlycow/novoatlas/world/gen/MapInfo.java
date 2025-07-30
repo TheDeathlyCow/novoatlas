@@ -80,7 +80,11 @@ public record MapInfo(
     }
 
     public float horizontalScale() {
-        return 1.0f;
+        if (this.scaling.isPresent()) {
+            return this.scaling.orElseThrow().horizontalScale();
+        } else {
+            return 1.0f;
+        }
     }
 
     public float verticalScale() {
