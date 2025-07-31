@@ -6,6 +6,12 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4d;
 
 public enum InterpolationStrategy implements StringRepresentable {
+    NEAREST_NEIGHBOR("nearest_neighbor") {
+        @Override
+        public double interpolate(double x, double z, MapImage image, MapScaleConfig.LanczosConfig lanczosConfig) {
+            return image.getTruncated(x, z);
+        }
+    },
     BILINEAR("bilinear") {
         @Override
         public double interpolate(double x, double z, MapImage image, MapScaleConfig.LanczosConfig lanczosConfig) {
@@ -31,20 +37,12 @@ public enum InterpolationStrategy implements StringRepresentable {
             return Mth.lerp2(deltaX, deltaZ, topLeft, topRight, bottomLeft, bottomRight);
         }
     },
-    NEAREST_NEIGHBOR("nearest_neighbor") {
-        @Override
-        public double interpolate(double x, double z, MapImage image, MapScaleConfig.LanczosConfig lanczosConfig) {
-            return image.getTruncated(x, z);
-        }
-    },
     BICUBIC("bicubic") {
         /**
          * Implementation by <a href="https://www.paulinternet.nl/?page=bicubic">Paul Breeuwsma</a>
          */
         @Override
         public double interpolate(double x, double z, MapImage image, MapScaleConfig.LanczosConfig lanczosConfig) {
-            // yeah this is horrible, sorry
-            // based on algorithm described here: https://en.wikipedia.org/wiki/Bicubic_interpolation
             int truncatedX = Mth.floor(x);
             int truncatedZ = Mth.floor(z);
 
@@ -151,13 +149,6 @@ public enum InterpolationStrategy implements StringRepresentable {
     public static final EnumCodec<InterpolationStrategy> CODEC = StringRepresentable.fromEnum(InterpolationStrategy::values);
 
     private final String name;
-
-    private static final Matrix4d HERMITE_SPLINE = new Matrix4d(
-            1, 0, 0, 0,
-            0, 0, 1, 0,
-            -3, 3, -2, -1,
-            2, -2, 1, 1
-    );
 
     InterpolationStrategy(String name) {
         this.name = name;

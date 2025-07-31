@@ -37,10 +37,10 @@ public record MapScaleConfig(
             float value,
             Optional<LanczosConfig> lanczosConfig
     ) {
-        public static final HorizontalConfig DEFAULT = new HorizontalConfig(InterpolationStrategy.BILINEAR, 1.0f, Optional.empty());
+        public static final HorizontalConfig DEFAULT = new HorizontalConfig(InterpolationStrategy.NEAREST_NEIGHBOR, 1.0f, Optional.empty());
 
         public HorizontalConfig(float value) {
-            this(InterpolationStrategy.BILINEAR, value, Optional.empty());
+            this(DEFAULT.interpolation, value, Optional.empty());
         }
 
         private static final Codec<HorizontalConfig> BASE_CODEC = RecordCodecBuilder.create(

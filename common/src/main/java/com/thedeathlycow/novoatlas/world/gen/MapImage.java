@@ -76,7 +76,7 @@ public record MapImage(
     private int sampleDirect(double x, double z, MapInfo info) {
         if (this.type == Type.HEIGHTMAP) {
             double height = info.horizontalScale().interpolate(x, z, this);
-            return Mth.floor(info.verticalScale() * height + info.startingY());
+            return (int) Math.round(info.verticalScale() * height + info.startingY());
         } else {
             return this.getTruncated(x, z);
         }
