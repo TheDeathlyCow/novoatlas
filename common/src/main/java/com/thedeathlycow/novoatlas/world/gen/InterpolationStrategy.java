@@ -3,7 +3,6 @@ package com.thedeathlycow.novoatlas.world.gen;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4d;
 
 public enum InterpolationStrategy implements StringRepresentable {
     NEAREST_NEIGHBOR("nearest_neighbor") {
