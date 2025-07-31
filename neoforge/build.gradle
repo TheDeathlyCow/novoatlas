@@ -42,7 +42,21 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 
-    forgeRuntimeLibrary(implementation include ("com.twelvemonkeys.imageio:imageio-webp:${project.twelvemonkeys_imageio_version}"))
+    List.of(
+            "imageio-webp",
+            "imageio-metadata",
+            "imageio-core"
+    ).forEach {
+        forgeRuntimeLibrary(implementation include ("com.twelvemonkeys.imageio:$it:${project.twelvemonkeys_imageio_version}"))
+    }
+
+    List.of(
+            "common-image",
+            "common-io",
+            "common-lang"
+    ).forEach {
+        forgeRuntimeLibrary(implementation include ("com.twelvemonkeys.common:$it:${project.twelvemonkeys_imageio_version}"))
+    }
 }
 
 processResources {
