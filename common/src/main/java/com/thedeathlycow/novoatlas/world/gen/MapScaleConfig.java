@@ -24,10 +24,10 @@ public record MapScaleConfig(
             InterpolationStrategy interpolation,
             float value
     ) {
-        public static final HorizontalConfig DEFAULT = new HorizontalConfig(InterpolationStrategy.BILINEAR, 1.0f);
+        public static final HorizontalConfig DEFAULT = new HorizontalConfig(InterpolationStrategy.NEAREST_NEIGHBOR, 1.0f);
 
         public HorizontalConfig(float value) {
-            this(InterpolationStrategy.BILINEAR, value);
+            this(DEFAULT.interpolation(), value);
         }
 
         private static final Codec<HorizontalConfig> BASE_CODEC = RecordCodecBuilder.create(

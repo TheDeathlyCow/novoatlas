@@ -3,9 +3,14 @@ package com.thedeathlycow.novoatlas.world.gen;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4d;
 
 public enum InterpolationStrategy implements StringRepresentable {
+    NEAREST_NEIGHBOR("nearest_neighbor") {
+        @Override
+        public double interpolate(double x, double z, MapImage image) {
+            return image.getTruncated(x, z);
+        }
+    },
     BILINEAR("bilinear") {
         @Override
         public double interpolate(double x, double z, MapImage image) {
@@ -29,12 +34,6 @@ public enum InterpolationStrategy implements StringRepresentable {
             int bottomRight = pixels[nextX][nextZ];
 
             return Mth.lerp2(deltaX, deltaZ, topLeft, topRight, bottomLeft, bottomRight);
-        }
-    },
-    NEAREST_NEIGHBOR("nearest_neighbor") {
-        @Override
-        public double interpolate(double x, double z, MapImage image) {
-            return image.getTruncated(x, z);
         }
     },
     BICUBIC("bicubic") {
