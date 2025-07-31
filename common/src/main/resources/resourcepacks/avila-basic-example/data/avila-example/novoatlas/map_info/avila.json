@@ -1,10 +1,7 @@
 {
     "starting_y": 6,
     "scaling": {
-        "horizontal_scale": {
-            "value": 10,
-            "interpolation": "bicubic"
-        },
+        "horizontal_scale": 1,
         "vertical_scale": 1
     },
     "height_map": "avila-example:avila",

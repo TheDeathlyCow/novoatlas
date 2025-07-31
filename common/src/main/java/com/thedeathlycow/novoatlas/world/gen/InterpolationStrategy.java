@@ -4,7 +4,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4d;
-import org.joml.Vector4d;
 
 public enum InterpolationStrategy implements StringRepresentable {
     BILINEAR("bilinear") {
