@@ -3,7 +3,7 @@
     "scaling": {
         "horizontal_scale": {
             "value": 10,
-            "interpolation": "nearest_neighbor"
+            "interpolation": "bicubic"
         },
         "vertical_scale": 1
     },
