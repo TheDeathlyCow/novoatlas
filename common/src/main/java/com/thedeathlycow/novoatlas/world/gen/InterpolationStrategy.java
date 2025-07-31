@@ -8,7 +8,7 @@ import org.joml.Matrix4d;
 public enum InterpolationStrategy implements StringRepresentable {
     BILINEAR("bilinear") {
         @Override
-        public double interpolate(double x, double z, MapImage image) {
+        public double interpolate(double x, double z, MapImage image, MapScaleConfig.LanczosConfig lanczosConfig) {
             // x and z are the truncated (floor) coordinates
             // deltaX and deltaZ are the fractional parts
             int truncatedX = Mth.floor(x);
@@ -33,7 +33,7 @@ public enum InterpolationStrategy implements StringRepresentable {
     },
     NEAREST_NEIGHBOR("nearest_neighbor") {
         @Override
-        public double interpolate(double x, double z, MapImage image) {
+        public double interpolate(double x, double z, MapImage image, MapScaleConfig.LanczosConfig lanczosConfig) {
             return image.getTruncated(x, z);
         }
     },
@@ -42,7 +42,7 @@ public enum InterpolationStrategy implements StringRepresentable {
          * Implementation by <a href="https://www.paulinternet.nl/?page=bicubic">Paul Breeuwsma</a>
          */
         @Override
-        public double interpolate(double x, double z, MapImage image) {
+        public double interpolate(double x, double z, MapImage image, MapScaleConfig.LanczosConfig lanczosConfig) {
             // yeah this is horrible, sorry
             // based on algorithm described here: https://en.wikipedia.org/wiki/Bicubic_interpolation
             int truncatedX = Mth.floor(x);
@@ -67,8 +67,6 @@ public enum InterpolationStrategy implements StringRepresentable {
         }
     },
     LANCZOS("lanczos") {
-        private static final int KERNEL_SIZE = 3;
-        private static final boolean CLAMP_TO_EDGE = true;
 
         /**
          * Sinc function: sin(πx)/(πx)
@@ -77,7 +75,7 @@ public enum InterpolationStrategy implements StringRepresentable {
             if (x == 0.0) {
                 return 1;
             }
-            return Mth.sin((float)(Mth.PI * x)) / (float)(Mth.PI * x);
+            return Mth.sin((float) (Mth.PI * x)) / (float) (Mth.PI * x);
         }
 
         /**
@@ -93,12 +91,12 @@ public enum InterpolationStrategy implements StringRepresentable {
         /**
          * Get pixel value with boundary handling
          */
-        private static double getPixelValue(int x, int z, MapImage image) {
+        private static double getPixelValue(int x, int z, MapImage image, boolean clampToEdge) {
             int[][] pixels = image.pixels();
             int width = image.width();
             int height = image.height();
 
-            if (CLAMP_TO_EDGE) {
+            if (clampToEdge) {
                 // Clamp-to-edge outside bounds
                 x = Mth.clamp(x, 0, width - 1);
                 z = Mth.clamp(z, 0, height - 1);
@@ -113,7 +111,7 @@ public enum InterpolationStrategy implements StringRepresentable {
         }
 
         @Override
-        public double interpolate(double x, double z, MapImage image) {
+        public double interpolate(double x, double z, MapImage image, MapScaleConfig.LanczosConfig lanczosConfig) {
             // Get the floor coordinates
             int floorX = Mth.floor(x);
             int floorZ = Mth.floor(z);
@@ -121,16 +119,19 @@ public enum InterpolationStrategy implements StringRepresentable {
             double result = 0.0;
             double weightSum = 0.0;
 
+            int kernelSize = lanczosConfig.kernelSize();
+            boolean clampToEdge = lanczosConfig.clampToEdge();
+
             // Apply Lanczos kernel in both X and Z directions
-            for (int i = -KERNEL_SIZE + 1; i <= KERNEL_SIZE; i++) {
-                for (int j = -KERNEL_SIZE + 1; j <= KERNEL_SIZE; j++) {
+            for (int i = -kernelSize + 1; i <= kernelSize; i++) {
+                for (int j = -kernelSize + 1; j <= kernelSize; j++) {
                     // Calculate the kernel weights
-                    double kernelX = lanczosKernel(i - (x - floorX), KERNEL_SIZE);
-                    double kernelZ = lanczosKernel(j - (z - floorZ), KERNEL_SIZE);
+                    double kernelX = lanczosKernel(i - (x - floorX), kernelSize);
+                    double kernelZ = lanczosKernel(j - (z - floorZ), kernelSize);
                     double weight = kernelX * kernelZ;
 
                     // Get the pixel value at the sample point
-                    double pixelValue = getPixelValue(floorX + i, floorZ + j, image);
+                    double pixelValue = getPixelValue(floorX + i, floorZ + j, image, clampToEdge);
 
                     // Accumulate the weighted sum
                     result += pixelValue * weight;
@@ -168,7 +169,7 @@ public enum InterpolationStrategy implements StringRepresentable {
         return this.name;
     }
 
-    public abstract double interpolate(double x, double z, MapImage image);
+    public abstract double interpolate(double x, double z, MapImage image, MapScaleConfig.LanczosConfig lanczosConfig);
 
     private static double[][] cubicNeighborhood(int x, int z, MapImage image) {
         int[][] pixels = image.pixels();

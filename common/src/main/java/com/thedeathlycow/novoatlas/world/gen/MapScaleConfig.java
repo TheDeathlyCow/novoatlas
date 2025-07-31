@@ -5,6 +5,8 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.ExtraCodecs;
 
+import java.util.Optional;
+
 public record MapScaleConfig(
         float verticalScale,
         HorizontalConfig horizontalScale
@@ -20,14 +22,25 @@ public record MapScaleConfig(
             ).apply(instance, MapScaleConfig::new)
     );
 
+    public record LanczosConfig(int kernelSize, boolean clampToEdge) {
+        public static final LanczosConfig DEFAULT = new LanczosConfig(3, true);
+        public static final Codec<LanczosConfig> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                        ExtraCodecs.POSITIVE_INT.optionalFieldOf("kernel_size", 3).forGetter(LanczosConfig::kernelSize),
+                        Codec.BOOL.optionalFieldOf("clamp_to_edge", true).forGetter(LanczosConfig::clampToEdge)
+                ).apply(instance, LanczosConfig::new)
+        );
+    }
+
     public record HorizontalConfig(
             InterpolationStrategy interpolation,
-            float value
+            float value,
+            Optional<LanczosConfig> lanczosConfig
     ) {
-        public static final HorizontalConfig DEFAULT = new HorizontalConfig(InterpolationStrategy.BILINEAR, 1.0f);
+        public static final HorizontalConfig DEFAULT = new HorizontalConfig(InterpolationStrategy.BILINEAR, 1.0f, Optional.empty());
 
         public HorizontalConfig(float value) {
-            this(InterpolationStrategy.BILINEAR, value);
+            this(InterpolationStrategy.BILINEAR, value, Optional.empty());
         }
 
         private static final Codec<HorizontalConfig> BASE_CODEC = RecordCodecBuilder.create(
@@ -37,7 +50,10 @@ public record MapScaleConfig(
                                 .forGetter(HorizontalConfig::interpolation),
                         ExtraCodecs.POSITIVE_FLOAT
                                 .fieldOf("value")
-                                .forGetter(HorizontalConfig::value)
+                                .forGetter(HorizontalConfig::value),
+                        LanczosConfig.CODEC
+                                .optionalFieldOf("lanczos_config")
+                                .forGetter(HorizontalConfig::lanczosConfig)
                 ).apply(instance, HorizontalConfig::new)
         );
 
@@ -56,7 +72,7 @@ public record MapScaleConfig(
         public static final Codec<HorizontalConfig> CODEC = Codec.withAlternative(BASE_CODEC, FLOAT_CODEC);
 
         public double interpolate(double x, double z, MapImage image) {
-            return this.interpolation.interpolate(x, z, image);
+            return this.interpolation.interpolate(x, z, image, this.lanczosConfig.orElse(LanczosConfig.DEFAULT));
         }
     }
 }
