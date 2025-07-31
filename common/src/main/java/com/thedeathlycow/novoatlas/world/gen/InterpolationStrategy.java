@@ -65,6 +65,86 @@ public enum InterpolationStrategy implements StringRepresentable {
         private static double getValue(double[] p, double x) {
             return p[1] + 0.5 * x * (p[2] - p[0] + x * (2.0 * p[0] - 5.0 * p[1] + 4.0 * p[2] - p[3] + x * (3.0 * (p[1] - p[2]) + p[3] - p[0])));
         }
+    },
+    LANCZOS("lanczos") {
+        private static final int KERNEL_SIZE = 3;
+        private static final boolean CLAMP_TO_EDGE = true;
+
+        /**
+         * Sinc function: sin(πx)/(πx)
+         */
+        private static float sinc(double x) {
+            if (x == 0.0) {
+                return 1;
+            }
+            return Mth.sin((float)(Mth.PI * x)) / (float)(Mth.PI * x);
+        }
+
+        /**
+         * Lanczos kernel function: L(x) = sinc(x) * sinc(x/a) for -a < x < a, 0 otherwise
+         */
+        private static double lanczosKernel(double x, int a) {
+            if ((-a < x) && (x < a)) {
+                return sinc(x) * sinc(x / a);
+            }
+            return 0.0;
+        }
+
+        /**
+         * Get pixel value with boundary handling
+         */
+        private static double getPixelValue(int x, int z, MapImage image) {
+            int[][] pixels = image.pixels();
+            int width = image.width();
+            int height = image.height();
+
+            if (CLAMP_TO_EDGE) {
+                // Clamp-to-edge outside bounds
+                x = Mth.clamp(x, 0, width - 1);
+                z = Mth.clamp(z, 0, height - 1);
+                return pixels[x][z];
+            } else {
+                // Zero outside bounds
+                if ((x < 0) || (x >= width) || (z < 0) || (z >= height)) {
+                    return 0.0;
+                }
+                return pixels[x][z];
+            }
+        }
+
+        @Override
+        public double interpolate(double x, double z, MapImage image) {
+            // Get the floor coordinates
+            int floorX = Mth.floor(x);
+            int floorZ = Mth.floor(z);
+
+            double result = 0.0;
+            double weightSum = 0.0;
+
+            // Apply Lanczos kernel in both X and Z directions
+            for (int i = -KERNEL_SIZE + 1; i <= KERNEL_SIZE; i++) {
+                for (int j = -KERNEL_SIZE + 1; j <= KERNEL_SIZE; j++) {
+                    // Calculate the kernel weights
+                    double kernelX = lanczosKernel(i - (x - floorX), KERNEL_SIZE);
+                    double kernelZ = lanczosKernel(j - (z - floorZ), KERNEL_SIZE);
+                    double weight = kernelX * kernelZ;
+
+                    // Get the pixel value at the sample point
+                    double pixelValue = getPixelValue(floorX + i, floorZ + j, image);
+
+                    // Accumulate the weighted sum
+                    result += pixelValue * weight;
+                    weightSum += weight;
+                }
+            }
+
+            // Normalize by the sum of weights to prevent brightness changes
+            if (weightSum != 0.0) {
+                result /= weightSum;
+            }
+
+            return result;
+        }
     };
 
     public static final EnumCodec<InterpolationStrategy> CODEC = StringRepresentable.fromEnum(InterpolationStrategy::values);
