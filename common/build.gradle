@@ -12,7 +12,7 @@ dependencies {
     // Do NOT use other classes from Fabric Loader.
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
-    modCompileOnly("com.github.glitchfiend:TerraBlender-fabric:$rootProject.minecraft_version-$rootProject.terrablender_version")
+    modCompileOnly("com.github.glitchfiend:TerraBlender-fabric:$rootProject.terrablender_version")
 }
 
 loom {
