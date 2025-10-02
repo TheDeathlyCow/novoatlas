@@ -73,7 +73,7 @@ publishMods {
     github {
         repository = "TheDeathlyCow/novoatlas"
         accessToken = providers.environmentVariable("RELEASE_GITHUB_TOKEN")
-        commitish = "1.21.5"
+        commitish = "1.21.9"
         tagName = "${mod_version}"
 
         displayName = "[1.21.9] NovoAtlas Example Datapacks ${mod_version}"
