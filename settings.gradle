@@ -11,5 +11,4 @@ rootProject.name = 'novoatlas'
 
 include 'common'
 include 'fabric'
-// TODO: remove when neoforge updates
-//include 'neoforge'
+include 'neoforge'

@@ -16,14 +16,14 @@ logoFile = "assets/novoatlas/icon.png"
 [[dependencies.novoatlas]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.4,)"
+versionRange = "[21.9,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.novoatlas]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.4,)"
+versionRange = "[1.21.9,)"
 ordering = "NONE"
 side = "BOTH"
 
