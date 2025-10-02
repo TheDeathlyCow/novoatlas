@@ -34,7 +34,7 @@ public final class NovoAtlasNeoForge {
 
     private static void addExamplePacks(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.SERVER_DATA) {
-            PackSource packSource = FMLEnvironment.production
+            PackSource packSource = FMLEnvironment.isProduction()
                     ? PackSource.FEATURE
                     : PackSource.WORLD;
 
