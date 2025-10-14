@@ -76,6 +76,6 @@ publishMods {
         commitish = "1.21.9"
         tagName = "${mod_version}"
 
-        displayName = "[1.21.9] NovoAtlas Example Datapacks ${mod_version}"
+        displayName = "[1.21.9-10] NovoAtlas Example Datapacks ${mod_version}"
     }
 }
