@@ -19,6 +19,7 @@ import java.util.Optional;
 
 public record MapInfo(
         ResourceKey<MapImage> heightMap,
+        Optional<ResourceKey<MapImage>> fluidHeightMap,
         ColorMapBiomeProvider surfaceBiomes,
         Optional<LayeredMapBiomeProvider> caveBiomes,
         int startingY,
@@ -30,6 +31,9 @@ public record MapInfo(
                     ResourceKey.codec(NovoAtlasResourceKeys.HEIGHTMAP)
                             .fieldOf("height_map")
                             .forGetter(MapInfo::heightMap),
+                    ResourceKey.codec(NovoAtlasResourceKeys.HEIGHTMAP)
+                            .optionalFieldOf("fluid_height_map")
+                            .forGetter(MapInfo::fluidHeightMap),
                     ColorMapBiomeProvider.CODEC.codec()
                             .fieldOf("surface_biomes")
                             .forGetter(MapInfo::surfaceBiomes),
@@ -60,6 +64,14 @@ public record MapInfo(
 
     public int getHeightMapElevation(int x, int z, int fallback) {
         return lookupHeightmap(this.heightMap).sample(x, z, this, fallback);
+    }
+
+    public int getFluidHeightMapElevation(int x, int z, int seaLevel) {
+        if (this.fluidHeightMap.isPresent()) {
+            return lookupHeightmap(this.fluidHeightMap.orElseThrow()).sample(x, z, this, seaLevel);
+        } else {
+            return seaLevel;
+        }
     }
 
     public int getHeightMapElevation(int x, int z) {
