@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 public record MapInfo(
         ResourceKey<MapImage> heightMap,
@@ -67,10 +68,12 @@ public record MapInfo(
         return lookupHeightmap(this.heightMap).sample(x, z, this, fallback);
     }
 
-    public int getFluidHeightMapElevation(int x, int z, int fallback) {
-        return this.aquiferHeightMap.map(
-                map -> lookupHeightmap(map).sample(x, z, this, fallback)
-        ).orElse(fallback);
+    public int getFluidHeightMapElevation(int x, int z, int seaLevel) {
+        if (this.aquiferHeightMap.isPresent()) {
+            return lookupHeightmap(this.aquiferHeightMap.orElseThrow()).sample(x, z, this, seaLevel);
+        } else {
+            return seaLevel;
+        }
     }
 
     public int getHeightMapElevation(int x, int z) {

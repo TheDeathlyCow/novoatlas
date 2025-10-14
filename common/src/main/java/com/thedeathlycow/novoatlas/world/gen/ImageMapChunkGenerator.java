@@ -69,7 +69,7 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
         this.mapInfo = mapInfo;
         this.undergroundDensityFunction = undergroundDensityFunction;
         this.enableCarvers = enableCarvers;
-//        ((NoiseBasedChunkGeneratorAccessor) this).novoatlas$setGlobalFluidPicker(Suppliers.memoize(() -> this.pickFluid(settings.value())));
+        ((NoiseBasedChunkGeneratorAccessor) this).novoatlas$setGlobalFluidPicker(Suppliers.memoize(() -> this.pickFluid(settings.value())));
     }
 
     private Aquifer.FluidPicker pickFluid(NoiseGeneratorSettings settings) {
@@ -289,8 +289,7 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     private int sampleFluidElevation(int x, int z) {
-        int height = this.mapInfo.value().getFluidHeightMapElevation(x, z, 0);
-        return height != 0 ? height : this.getSeaLevel();
+        return this.mapInfo.value().getFluidHeightMapElevation(x, z, this.getSeaLevel());
     }
 
     /**
