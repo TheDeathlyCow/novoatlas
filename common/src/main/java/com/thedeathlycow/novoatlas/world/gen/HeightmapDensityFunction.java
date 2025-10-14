@@ -61,7 +61,7 @@ public record HeightmapDensityFunction(
     }
 
     @Override
-    public KeyDispatchDataCodec<? extends DensityFunction> codec() {
+    public KeyDispatchDataCodec<? extends HeightmapDensityFunction> codec() {
         return CODEC;
     }
 }
