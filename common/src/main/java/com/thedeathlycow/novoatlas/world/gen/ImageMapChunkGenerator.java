@@ -8,7 +8,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.WorldGenRegion;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
@@ -43,9 +42,6 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
                     .apply(instance, ImageMapChunkGenerator::new)
     );
 
-    // Data pack version for snapshot 25w31a -- first snapshot of 1.21.9 cycle
-    private static final int PRELIMINARY_SURFACE_UPDATE_VERSION = 82;
-
     private final Holder<MapInfo> mapInfo;
 
     private final DensityFunction undergroundDensityFunction;
@@ -79,18 +75,11 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
 
         DensityFunction heightMap = new HeightmapDensityFunction(mapInfo);
 
-        DensityFunction preliminaryHeightmap = heightMap;
+        NoiseSettings noiseSettings = baseSettings.noiseSettings();
+        int minY = noiseSettings.minY();
+        int maxY = minY + noiseSettings.height();
 
-        int dataVersion = SharedConstants.getCurrentVersion().packVersion(PackType.SERVER_DATA)
-                .major();
-
-        if (dataVersion >= PRELIMINARY_SURFACE_UPDATE_VERSION) {
-            NoiseSettings noiseSettings = baseSettings.noiseSettings();
-            int minY = noiseSettings.minY();
-            int maxY = minY + noiseSettings.height();
-
-            preliminaryHeightmap = new GetHeightFromMapDensityFunction(mapInfo, minY, maxY);
-        }
+        DensityFunction preliminaryHeightmap = new GetHeightFromMapDensityFunction(mapInfo, minY, maxY);
 
         DensityFunction finalDensity = DensityFunctions.min(
                 undergroundDensityFunction,
