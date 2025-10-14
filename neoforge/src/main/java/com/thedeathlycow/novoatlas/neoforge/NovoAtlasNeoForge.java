@@ -2,10 +2,13 @@ package com.thedeathlycow.novoatlas.neoforge;
 
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
+import com.thedeathlycow.novoatlas.world.gen.GetHeightFromMapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
@@ -71,6 +74,8 @@ public final class NovoAtlasNeoForge {
         event.register(Registries.CHUNK_GENERATOR, NovoAtlas.loc("image_map"), () -> ImageMapChunkGenerator.CODEC);
         event.register(Registries.BIOME_SOURCE, NovoAtlas.loc("color_map"), () -> ColorMapBiomeSource.CODEC);
         event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
+        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("get_height_from_map"), () -> GetHeightFromMapDensityFunction.DATA_CODEC);
+
     }
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
