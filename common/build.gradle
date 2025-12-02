@@ -66,7 +66,7 @@ publishMods {
         changelog += "\n" + forgeChangelog.text
     }
 
-    type = STABLE
+    type = BETA
 
     additionalFiles.from(datapackArchives)
 
