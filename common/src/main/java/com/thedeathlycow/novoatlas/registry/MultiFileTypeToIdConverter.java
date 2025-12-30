@@ -5,7 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -35,7 +35,7 @@ public class MultiFileTypeToIdConverter {
         return builtinImages(getElementsPath(registryKey));
     }
 
-    public ResourceLocation fileToId(ResourceLocation file) {
+    public Identifier fileToId(Identifier file) {
         String path = file.getPath();
 
         for (String extension : this.extensions) {
@@ -50,11 +50,11 @@ public class MultiFileTypeToIdConverter {
         throw new IllegalArgumentException(message);
     }
 
-    public Map<ResourceLocation, Resource> listMatchingResources(ResourceManager resourceManager) {
+    public Map<Identifier, Resource> listMatchingResources(ResourceManager resourceManager) {
         return resourceManager.listResources(this.prefix, this::test);
     }
 
-    public Map<ResourceLocation, List<Resource>> listMatchingResourceStacks(ResourceManager resourceManager) {
+    public Map<Identifier, List<Resource>> listMatchingResourceStacks(ResourceManager resourceManager) {
         return resourceManager.listResourceStacks(this.prefix, this::test);
     }
 
@@ -62,17 +62,17 @@ public class MultiFileTypeToIdConverter {
         return this.extensions;
     }
 
-    private boolean test(ResourceLocation location) {
+    private boolean test(Identifier location) {
         return Arrays.stream(this.extensions).anyMatch(extension -> location.getPath().endsWith(extension));
     }
 
     private static String getElementsPath(ResourceKey<? extends Registry<?>> registryKey) {
-        String namespace = registryKey.location().getNamespace();
+        String namespace = registryKey.identifier().getNamespace();
 
-        if (namespace.equals(ResourceLocation.DEFAULT_NAMESPACE)) {
+        if (namespace.equals(Identifier.DEFAULT_NAMESPACE)) {
             return Registries.elementsDirPath(registryKey);
         } else {
-            return "%s/%s".formatted(namespace, registryKey.location().getPath());
+            return "%s/%s".formatted(namespace, registryKey.identifier().getPath());
         }
     }
 }

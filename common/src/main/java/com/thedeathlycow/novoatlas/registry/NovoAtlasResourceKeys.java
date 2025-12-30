@@ -8,15 +8,15 @@ import net.minecraft.resources.ResourceKey;
 
 public final class NovoAtlasResourceKeys {
     public static final ResourceKey<Registry<MapInfo>> MAP_INFO = ResourceKey.createRegistryKey(
-            NovoAtlas.loc("map_info")
+            NovoAtlas.id("map_info")
     );
 
     public static final ResourceKey<Registry<MapImage>> HEIGHTMAP = ResourceKey.createRegistryKey(
-            NovoAtlas.loc("heightmap")
+            NovoAtlas.id("heightmap")
     );
 
     public static final ResourceKey<Registry<MapImage>> BIOME_MAP = ResourceKey.createRegistryKey(
-            NovoAtlas.loc("biome_map")
+            NovoAtlas.id("biome_map")
     );
 
     private NovoAtlasResourceKeys() {

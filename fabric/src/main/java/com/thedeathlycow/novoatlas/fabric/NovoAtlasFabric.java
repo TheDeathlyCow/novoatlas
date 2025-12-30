@@ -24,10 +24,10 @@ public final class NovoAtlasFabric implements ModInitializer {
 
         DynamicRegistries.register(NovoAtlasResourceKeys.MAP_INFO, MapInfo.DIRECT_CODEC);
 
-        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.loc("image_map"), ImageMapChunkGenerator.CODEC);
-        Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.loc("color_map"), ColorMapBiomeSource.CODEC);
-        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("heightmap"), HeightmapDensityFunction.DATA_CODEC);
-        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("get_height_from_map"), GetHeightFromMapDensityFunction.DATA_CODEC);
+        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), ImageMapChunkGenerator.CODEC);
+        Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.id("color_map"), ColorMapBiomeSource.CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), HeightmapDensityFunction.DATA_CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), GetHeightFromMapDensityFunction.DATA_CODEC);
 
         ResourceManagerHelper serverManager = ResourceManagerHelper.get(PackType.SERVER_DATA);
         serverManager.registerReloadListener(new MapImageLoader());
@@ -39,19 +39,19 @@ public final class NovoAtlasFabric implements ModInitializer {
                 : ResourcePackActivationType.NORMAL;
 
         ResourceManagerHelper.registerBuiltinResourcePack(
-                NovoAtlas.loc("avila-basic-example"),
+                NovoAtlas.id("avila-basic-example"),
                 mod,
                 activationType
         );
 
         ResourceManagerHelper.registerBuiltinResourcePack(
-                NovoAtlas.loc("avila-cave-biome-example"),
+                NovoAtlas.id("avila-cave-biome-example"),
                 mod,
                 ResourcePackActivationType.NORMAL
         );
 
         ResourceManagerHelper.registerBuiltinResourcePack(
-                NovoAtlas.loc("avila-no-caves-example"),
+                NovoAtlas.id("avila-no-caves-example"),
                 mod,
                 ResourcePackActivationType.NORMAL
         );

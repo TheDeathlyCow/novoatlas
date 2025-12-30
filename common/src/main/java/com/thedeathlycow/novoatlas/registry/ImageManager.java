@@ -4,7 +4,7 @@ import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
@@ -38,14 +38,14 @@ public final class ImageManager {
         if (NovoAtlas.LOGGER.isInfoEnabled()) {
             NovoAtlas.LOGGER.info(
                     "Reloading map images for {}, supported image formats are: {}",
-                    registryKey.location(),
+                    registryKey.identifier(),
                     Arrays.toString(converter.getExtensions())
             );
         }
 
-        Map<ResourceLocation, Resource> resources = converter.listMatchingResources(resourceManager);
+        Map<Identifier, Resource> resources = converter.listMatchingResources(resourceManager);
 
-        for (Map.Entry<ResourceLocation, Resource> entry : resources.entrySet()) {
+        for (Map.Entry<Identifier, Resource> entry : resources.entrySet()) {
             BufferedImage image;
             try (InputStream stream = entry.getValue().open()) {
                 image = ImageIO.read(stream);
@@ -59,13 +59,13 @@ public final class ImageManager {
             if (updatedRegistry.put(key, map) != null) {
                 final String message = "Found duplicate image files for {}, overriding with {} " +
                         "(images of the different types should have different names)";
-                NovoAtlas.LOGGER.warn(message, key.location(), entry.getKey());
+                NovoAtlas.LOGGER.warn(message, key.identifier(), entry.getKey());
             }
         }
 
         this.registry.clear();
         this.registry.putAll(updatedRegistry);
-        NovoAtlas.LOGGER.info("Loaded {} map image(s) for {}", this.registry.size(), registryKey.location());
+        NovoAtlas.LOGGER.info("Loaded {} map image(s) for {}", this.registry.size(), registryKey.identifier());
     }
 
     @Nullable
