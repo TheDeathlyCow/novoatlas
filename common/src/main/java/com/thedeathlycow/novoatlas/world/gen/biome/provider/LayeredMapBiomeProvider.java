@@ -19,7 +19,7 @@ public record LayeredMapBiomeProvider(
 ) implements BiomeMapProvider {
     public static final ResourceKey<Biome> SURFACE_BIOME = ResourceKey.create(
             Registries.BIOME,
-            NovoAtlas.loc("surface_biome")
+            NovoAtlas.id("surface_biome")
     );
 
     public static final MapCodec<LayeredMapBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(

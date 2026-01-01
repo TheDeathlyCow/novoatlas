@@ -7,8 +7,6 @@ import com.thedeathlycow.novoatlas.world.gen.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
@@ -42,7 +40,7 @@ public final class NovoAtlasNeoForge {
                     : PackSource.WORLD;
 
             event.addPackFinders(
-                    NovoAtlas.loc("resourcepacks/avila-basic-example"),
+                    NovoAtlas.id("resourcepacks/avila-basic-example"),
                     PackType.SERVER_DATA,
                     Component.literal("novoatlas/avila-basic-example"),
                     packSource,
@@ -51,7 +49,7 @@ public final class NovoAtlasNeoForge {
             );
 
             event.addPackFinders(
-                    NovoAtlas.loc("resourcepacks/avila-cave-biome-example"),
+                    NovoAtlas.id("resourcepacks/avila-cave-biome-example"),
                     PackType.SERVER_DATA,
                     Component.literal("novoatlas/avila-cave-biome-example"),
                     PackSource.FEATURE,
@@ -60,7 +58,7 @@ public final class NovoAtlasNeoForge {
             );
 
             event.addPackFinders(
-                    NovoAtlas.loc("resourcepacks/avila-no-caves-example"),
+                    NovoAtlas.id("resourcepacks/avila-no-caves-example"),
                     PackType.SERVER_DATA,
                     Component.literal("novoatlas/avila-no-caves-example"),
                     PackSource.FEATURE,
@@ -71,10 +69,10 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void register(RegisterEvent event) {
-        event.register(Registries.CHUNK_GENERATOR, NovoAtlas.loc("image_map"), () -> ImageMapChunkGenerator.CODEC);
-        event.register(Registries.BIOME_SOURCE, NovoAtlas.loc("color_map"), () -> ColorMapBiomeSource.CODEC);
-        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
-        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("get_height_from_map"), () -> GetHeightFromMapDensityFunction.DATA_CODEC);
+        event.register(Registries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), () -> ImageMapChunkGenerator.CODEC);
+        event.register(Registries.BIOME_SOURCE, NovoAtlas.id("color_map"), () -> ColorMapBiomeSource.CODEC);
+        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
+        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), () -> GetHeightFromMapDensityFunction.DATA_CODEC);
 
     }
 

@@ -3,14 +3,14 @@ package com.thedeathlycow.novoatlas.fabric;
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.ImageManager;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 public class MapImageLoader implements SimpleSynchronousResourceReloadListener {
-    public static final ResourceLocation ID = NovoAtlas.loc("map_image");
+    public static final Identifier ID = NovoAtlas.id("map_image");
 
     @Override
-    public ResourceLocation getFabricId() {
+    public Identifier getFabricId() {
         return ID;
     }
 
