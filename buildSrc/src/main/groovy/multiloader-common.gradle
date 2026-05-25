@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'me.modmuss50.mod-publish-plugin'
 }
 
 base {
@@ -87,6 +88,120 @@ processResources {
     }
 
     inputs.properties(expandProps)
+}
+
+def exampleSourceDir = file("$rootDir/common/src/main/resources/resourcepacks")
+
+def buildDatapacks = tasks.register("buildDatapacks") {
+    group = "build"
+}
+def datapackBuildTarget = file("$rootDir/build/datapacks")
+
+def datapackArchives = []
+
+exampleSourceDir.eachDir { dir ->
+    if (dir.isDirectory()) {
+        def taskName = "buildDatapack${dir.name.capitalize().replace("-", "")}"
+
+        def task = tasks.register(taskName, Zip) {
+            group = "build"
+            from(dir)
+            archiveFileName.set("${dir.name}-${rootProject.version}.zip")
+            destinationDirectory.set(datapackBuildTarget)
+        }
+
+        tasks.named("buildDatapacks") {
+            dependsOn(task)
+        }
+
+        datapackArchives << task.flatMap { it.archiveFile }
+    }
+}
+
+tasks.named("build") {
+    dependsOn(buildDatapacks)
+}
+
+publishMods {
+    changelog = rootProject.file("./changelogs/${project.version}.md").text
+
+    def fabricChangelog = rootProject.file("./changelogs/fabric/${project.version}.md")
+    def neoforgeChangelog = rootProject.file("./changelogs/neoforge/${project.version}.md")
+
+    if (fabricChangelog.exists()) {
+        changelog += "\n" + fabricChangelog.text
+    }
+
+    if (neoforgeChangelog.exists()) {
+        changelog += "\n" + neoforgeChangelog.text
+    }
+
+    type = STABLE
+
+    def cfOptions = curseforgeOptions {
+        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+        projectId = "1297254"
+        minecraftVersions.addAll("26.1", "26.1.1", "26.1.2")
+        javaVersions.add(JavaVersion.VERSION_25)
+        clientRequired = false
+        serverRequired = true
+    }
+
+    def mrOptions = modrinthOptions {
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        projectId = "yh3a3Yc8"
+        minecraftVersions.addAll("26.1", "26.1.1", "26.1.2")
+        optional {
+            slug = "terrablender"
+        }
+    }
+
+    curseforge("curseforgeFabric") {
+        from cfOptions
+        file project(":fabric")
+        modLoaders.add("fabric")
+        requires {
+            slug = "fabric-api"
+        }
+        optional {
+            slug = "terrablender-fabric"
+        }
+    }
+
+    modrinth("modrinthFabric") {
+        from mrOptions
+        file project(":fabric")
+        modLoaders.add("fabric")
+        requires {
+            slug = "fabric-api"
+        }
+    }
+
+    curseforge("curseforgeNeoforge") {
+        from cfOptions
+        file project(":neoforge")
+        modLoaders.add("neoforge")
+        optional {
+            slug = "terrablender-neoforge"
+        }
+    }
+
+    modrinth("modrinthNeoforge") {
+        from mrOptions
+        file project(":neoforge")
+        modLoaders.add("neoforge")
+    }
+
+    github {
+        repository = "TheDeathlyCow/novoatlas"
+        accessToken = providers.environmentVariable("RELEASE_GITHUB_TOKEN")
+        commitish = "26.1.x"
+        tagName = "${project.version}"
+
+        displayName = "[26.1.x] NovoAtlas Example Datapacks ${project.version}"
+
+        additionalFiles.from(datapackArchives)
+    }
 }
 
 publishing {
