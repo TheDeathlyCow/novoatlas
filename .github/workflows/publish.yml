@@ -20,7 +20,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - run: chmod +x ./gradlew
-      - run: ./gradlew publishCurseforgeFabric --dry-run
+      - run: ./gradlew publishCurseforgeFabric
         env:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
 
@@ -39,7 +39,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - run: chmod +x ./gradlew
-      - run: ./gradlew publishModrinthFabric --dry-run
+      - run: ./gradlew publishModrinthFabric
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
 
@@ -58,7 +58,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - run: chmod +x ./gradlew
-      - run: ./gradlew publishCurseforgeNeoforge --dry-run
+      - run: ./gradlew publishCurseforgeNeoforge
         env:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
 
@@ -77,7 +77,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - run: chmod +x ./gradlew
-      - run: ./gradlew publishModrinthNeoforge --dry-run
+      - run: ./gradlew publishModrinthNeoforge
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
 
@@ -96,6 +96,6 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - run: chmod +x ./gradlew
-      - run: ./gradlew publishGithub --dry-run
+      - run: ./gradlew publishGithub
         env:
           RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
