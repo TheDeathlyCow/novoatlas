@@ -27,7 +27,11 @@ dependencies {
 }
 
 loom {
-    convertAw2At(tasks.named("jar"), ["${mod_id}.accesswidener"])
+    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+        convertAw2At(tasks.named("jar"), ["${mod_id}.accesswidener"])
+    }
 
     runs {
         client {
