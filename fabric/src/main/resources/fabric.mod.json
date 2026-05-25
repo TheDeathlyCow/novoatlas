@@ -1,19 +1,19 @@
 {
     "schemaVersion": 1,
-    "id": "novoatlas",
+    "id": "${mod_id}",
     "version": "${version}",
-    "name": "NovoAtlas",
-    "description": "A data-driven image based world generator for Minecraft.",
+    "name": "${mod_name}",
+    "description": "${description}",
     "authors": [
-        "TheDeathlyCow",
-        "itsmiir (Original Atlas mod)"
+        "${mod_author}",
+        "${credits}"
     ],
     "contact": {
-        "homepage": "https://github.com/TheDeathlyCow/novo-atlas/wiki",
+        "homepage": "https://www.thedeathlycow.com/novoatlas/",
         "sources": "https://github.com/TheDeathlyCow/novo-atlas",
         "issues": "https://github.com/TheDeathlyCow/novo-atlas/issues"
     },
-    "license": "LGPL-3.0",
+    "license": "${license}",
     "icon": "assets/novoatlas/icon.png",
     "environment": "*",
     "entrypoints": {
@@ -25,13 +25,13 @@
         ]
     },
     "mixins": [
-        "novoatlas.mixins.json"
+        "${mod_id}.mixins.json"
     ],
     "depends": {
-        "fabricloader": ">=0.18.4",
-        "minecraft": ">=1.21.9",
-        "java": ">=21",
-        "fabric-api": "*"
+        "fabricloader": ">=${fabric_loader_version}",
+        "fabric-api": "*",
+        "minecraft": "~${minecraft_version}-",
+        "java": ">=${java_version}"
     },
-    "accessWidener": "novoatlas.accesswidener"
+    "accessWidener": "${mod_id}.accesswidener"
 }

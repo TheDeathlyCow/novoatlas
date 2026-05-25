@@ -1,6 +1,6 @@
 package com.thedeathlycow.novoatlas.mixin.compat;
 
-import com.thedeathlycow.novoatlas.NovoAtlasPlatform;
+import com.thedeathlycow.novoatlas.platform.Services;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -40,9 +40,9 @@ public class Plugin implements IMixinConfigPlugin {
 
         if (isPresentMixin) {
             // We only load the mixin if the mod we want to be present is found
-            return NovoAtlasPlatform.isModLoaded(compatModId);
+            return Services.PLATFORM.isEarlyModLoaded(compatModId);
         }
-        return !NovoAtlasPlatform.isModLoaded(compatModId);
+        return !Services.PLATFORM.isEarlyModLoaded(compatModId);
     }
 
     @Override

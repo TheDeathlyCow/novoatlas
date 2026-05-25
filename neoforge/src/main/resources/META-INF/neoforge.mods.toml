@@ -1,31 +1,31 @@
 modLoader = "javafml"
-loaderVersion = "[4,)"
+loaderVersion = "${neoforge_loader_version_range}"
 issueTrackerURL = "https://github.com/TheDeathlyCow/novo-atlas/issues"
-license = "LGPL-3.0"
+license = "${license}"
 
 [[mods]]
-modId = "novoatlas"
+modId = "${mod_id}"
 version = "${version}"
-displayName = "NovoAtlas"
-authors = "TheDeathlyCow, itsmiir (Original Atlas mod)"
-description = '''
-A data-driven image based world generator for Minecraft.
-'''
+displayName = "${mod_name}"
+authors = "${mod_author}"
+credits = "${credits}"
+description = '''${description}'''
 logoFile = "assets/novoatlas/icon.png"
+displayURL = "https://www.thedeathlycow.com/novoatlas/"
 
-[[dependencies.novoatlas]]
+[[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.11,)"
+versionRange = "[${neoforge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.novoatlas]]
+[[dependencies.${mod_id}]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.11,)"
+versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
 [[mixins]]
-config = "novoatlas.mixins.json"
+config = "${mod_id}.mixins.json"
