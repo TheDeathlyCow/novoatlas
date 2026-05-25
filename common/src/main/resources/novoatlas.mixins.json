@@ -8,8 +8,7 @@
     ],
     "mixins": [
         "accessor.NoiseBasedChunkGeneratorAccessor",
-        "accessor.NoiseChunkAccessor",
-        "accessor.SurfaceRulesContextAccessor",
+        "accessor.NoiseChunkAccessor"
     ],
     "injectors": {
         "defaultRequire": 1

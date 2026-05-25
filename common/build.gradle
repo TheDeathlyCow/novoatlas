@@ -14,7 +14,7 @@ dependencies {
             "imageio-metadata",
             "imageio-core"
     ).forEach {
-        implementation include ("com.twelvemonkeys.imageio:$it:${project.twelvemonkeys_imageio_version}")
+        implementation "com.twelvemonkeys.imageio:$it:${project.twelvemonkeys_imageio_version}"
     }
 
     List.of(
@@ -22,7 +22,14 @@ dependencies {
             "common-io",
             "common-lang"
     ).forEach {
-        implementation include ("com.twelvemonkeys.common:$it:${project.twelvemonkeys_imageio_version}")
+        implementation "com.twelvemonkeys.common:$it:${project.twelvemonkeys_imageio_version}"
+    }
+}
+
+loom {
+    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
     }
 }
 
@@ -52,7 +59,7 @@ def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', Strin
     }
 }
 sourceSets.configureEach {
-    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant ->
         configurations.named("$variant") {
             attributes {
                 attribute(loaderAttribute, 'common')
