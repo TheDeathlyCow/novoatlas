@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-common'
-    id 'org.relativitymc.neo-loom'
+    id 'net.fabricmc.fabric-loom'
 }
 
 dependencies {
