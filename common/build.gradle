@@ -7,6 +7,23 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     // use this to get mixins and asm in the common module, do not use fabric classes in common!!!!!
     compileOnly "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    compileOnly "com.github.glitchfiend:TerraBlender-fabric:${terrablender_version}"
+
+    List.of(
+            "imageio-webp",
+            "imageio-metadata",
+            "imageio-core"
+    ).forEach {
+        implementation include ("com.twelvemonkeys.imageio:$it:${project.twelvemonkeys_imageio_version}")
+    }
+
+    List.of(
+            "common-image",
+            "common-io",
+            "common-lang"
+    ).forEach {
+        implementation include ("com.twelvemonkeys.common:$it:${project.twelvemonkeys_imageio_version}")
+    }
 }
 
 configurations {

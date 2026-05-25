@@ -26,6 +26,9 @@ repositories {
         }
         filter { includeGroupAndSubgroups('org.spongepowered') }
     }
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net/' }
+    }
     maven {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'

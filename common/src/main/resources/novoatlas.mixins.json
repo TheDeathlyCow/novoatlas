@@ -10,7 +10,6 @@
         "accessor.NoiseBasedChunkGeneratorAccessor",
         "accessor.NoiseChunkAccessor",
         "accessor.SurfaceRulesContextAccessor",
-        "compat.terrablender.present.LevelUtilsMixin"
     ],
     "injectors": {
         "defaultRequire": 1
