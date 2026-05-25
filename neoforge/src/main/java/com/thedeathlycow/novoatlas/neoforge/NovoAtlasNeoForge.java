@@ -1,6 +1,7 @@
 package com.thedeathlycow.novoatlas.neoforge;
 
 import com.thedeathlycow.novoatlas.NovoAtlas;
+import com.thedeathlycow.novoatlas.registry.ImageManager;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
 import com.thedeathlycow.novoatlas.world.gen.GetHeightFromMapDensityFunction;
 import com.thedeathlycow.novoatlas.world.gen.ImageMapChunkGenerator;
@@ -45,7 +46,7 @@ public final class NovoAtlasNeoForge {
                     Component.literal("novoatlas/avila-basic-example"),
                     packSource,
                     false,
-                    Pack.Position.BOTTOM
+                    Pack.Position.TOP
             );
 
             event.addPackFinders(
@@ -54,7 +55,7 @@ public final class NovoAtlasNeoForge {
                     Component.literal("novoatlas/avila-cave-biome-example"),
                     PackSource.FEATURE,
                     false,
-                    Pack.Position.BOTTOM
+                    Pack.Position.TOP
             );
 
             event.addPackFinders(
@@ -63,7 +64,7 @@ public final class NovoAtlasNeoForge {
                     Component.literal("novoatlas/avila-no-caves-example"),
                     PackSource.FEATURE,
                     false,
-                    Pack.Position.BOTTOM
+                    Pack.Position.TOP
             );
         }
     }
@@ -81,6 +82,7 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void registerResourceReloader(AddServerReloadListenersEvent event) {
-        event.addListener(MapImageLoader.ID, new MapImageLoader());
+        event.addListener(NovoAtlasResourceKeys.HEIGHTMAP.identifier(), ImageManager.HEIGHTMAP);
+        event.addListener(NovoAtlasResourceKeys.BIOME_MAP.identifier(), ImageManager.BIOME_MAP);
     }
 }
