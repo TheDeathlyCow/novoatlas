@@ -1,0 +1,33 @@
+def exampleSourceDir = file("$rootDir/common/src/main/resources/resourcepacks")
+
+def buildDatapacks = tasks.register("buildDatapacks") {
+    group = "build"
+}
+def datapackBuildTarget = file("$rootDir/build/datapacks")
+
+def datapackArchives = []
+
+exampleSourceDir.eachDir { dir ->
+    if (dir.isDirectory()) {
+        def taskName = "buildDatapack${dir.name.capitalize().replace("-", "")}"
+
+        def task = tasks.register(taskName, Zip) {
+            group = "build"
+            from(dir)
+            archiveFileName.set("${dir.name}-${rootProject.version}.zip")
+            destinationDirectory.set(datapackBuildTarget)
+        }
+
+        tasks.named("buildDatapacks") {
+            dependsOn(task)
+        }
+
+        datapackArchives << task.flatMap { it.archiveFile }
+    }
+}
+
+tasks.named("build") {
+    dependsOn(buildDatapacks)
+}
+
+project.extensions.datapackArchives = datapackArchives

@@ -1,6 +1,7 @@
 plugins {
     id 'multiloader-loader'
     id 'net.fabricmc.fabric-loom'
+    id 'me.modmuss50.mod-publish-plugin'
 }
 
 dependencies {
@@ -62,5 +63,42 @@ sourceSets.configureEach {
                 attribute(loaderAttribute, 'fabric')
             }
         }
+    }
+}
+
+publishMods {
+    type = STABLE
+    def changelogFile = rootProject.file("./changelogs/${project.version}.md")
+
+    changelog = changelogFile.text
+
+    file = jar.archiveFile
+    displayName = "NovoAtlas Fabric ${project.version}"
+
+    modLoaders.addAll("fabric", "quilt")
+
+    curseforge {
+        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+        projectId = "1297254"
+        minecraftVersions.addAll("26.1", "26.1.1", "26.1.2")
+
+        javaVersions.add(JavaVersion.VERSION_25)
+
+        clientRequired = false
+        serverRequired = true
+
+        requires("fabric-api")
+
+        optional("terrablender-fabric")
+    }
+
+    modrinth {
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        projectId = "yh3a3Yc8"
+        minecraftVersions.addAll("26.1", "26.1.1", "26.1.2")
+
+        requires("fabric-api")
+
+        optional("terrablender")
     }
 }

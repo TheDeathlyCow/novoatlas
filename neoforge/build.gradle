@@ -1,6 +1,7 @@
 plugins {
     id 'multiloader-loader'
     id 'org.relativitymc.neo-loom'
+    id 'me.modmuss50.mod-publish-plugin'
 }
 
 dependencies {
@@ -65,5 +66,38 @@ sourceSets.configureEach {
                 attribute(loaderAttribute, 'neoforge')
             }
         }
+    }
+}
+
+publishMods {
+    type = STABLE
+    def changelogFile = rootProject.file("./changelogs/${project.version}.md")
+
+    changelog = changelogFile.text
+
+    file = jar.archiveFile
+    displayName = "NovoAtlas Neoforge ${project.version}"
+
+    modLoaders.addAll("neoforge")
+
+    curseforge {
+        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+        projectId = "1297254"
+        minecraftVersions.addAll("26.1", "26.1.1", "26.1.2")
+
+        javaVersions.add(JavaVersion.VERSION_25)
+
+        clientRequired = false
+        serverRequired = true
+
+        optional("terrablender-neoforge")
+    }
+
+    modrinth {
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        projectId = "yh3a3Yc8"
+        minecraftVersions.addAll("26.1", "26.1.1", "26.1.2")
+
+        optional("terrablender")
     }
 }
