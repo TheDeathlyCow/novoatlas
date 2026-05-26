@@ -88,8 +88,6 @@ publishMods {
         serverRequired = true
 
         requires("fabric-api")
-
-        optional("terrablender-fabric")
     }
 
     modrinth {
@@ -98,7 +96,5 @@ publishMods {
         minecraftVersions.addAll("26.1", "26.1.1", "26.1.2")
 
         requires("fabric-api")
-
-        optional("terrablender")
     }
 }

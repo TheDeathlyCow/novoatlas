@@ -89,15 +89,11 @@ publishMods {
 
         clientRequired = false
         serverRequired = true
-
-        optional("terrablender-neoforge")
     }
 
     modrinth {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         projectId = "yh3a3Yc8"
         minecraftVersions.addAll("26.1", "26.1.1", "26.1.2")
-
-        optional("terrablender")
     }
 }
