@@ -21,8 +21,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 public final class ImageManager extends SimplePreparableReloadListener<Map<ResourceKey<MapImage>, MapImage> > {
-    public static final ImageManager HEIGHTMAP = new ImageManager(NovoAtlasResourceKeys.HEIGHTMAP, MapImage.Type.HEIGHTMAP);
-    public static final ImageManager BIOME_MAP = new ImageManager(NovoAtlasResourceKeys.BIOME_MAP, MapImage.Type.BIOME_MAP);
+    public static final ImageManager HEIGHTMAP = new ImageManager(NovoAtlasRegistries.HEIGHTMAP, MapImage.Type.HEIGHTMAP);
+    public static final ImageManager BIOME_MAP = new ImageManager(NovoAtlasRegistries.BIOME_MAP, MapImage.Type.BIOME_MAP);
 
     private final ResourceKey<Registry<MapImage>> registryKey;
     private final MapImage.Type type;

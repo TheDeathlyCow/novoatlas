@@ -3,6 +3,7 @@ package com.thedeathlycow.novoatlas.world.gen;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.world.gen.interpolation.Interpolator;
 import net.minecraft.util.ExtraCodecs;
 
 public record MapScaleConfig(
@@ -21,10 +22,10 @@ public record MapScaleConfig(
     );
 
     public record HorizontalConfig(
-            InterpolationStrategy interpolation,
+            Interpolator interpolation,
             float value
     ) {
-        public static final HorizontalConfig DEFAULT = new HorizontalConfig(InterpolationStrategy.NEAREST_NEIGHBOR, 1.0f);
+        public static final HorizontalConfig DEFAULT = new HorizontalConfig(Interpolator.nearestNeighbour(), 1.0f);
 
         public HorizontalConfig(float value) {
             this(DEFAULT.interpolation(), value);
@@ -32,8 +33,7 @@ public record MapScaleConfig(
 
         private static final Codec<HorizontalConfig> BASE_CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
-                        InterpolationStrategy.CODEC
-                                .fieldOf("interpolation")
+                        Interpolator.BASE_CODEC
                                 .forGetter(HorizontalConfig::interpolation),
                         ExtraCodecs.POSITIVE_FLOAT
                                 .fieldOf("value")
@@ -55,8 +55,8 @@ public record MapScaleConfig(
 
         public static final Codec<HorizontalConfig> CODEC = Codec.withAlternative(BASE_CODEC, FLOAT_CODEC);
 
-        public double interpolate(double x, double z, MapImage image) {
-            return this.interpolation.interpolate(x, z, image);
+        public double sample(double x, double z, MapImage image) {
+            return this.interpolation.sample(x, z, image);
         }
     }
 }

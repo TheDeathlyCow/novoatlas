@@ -1,5 +1,8 @@
 package com.thedeathlycow.novoatlas.platform;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+
 public interface NovoAtlasPlatform {
     /// Gets the name of the current platform
     ///
@@ -31,4 +34,7 @@ public interface NovoAtlasPlatform {
     default String getEnvironmentName() {
         return isDevelopmentEnvironment() ? "development" : "production";
     }
+
+    /// Creates a server-side friendly built in registry from a key.
+    <T> Registry<T> createBuiltinRegistry(ResourceKey<Registry<T>> key);
 }

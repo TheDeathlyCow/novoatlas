@@ -1,8 +1,11 @@
 package com.thedeathlycow.novoatlas.neoforge;
 
 import com.thedeathlycow.novoatlas.platform.NovoAtlasPlatform;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 
 public class NovoAtlasNeoForgePlatform implements NovoAtlasPlatform {
     @Override
@@ -23,5 +26,10 @@ public class NovoAtlasNeoForgePlatform implements NovoAtlasPlatform {
     @Override
     public boolean isDevelopmentEnvironment() {
         return !FMLLoader.getCurrent().isProduction();
+    }
+
+    @Override
+    public <T> Registry<T> createBuiltinRegistry(ResourceKey<Registry<T>> key) {
+        return new RegistryBuilder<>(key).create();
     }
 }
