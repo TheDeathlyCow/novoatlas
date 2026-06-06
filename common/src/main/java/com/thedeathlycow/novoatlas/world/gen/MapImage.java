@@ -75,14 +75,14 @@ public record MapImage(
 
     private int sampleDirect(double x, double z, MapInfo info) {
         if (this.type == Type.HEIGHTMAP) {
-            double height = info.horizontalScale().interpolate(x, z, this);
+            double height = info.horizontalScale().sample(x, z, this);
             return (int) Math.round(info.verticalScale() * height + info.startingY());
         } else {
             return this.getTruncated(x, z);
         }
     }
 
-    int getTruncated(double x, double z) {
+    public int getTruncated(double x, double z) {
         int truncatedX = Mth.floor(x);
         int truncatedZ = Mth.floor(z);
         return this.pixels[truncatedX][truncatedZ];
