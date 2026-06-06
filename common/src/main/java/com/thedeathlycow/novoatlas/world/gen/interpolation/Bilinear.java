@@ -4,7 +4,9 @@ import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
 import net.minecraft.util.Mth;
 
-final class Bilinear implements Interpolator {
+public final class Bilinear implements Interpolator {
+    public static final MapCodec<Bilinear> CODEC = MapCodec.unit(new Bilinear());
+
     @Override
     public double sample(double x, double z, MapImage image) {
         // x and z are the truncated (floor) coordinates
@@ -31,11 +33,6 @@ final class Bilinear implements Interpolator {
 
     @Override
     public MapCodec<Bilinear> codec() {
-        return MapCodec.unit(new Bilinear());
-    }
-
-    @Override
-    public String getSerializedName() {
-        return "bilinear";
+        return CODEC;
     }
 }

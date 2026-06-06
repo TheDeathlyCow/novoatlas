@@ -3,9 +3,10 @@ package com.thedeathlycow.novoatlas.world.gen.interpolation;
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
 
-final class Bicubic implements Interpolator {
+public final class Bicubic implements Interpolator {
+    public static final MapCodec<Bicubic> CODEC = MapCodec.unit(new Bicubic());
+
     /// Implementation by [Paul Breeuwsma](https://www.paulinternet.nl/?page=bicubic)
     @Override
     public double sample(double x, double z, MapImage image) {
@@ -32,13 +33,7 @@ final class Bicubic implements Interpolator {
 
     @Override
     public MapCodec<Bicubic> codec() {
-        return MapCodec.unit(new Bicubic());
-    }
-
-    @Override
-    @NotNull
-    public String getSerializedName() {
-        return "bicubic";
+        return CODEC;
     }
 
     private static double[][] cubicNeighborhood(int x, int z, MapImage image) {

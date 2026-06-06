@@ -2,15 +2,18 @@ package com.thedeathlycow.novoatlas.world.gen.interpolation;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.thedeathlycow.novoatlas.registry.NovoAtlasBuiltinRegistries;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
-import net.minecraft.util.StringRepresentable;
 
-public interface Interpolator extends StringRepresentable {
-    Codec<Interpolator> BASE_CODEC = StringRepresentable.fromValues(() -> new Interpolator[]{
-            nearestNeighbour(),
-            bilinear(),
-            bicubic()
-    });
+import java.util.function.Function;
+
+public interface Interpolator {
+    Codec<Interpolator> BASE_CODEC = NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE.byNameCodec()
+            .dispatch(
+                    "interpolation",
+                    Interpolator::codec,
+                    Function.identity()
+            );
 
     double sample(double x, double z, MapImage image);
 

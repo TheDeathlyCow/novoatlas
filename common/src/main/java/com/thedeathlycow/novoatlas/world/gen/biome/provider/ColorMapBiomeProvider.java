@@ -3,7 +3,7 @@ package com.thedeathlycow.novoatlas.world.gen.biome.provider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
+import com.thedeathlycow.novoatlas.registry.NovoAtlasRegistries;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
 import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.BiomeColorEntry;
@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 public final class ColorMapBiomeProvider implements BiomeMapProvider {
     public static final MapCodec<ColorMapBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
-                    ResourceKey.codec(NovoAtlasResourceKeys.BIOME_MAP)
+                    ResourceKey.codec(NovoAtlasRegistries.BIOME_MAP)
                             .fieldOf("map")
                             .forGetter(ColorMapBiomeProvider::getMap),
                     BiomeColorEntry.LIST_CODEC
