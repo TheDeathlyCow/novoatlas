@@ -92,9 +92,9 @@ public final class NovoAtlasNeoForge {
             event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), () -> Bilinear.CODEC);
             event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"), () -> Bicubic.CODEC);
 
-            addAliasToDefault(event.getRegistry(), NovoAtlas.id("nearest_neighbor"));
-            addAliasToDefault(event.getRegistry(), NovoAtlas.id("bilinear"));
-            addAliasToDefault(event.getRegistry(), NovoAtlas.id("bicubic"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("nearest_neighbor"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("bilinear"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("bicubic"));
         }
     }
 
@@ -107,7 +107,7 @@ public final class NovoAtlasNeoForge {
         event.addListener(NovoAtlasRegistries.BIOME_MAP.identifier(), ImageManager.BIOME_MAP);
     }
 
-    private static void addAliasToDefault(Registry<?> registry, Identifier id) {
-        registry.addAlias(id, Identifier.withDefaultNamespace(id.getPath()));
+    private static void addDefaultAlias(Registry<?> registry, Identifier id) {
+        registry.addAlias(Identifier.withDefaultNamespace(id.getPath()), id);
     }
 }

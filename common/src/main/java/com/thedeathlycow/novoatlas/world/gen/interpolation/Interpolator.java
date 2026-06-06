@@ -1,6 +1,5 @@
 package com.thedeathlycow.novoatlas.world.gen.interpolation;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasBuiltinRegistries;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
@@ -8,8 +7,8 @@ import com.thedeathlycow.novoatlas.world.gen.MapImage;
 import java.util.function.Function;
 
 public interface Interpolator {
-    Codec<Interpolator> BASE_CODEC = NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE.byNameCodec()
-            .dispatch(
+    MapCodec<Interpolator> BASE_CODEC = NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE.byNameCodec()
+            .dispatchMap(
                     "interpolation",
                     Interpolator::codec,
                     Function.identity()

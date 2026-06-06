@@ -34,7 +34,6 @@ public record MapScaleConfig(
         private static final Codec<HorizontalConfig> BASE_CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
                         Interpolator.BASE_CODEC
-                                .fieldOf("interpolation")
                                 .forGetter(HorizontalConfig::interpolation),
                         ExtraCodecs.POSITIVE_FLOAT
                                 .fieldOf("value")
