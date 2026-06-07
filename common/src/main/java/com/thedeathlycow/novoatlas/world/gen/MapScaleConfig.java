@@ -48,7 +48,7 @@ public record MapScaleConfig(
                             if (config.interpolation == DEFAULT.interpolation()) {
                                 return DataResult.success(config.value);
                             } else {
-                                return DataResult.error(() -> "Non-bilinear horizontal config cannot map to float " + config);
+                                return DataResult.error(() -> "Only a nearest neighbour interpolator can be mapped to a float, but was given:" + config);
                             }
                         }
                 );
