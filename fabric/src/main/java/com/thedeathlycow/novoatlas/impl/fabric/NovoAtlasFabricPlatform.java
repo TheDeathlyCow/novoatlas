@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.fabric;
+package com.thedeathlycow.novoatlas.impl.fabric;
 
 import com.thedeathlycow.novoatlas.impl.platform.NovoAtlasPlatform;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;

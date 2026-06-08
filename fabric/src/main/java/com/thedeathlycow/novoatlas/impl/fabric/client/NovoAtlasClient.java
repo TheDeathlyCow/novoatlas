@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.fabric.client;
+package com.thedeathlycow.novoatlas.impl.fabric.client;
 
 import net.fabricmc.api.ClientModInitializer;
 

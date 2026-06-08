@@ -1,8 +1,8 @@
 package com.thedeathlycow.novoatlas.impl.registry;
 
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.platform.Services;
 import com.thedeathlycow.novoatlas.impl.gen.interpolation.Interpolator;
+import com.thedeathlycow.novoatlas.impl.platform.Services;
 import net.minecraft.core.Registry;
 
 public final class NovoAtlasBuiltinRegistries {

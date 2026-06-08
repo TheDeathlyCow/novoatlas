@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.fabric;
+package com.thedeathlycow.novoatlas.impl.fabric;
 
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.platform.Services;

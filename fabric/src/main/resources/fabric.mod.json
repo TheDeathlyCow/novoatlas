@@ -18,7 +18,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.thedeathlycow.novoatlas.fabric.NovoAtlasFabric"
+            "com.thedeathlycow.novoatlas.impl.fabric.NovoAtlasFabric"
         ],
         "client": [
             "com.thedeathlycow.novoatlas.fabric.client.NovoAtlasClient"
