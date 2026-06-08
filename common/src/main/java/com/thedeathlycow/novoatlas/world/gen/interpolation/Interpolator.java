@@ -1,5 +1,6 @@
 package com.thedeathlycow.novoatlas.world.gen.interpolation;
 
+import com.google.common.base.Preconditions;
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasBuiltinRegistries;
 import com.thedeathlycow.novoatlas.world.gen.MapImage;
@@ -28,5 +29,10 @@ public interface Interpolator {
 
     static Interpolator bicubic() {
         return new Bicubic();
+    }
+
+    static Interpolator lanczos(int window) {
+        Preconditions.checkArgument(window > 0, "Lanczos window must be positive");
+        return new Lanczos(window);
     }
 }

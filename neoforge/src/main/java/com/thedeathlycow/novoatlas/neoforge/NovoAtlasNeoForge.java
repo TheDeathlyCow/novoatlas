@@ -11,6 +11,7 @@ import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.world.gen.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.world.gen.interpolation.Bilinear;
+import com.thedeathlycow.novoatlas.world.gen.interpolation.Lanczos;
 import com.thedeathlycow.novoatlas.world.gen.interpolation.NearestNeighbour;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -91,10 +92,12 @@ public final class NovoAtlasNeoForge {
             event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), () -> NearestNeighbour.CODEC);
             event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), () -> Bilinear.CODEC);
             event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"), () -> Bicubic.CODEC);
+            event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"), () -> Lanczos.CODEC);
 
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("nearest_neighbor"));
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("bilinear"));
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("bicubic"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("lanczos"));
         }
     }
 
