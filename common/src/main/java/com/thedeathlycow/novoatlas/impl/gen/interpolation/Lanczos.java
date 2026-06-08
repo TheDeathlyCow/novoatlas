@@ -12,7 +12,7 @@ public record Lanczos(
     public static final MapCodec<Lanczos> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     ExtraCodecs.POSITIVE_INT
-                            .optionalFieldOf("window", 3)
+                            .optionalFieldOf("window", 2)
                             .forGetter(Lanczos::window)
             ).apply(instance, Lanczos::new)
     );
