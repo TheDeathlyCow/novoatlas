@@ -1,6 +1,6 @@
 package com.thedeathlycow.novoatlas.neoforge;
 
-import com.thedeathlycow.novoatlas.platform.NovoAtlasPlatform;
+import com.thedeathlycow.novoatlas.impl.platform.NovoAtlasPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.fml.ModList;
