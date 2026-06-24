@@ -35,7 +35,7 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
                             MapInfo.CODEC
                                     .fieldOf("map_info")
                                     .forGetter(ImageMapChunkGenerator::getMapInfo),
-                            DensityFunction.HOLDER_HELPER_CODEC
+                            DensityFunction.CODEC
                                     .fieldOf("underground_density_function")
                                     .forGetter(ImageMapChunkGenerator::getUndergroundDensityFunction),
                             Codec.BOOL
@@ -265,7 +265,7 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
 
                                     if (aquifer.shouldScheduleFluidUpdate() && !state.getFluidState().isEmpty()) {
                                         mutable.set(absoluteX, absoluteY, absoluteZ);
-                                        chunkAccess.markPosForPostprocessing(mutable);
+                                        chunkAccess.markPosForPostProcessing(mutable);
                                     }
                                 }
                             }

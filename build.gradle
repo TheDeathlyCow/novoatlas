@@ -1,6 +1,4 @@
 plugins {
-    // see https://fabricmc.net/develop/ for new versions
-    id 'org.relativitymc.neo-loom' version '1.15-SNAPSHOT' apply false
-    id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT' apply false
+    id 'org.relativitymc.neo-loom' version '1.17.0-alpha.31' apply false
     id 'me.modmuss50.mod-publish-plugin' version '2.0.0-beta.1' apply false
 }
