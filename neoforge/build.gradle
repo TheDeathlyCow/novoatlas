@@ -83,7 +83,7 @@ publishMods {
     curseforge {
         accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
         projectId = "1297254"
-        minecraftVersions.addAll("26.1", "26.1.1", "26.1.2")
+        minecraftVersions.addAll("26.2")
 
         javaVersions.add(JavaVersion.VERSION_25)
 
@@ -94,6 +94,6 @@ publishMods {
     modrinth {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         projectId = "yh3a3Yc8"
-        minecraftVersions.addAll("26.1", "26.1.1", "26.1.2")
+        minecraftVersions.addAll("26.2")
     }
 }
