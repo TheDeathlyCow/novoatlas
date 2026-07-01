@@ -103,7 +103,7 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
         int minY = noiseSettings.minY();
         int maxY = minY + noiseSettings.height();
 
-        DensityFunction preliminaryHeightmap = new GetHeightFromMapDensityFunction(mapInfo, minY, maxY);
+        DensityFunction preliminaryHeightmap = new GetPreliminaryHeightFromMapDensityFunction(mapInfo, minY, maxY);
 
         DensityFunction finalDensity = DensityFunctions.min(
                 undergroundDensityFunction,
