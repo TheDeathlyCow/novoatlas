@@ -2,10 +2,7 @@ package com.thedeathlycow.novoatlas.fabric;
 
 import com.thedeathlycow.novoatlas.NovoAtlas;
 import com.thedeathlycow.novoatlas.registry.NovoAtlasResourceKeys;
-import com.thedeathlycow.novoatlas.world.gen.GetHeightFromMapDensityFunction;
-import com.thedeathlycow.novoatlas.world.gen.ImageMapChunkGenerator;
-import com.thedeathlycow.novoatlas.world.gen.HeightmapDensityFunction;
-import com.thedeathlycow.novoatlas.world.gen.MapInfo;
+import com.thedeathlycow.novoatlas.world.gen.*;
 import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
@@ -28,6 +25,7 @@ public final class NovoAtlasFabric implements ModInitializer {
         Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.id("color_map"), ColorMapBiomeSource.CODEC);
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), HeightmapDensityFunction.DATA_CODEC);
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), GetHeightFromMapDensityFunction.DATA_CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_preliminary_height_from_map"), GetPreliminaryHeightFromMapDensityFunction.DATA_CODEC);
 
         ResourceManagerHelper serverManager = ResourceManagerHelper.get(PackType.SERVER_DATA);
         serverManager.registerReloadListener(new MapImageLoader());

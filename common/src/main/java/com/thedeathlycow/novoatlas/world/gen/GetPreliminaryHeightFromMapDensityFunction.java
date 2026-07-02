@@ -1,17 +1,24 @@
-package com.thedeathlycow.novoatlas.impl.gen;
+package com.thedeathlycow.novoatlas.world.gen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.world.gen.MapInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
-/// Identical to [GetHeightFromMapDensityFunction] but subtracts elevation by 8 to account for the expected preliminary
-/// surface value.
+/**
+ * Identical to [GetHeightFromMapDensityFunction] but subtracts elevation by 8 to account for the expected preliminary
+ * surface value.
+ *
+ * @param mapInfo
+ * @param lowerBound
+ * @param upperBound
+ */
 public record GetPreliminaryHeightFromMapDensityFunction(
         Holder<MapInfo> mapInfo,
         int lowerBound,
