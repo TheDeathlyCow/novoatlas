@@ -9,6 +9,7 @@ import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeColorEntry;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
@@ -35,12 +36,15 @@ public final class ColorMapBiomeProvider implements BiomeMapProvider {
     private final ResourceKey<MapImage> map;
     private final List<BiomeColorEntry> biomeColors;
     private final boolean strict;
-    private final Int2ObjectMap<Holder<Biome>> biomeToColorCache = new Int2ObjectArrayMap<>();
+    private final Int2ObjectMap<Holder<Biome>> biomeToColorCache;
 
     public ColorMapBiomeProvider(ResourceKey<MapImage> map, List<BiomeColorEntry> biomeColors, boolean strict) {
         this.map = map;
         this.biomeColors = biomeColors;
         this.strict = strict;
+        this.biomeToColorCache = biomeColors.size() > 10
+                ? new Int2ObjectOpenHashMap<>()
+                : new Int2ObjectArrayMap<>();
 
         for (BiomeColorEntry entry : biomeColors) {
             this.biomeToColorCache.put(entry.color(), entry.biome());
