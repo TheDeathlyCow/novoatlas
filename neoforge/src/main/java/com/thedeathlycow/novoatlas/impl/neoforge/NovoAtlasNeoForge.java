@@ -2,14 +2,15 @@ package com.thedeathlycow.novoatlas.impl.neoforge;
 
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.gen.*;
-import com.thedeathlycow.novoatlas.impl.registry.ImageManager;
-import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasBuiltinRegistries;
-import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeCellColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.biome.ColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.gen.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.gen.interpolation.Lanczos;
 import com.thedeathlycow.novoatlas.impl.gen.interpolation.NearestNeighbour;
+import com.thedeathlycow.novoatlas.impl.registry.ImageManager;
+import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasBuiltinRegistries;
+import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -23,7 +24,9 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
-import net.neoforged.neoforge.registries.*;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 @Mod(NovoAtlas.MOD_ID)
 public final class NovoAtlasNeoForge {
@@ -78,11 +81,20 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void register(RegisterEvent event) {
-        event.register(Registries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), () -> ImageMapChunkGenerator.CODEC);
-        event.register(Registries.BIOME_SOURCE, NovoAtlas.id("color_map"), () -> ColorMapBiomeSource.CODEC);
-        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
-        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), () -> GetHeightFromMapDensityFunction.DATA_CODEC);
-        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_preliminary_height_from_map"), () -> GetPreliminaryHeightFromMapDensityFunction.DATA_CODEC);
+        if (event.getRegistry() == Registries.CHUNK_GENERATOR) {
+            event.register(Registries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), () -> ImageMapChunkGenerator.CODEC);
+        }
+
+        if (event.getRegistry() == Registries.BIOME_SOURCE) {
+            event.register(Registries.BIOME_SOURCE, NovoAtlas.id("color_map"), () -> ColorMapBiomeSource.CODEC);
+            event.register(Registries.BIOME_SOURCE, NovoAtlas.id("biome_cell_color_map"), () -> BiomeCellColorMapBiomeSource.CODEC);
+        }
+
+        if (event.getRegistry() == Registries.DENSITY_FUNCTION_TYPE) {
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), () -> GetHeightFromMapDensityFunction.DATA_CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_preliminary_height_from_map"), () -> GetPreliminaryHeightFromMapDensityFunction.DATA_CODEC);
+        }
 
         if (event.getRegistryKey() == NovoAtlasRegistries.INTERPOLATOR_TYPE) {
             event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), () -> NearestNeighbour.CODEC);
@@ -98,11 +110,7 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(NovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC, null, builder -> {
-            builder.onAdd((_, _, key, object) -> {
-                MapInfo.onObjectRegistered(key.identifier(), object);
-            });
-        });
+        event.dataPackRegistry(NovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
     }
 
     private static void registerResourceReloader(AddServerReloadListenersEvent event) {
