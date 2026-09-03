@@ -2,11 +2,14 @@ package com.thedeathlycow.novoatlas.impl.gen;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.gen.biome.provider.ColorMapBiomeProvider;
 import com.thedeathlycow.novoatlas.impl.gen.biome.provider.LayeredMapBiomeProvider;
 import com.thedeathlycow.novoatlas.impl.registry.ImageManager;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
@@ -24,7 +27,8 @@ public record MapInfo(
         Optional<LayeredMapBiomeProvider> caveBiomes,
         int startingY,
         int surfaceRange,
-        Optional<MapScaleConfig> scaling
+        Optional<MapScaleConfig> scaling,
+        boolean useReducedSizeBiomeMaps
 ) {
     public static final Codec<MapInfo> DIRECT_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
@@ -48,7 +52,10 @@ public record MapInfo(
                             .forGetter(MapInfo::surfaceRange),
                     MapScaleConfig.CODEC
                             .optionalFieldOf("scaling")
-                            .forGetter(MapInfo::scaling)
+                            .forGetter(MapInfo::scaling),
+                    Codec.BOOL
+                            .optionalFieldOf("use_reduced_size_biome_maps", false)
+                            .forGetter(MapInfo::useReducedSizeBiomeMaps)
             ).apply(instance, MapInfo::new)
     );
 
@@ -79,7 +86,17 @@ public record MapInfo(
     }
 
     @NotNull
-    public Holder<Biome> getBiome(int x, int y, int z, @NotNull Holder<Biome> defaultBiome) {
+    public Holder<Biome> getBiome(int biomeX, int biomeY, int biomeZ, @NotNull Holder<Biome> defaultBiome) {
+        int x = biomeX;
+        int y = biomeY;
+        int z = biomeZ;
+
+        if (!this.useReducedSizeBiomeMaps) {
+            x = QuartPos.toBlock(biomeX);
+            y = QuartPos.toBlock(biomeY);
+            z = QuartPos.toBlock(biomeZ);
+        }
+
         if (this.caveBiomes.isPresent()) {
             Holder<Biome> caveBiome = this.getCaveBiome(x, y, z, this.caveBiomes.orElseThrow());
             if (caveBiome != null) {
@@ -88,6 +105,7 @@ public record MapInfo(
         }
 
         Holder<Biome> surfaceBiome = this.surfaceBiomes.getBiome(x, y, z, this);
+
         return surfaceBiome != null ? surfaceBiome : defaultBiome;
     }
 
@@ -123,5 +141,17 @@ public record MapInfo(
         }
 
         return null;
+    }
+
+    public static void onObjectRegistered(Identifier id, MapInfo object) {
+        if (!object.useReducedSizeBiomeMaps()) {
+            NovoAtlas.LOGGER.warn(
+                    "The following NovoAtlas map info object: '{}' use full-scale 1:1 biome maps. As of " +
+                            "NovoAtlas 1.7.4, you should reduce the scale of your biome maps by 4x and " +
+                            "enable the flag use_reduced_size_biome_maps in your map info object. Support " +
+                            "for 1:1 maps will be removed in Minecraft 26.3.",
+                    id
+            );
+        }
     }
 }

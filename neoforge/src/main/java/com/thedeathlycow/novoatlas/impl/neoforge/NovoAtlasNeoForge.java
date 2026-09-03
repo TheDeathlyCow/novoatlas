@@ -23,9 +23,7 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
-import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.*;
 
 @Mod(NovoAtlas.MOD_ID)
 public final class NovoAtlasNeoForge {
@@ -100,7 +98,11 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(NovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
+        event.dataPackRegistry(NovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC, null, builder -> {
+            builder.onAdd((_, _, key, object) -> {
+                MapInfo.onObjectRegistered(key.identifier(), object);
+            });
+        });
     }
 
     private static void registerResourceReloader(AddServerReloadListenersEvent event) {

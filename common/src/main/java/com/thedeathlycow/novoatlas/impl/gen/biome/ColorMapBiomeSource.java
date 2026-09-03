@@ -63,11 +63,8 @@ public class ColorMapBiomeSource extends BiomeSource {
     @Override
     public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ, Climate.Sampler sampler) {
         MapInfo info = this.mapInfo.value();
-        int x = QuartPos.toBlock(biomeX);
-        int y = QuartPos.toBlock(biomeY);
-        int z = QuartPos.toBlock(biomeZ);
 
-        return info.getBiome(x, y, z, this.defaultBiome);
+        return info.getBiome(biomeX, biomeY, biomeZ, this.defaultBiome);
     }
 
     public Holder<MapInfo> getMapInfo() {

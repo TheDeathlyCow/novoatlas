@@ -12,15 +12,23 @@ import com.thedeathlycow.novoatlas.impl.gen.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.gen.interpolation.Lanczos;
 import com.thedeathlycow.novoatlas.impl.gen.interpolation.NearestNeighbour;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public final class NovoAtlasFabric implements ModInitializer {
     @Override
@@ -28,6 +36,11 @@ public final class NovoAtlasFabric implements ModInitializer {
         NovoAtlas.init();
 
         DynamicRegistries.register(NovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
+        DynamicRegistrySetupCallback.EVENT.register(view -> {
+            view.registerEntryAdded(
+                    NovoAtlasRegistries.MAP_INFO,
+                    (_, id, object) -> MapInfo.onObjectRegistered(id, object));
+        });
 
         Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), ImageMapChunkGenerator.CODEC);
         Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.id("color_map"), ColorMapBiomeSource.CODEC);
