@@ -7,7 +7,7 @@
         "underground_density_function": "novoatlas:no_caves",
         "enable_carvers": false,
         "biome_source": {
-            "type": "novoatlas:color_map",
+            "type": "novoatlas:biome_cell_color_map",
             "map_info": "avila-example:avila",
             "default_biome": "minecraft:the_void"
         }
