@@ -2,9 +2,9 @@ package com.thedeathlycow.novoatlas.impl.registry;
 
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
-import com.thedeathlycow.novoatlas.impl.gen.MapImage;
-import com.thedeathlycow.novoatlas.impl.gen.MapInfo;
-import com.thedeathlycow.novoatlas.impl.gen.interpolation.Interpolator;
+import com.thedeathlycow.novoatlas.impl.image.MapImage;
+import com.thedeathlycow.novoatlas.impl.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.Interpolator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 

@@ -1,7 +1,7 @@
-package com.thedeathlycow.novoatlas.impl.gen.biome.provider;
+package com.thedeathlycow.novoatlas.impl.image.biome.provider;
 
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.gen.MapInfo;
+import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.Nullable;

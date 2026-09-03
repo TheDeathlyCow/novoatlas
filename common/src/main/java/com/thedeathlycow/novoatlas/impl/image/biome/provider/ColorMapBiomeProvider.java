@@ -1,11 +1,11 @@
-package com.thedeathlycow.novoatlas.impl.gen.biome.provider;
+package com.thedeathlycow.novoatlas.impl.image.biome.provider;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.impl.gen.MapImage;
-import com.thedeathlycow.novoatlas.impl.gen.MapInfo;
-import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeColorEntry;
+import com.thedeathlycow.novoatlas.impl.image.MapImage;
+import com.thedeathlycow.novoatlas.impl.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.image.biome.BiomeColorEntry;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;

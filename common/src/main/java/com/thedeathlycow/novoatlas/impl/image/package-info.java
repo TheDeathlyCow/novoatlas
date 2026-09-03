@@ -1,4 +1,4 @@
 @ApiStatus.Internal
-package com.thedeathlycow.novoatlas.impl.gen.interpolation;
+package com.thedeathlycow.novoatlas.impl.image;
 
 import org.jetbrains.annotations.ApiStatus;

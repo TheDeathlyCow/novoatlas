@@ -1,7 +1,7 @@
-package com.thedeathlycow.novoatlas.impl.gen.interpolation;
+package com.thedeathlycow.novoatlas.impl.image.interpolation;
 
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.gen.MapImage;
+import com.thedeathlycow.novoatlas.impl.image.MapImage;
 import net.minecraft.util.Mth;
 
 public final class Bicubic implements Interpolator {

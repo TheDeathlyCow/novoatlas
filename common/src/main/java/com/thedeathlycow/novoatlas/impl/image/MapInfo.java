@@ -1,9 +1,9 @@
-package com.thedeathlycow.novoatlas.impl.gen;
+package com.thedeathlycow.novoatlas.impl.image;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.impl.gen.biome.provider.ColorMapBiomeProvider;
-import com.thedeathlycow.novoatlas.impl.gen.biome.provider.LayeredMapBiomeProvider;
+import com.thedeathlycow.novoatlas.impl.image.biome.provider.ColorMapBiomeProvider;
+import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProvider;
 import com.thedeathlycow.novoatlas.impl.registry.ImageManager;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import net.minecraft.core.Holder;

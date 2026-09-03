@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.impl.gen;
+package com.thedeathlycow.novoatlas.impl.image;
 
 import net.minecraft.util.Mth;
 

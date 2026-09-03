@@ -1,6 +1,6 @@
 package com.thedeathlycow.novoatlas.impl.registry;
 
-import com.thedeathlycow.novoatlas.impl.gen.MapImage;
+import com.thedeathlycow.novoatlas.impl.image.MapImage;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;

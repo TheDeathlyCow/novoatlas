@@ -1,8 +1,8 @@
-package com.thedeathlycow.novoatlas.impl.gen.interpolation;
+package com.thedeathlycow.novoatlas.impl.image.interpolation;
 
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.gen.MapImage;
+import com.thedeathlycow.novoatlas.impl.image.MapImage;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasBuiltinRegistries;
 
 import java.util.function.Function;
