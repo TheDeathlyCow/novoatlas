@@ -30,7 +30,7 @@ public class MultiFileTypeToIdConverter {
         return new MultiFileTypeToIdConverter(prefix, extensions);
     }
 
-    public static MultiFileTypeToIdConverter imageRegistry(ResourceKey<Registry<MapImage>> registryKey) {
+    public static <T extends MapImage> MultiFileTypeToIdConverter imageRegistry(ResourceKey<Registry<T>> registryKey) {
         return builtinImages(getElementsPath(registryKey));
     }
 

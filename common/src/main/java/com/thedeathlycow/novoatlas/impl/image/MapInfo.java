@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.image.biome.provider.ColorMapBiomeProvider;
 import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProvider;
-import com.thedeathlycow.novoatlas.impl.registry.ImageManager;
+import com.thedeathlycow.novoatlas.impl.registry.MapImageRegistry;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
@@ -18,8 +18,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 public record MapInfo(
-        ResourceKey<MapImage> heightMap,
-        Optional<ResourceKey<MapImage>> fluidHeightMap,
+        ResourceKey<HeightMapImage> heightMap,
+        Optional<ResourceKey<HeightMapImage>> fluidHeightMap,
         ColorMapBiomeProvider surfaceBiomes,
         Optional<LayeredMapBiomeProvider> caveBiomes,
         int startingY,
@@ -54,12 +54,12 @@ public record MapInfo(
 
     public static final Codec<Holder<MapInfo>> CODEC = RegistryFileCodec.create(NovoAtlasRegistries.MAP_INFO, DIRECT_CODEC);
 
-    public static MapImage lookupHeightmap(ResourceKey<MapImage> map) {
-        return Objects.requireNonNull(ImageManager.HEIGHTMAP.getImage(map), "Missing height map image " + map);
+    public static HeightMapImage lookupHeightmap(ResourceKey<HeightMapImage> map) {
+        return Objects.requireNonNull(MapImageRegistry.HEIGHTMAP.getImage(map), "Missing height map image " + map);
     }
 
-    public static MapImage lookupBiomeMap(ResourceKey<MapImage> map) {
-        return Objects.requireNonNull(ImageManager.BIOME_MAP.getImage(map), "Missing biome map image " + map);
+    public static BiomeMapImage lookupBiomeMap(ResourceKey<BiomeMapImage> map) {
+        return Objects.requireNonNull(MapImageRegistry.BIOME_MAP.getImage(map), "Missing biome map image " + map);
     }
 
     public int getHeightMapElevation(int x, int z, int fallback) {

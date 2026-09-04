@@ -3,6 +3,7 @@ package com.thedeathlycow.novoatlas.impl.image.biome.provider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.impl.image.BiomeMapImage;
 import com.thedeathlycow.novoatlas.impl.image.MapImage;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.biome.BiomeColorEntry;
@@ -33,12 +34,12 @@ public final class ColorMapBiomeProvider implements BiomeMapProvider {
             ).apply(instance, ColorMapBiomeProvider::new)
     );
 
-    private final ResourceKey<MapImage> map;
+    private final ResourceKey<BiomeMapImage> map;
     private final List<BiomeColorEntry> biomeColors;
     private final boolean strict;
     private final Int2ObjectMap<Holder<Biome>> biomeToColorCache;
 
-    public ColorMapBiomeProvider(ResourceKey<MapImage> map, List<BiomeColorEntry> biomeColors, boolean strict) {
+    public ColorMapBiomeProvider(ResourceKey<BiomeMapImage> map, List<BiomeColorEntry> biomeColors, boolean strict) {
         this.map = map;
         this.biomeColors = biomeColors;
         this.strict = strict;
@@ -54,7 +55,7 @@ public final class ColorMapBiomeProvider implements BiomeMapProvider {
     @Override
     @Nullable
     public Holder<Biome> getBiome(int x, int y, int z, MapInfo info) {
-        MapImage image = MapInfo.lookupBiomeMap(this.map);
+        BiomeMapImage image = MapInfo.lookupBiomeMap(this.map);
         int color = image.sample(x, z, info, Integer.MIN_VALUE);
 
         if (color == Integer.MIN_VALUE) {
@@ -83,7 +84,7 @@ public final class ColorMapBiomeProvider implements BiomeMapProvider {
         return CODEC;
     }
 
-    public ResourceKey<MapImage> getMap() {
+    public ResourceKey<BiomeMapImage> getMap() {
         return map;
     }
 

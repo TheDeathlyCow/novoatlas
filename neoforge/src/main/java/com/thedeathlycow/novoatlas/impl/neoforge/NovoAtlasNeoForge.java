@@ -9,7 +9,7 @@ import com.thedeathlycow.novoatlas.impl.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Lanczos;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.NearestNeighbour;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
-import com.thedeathlycow.novoatlas.impl.registry.ImageManager;
+import com.thedeathlycow.novoatlas.impl.registry.MapImageRegistry;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasBuiltinRegistries;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import net.minecraft.core.Registry;
@@ -115,8 +115,8 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void registerResourceReloader(AddServerReloadListenersEvent event) {
-        event.addListener(NovoAtlasRegistries.HEIGHTMAP.identifier(), ImageManager.HEIGHTMAP);
-        event.addListener(NovoAtlasRegistries.BIOME_MAP.identifier(), ImageManager.BIOME_MAP);
+        event.addListener(NovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
+        event.addListener(NovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
     }
 
     private static void addDefaultAlias(Registry<?> registry, Identifier id) {
