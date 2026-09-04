@@ -2,8 +2,8 @@ package com.thedeathlycow.novoatlas.impl.gen.biome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.impl.gen.MapInfo;
-import com.thedeathlycow.novoatlas.impl.gen.biome.provider.LayeredMapBiomeProvider;
+import com.thedeathlycow.novoatlas.impl.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;

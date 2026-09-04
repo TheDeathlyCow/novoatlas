@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.impl.gen.biome;
+package com.thedeathlycow.novoatlas.impl.image.biome;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;

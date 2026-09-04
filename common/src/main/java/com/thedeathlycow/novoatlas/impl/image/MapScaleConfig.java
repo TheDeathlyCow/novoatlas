@@ -1,9 +1,9 @@
-package com.thedeathlycow.novoatlas.impl.gen;
+package com.thedeathlycow.novoatlas.impl.image;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.impl.gen.interpolation.Interpolator;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.Interpolator;
 import net.minecraft.util.ExtraCodecs;
 
 public record MapScaleConfig(

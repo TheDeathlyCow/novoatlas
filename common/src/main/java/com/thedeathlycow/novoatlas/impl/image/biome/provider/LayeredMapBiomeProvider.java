@@ -1,10 +1,10 @@
-package com.thedeathlycow.novoatlas.impl.gen.biome.provider;
+package com.thedeathlycow.novoatlas.impl.image.biome.provider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
-import com.thedeathlycow.novoatlas.impl.gen.MapInfo;
-import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeLayerEntry;
+import com.thedeathlycow.novoatlas.impl.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.image.biome.BiomeLayerEntry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;

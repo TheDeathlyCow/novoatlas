@@ -4,11 +4,12 @@ import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.gen.*;
 import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeCellColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.biome.ColorMapBiomeSource;
-import com.thedeathlycow.novoatlas.impl.gen.interpolation.Bicubic;
-import com.thedeathlycow.novoatlas.impl.gen.interpolation.Bilinear;
-import com.thedeathlycow.novoatlas.impl.gen.interpolation.Lanczos;
-import com.thedeathlycow.novoatlas.impl.gen.interpolation.NearestNeighbour;
-import com.thedeathlycow.novoatlas.impl.registry.ImageManager;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.Bicubic;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.Bilinear;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.Lanczos;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.NearestNeighbour;
+import com.thedeathlycow.novoatlas.impl.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.registry.MapImageRegistry;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasBuiltinRegistries;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import net.minecraft.core.Registry;
@@ -114,8 +115,8 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void registerResourceReloader(AddServerReloadListenersEvent event) {
-        event.addListener(NovoAtlasRegistries.HEIGHTMAP.identifier(), ImageManager.HEIGHTMAP);
-        event.addListener(NovoAtlasRegistries.BIOME_MAP.identifier(), ImageManager.BIOME_MAP);
+        event.addListener(NovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
+        event.addListener(NovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
     }
 
     private static void addDefaultAlias(Registry<?> registry, Identifier id) {

@@ -2,9 +2,11 @@ package com.thedeathlycow.novoatlas.impl.registry;
 
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
-import com.thedeathlycow.novoatlas.impl.gen.MapImage;
-import com.thedeathlycow.novoatlas.impl.gen.MapInfo;
-import com.thedeathlycow.novoatlas.impl.gen.interpolation.Interpolator;
+import com.thedeathlycow.novoatlas.impl.image.BiomeMapImage;
+import com.thedeathlycow.novoatlas.impl.image.HeightMapImage;
+import com.thedeathlycow.novoatlas.impl.image.MapImage;
+import com.thedeathlycow.novoatlas.impl.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.Interpolator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 
@@ -13,11 +15,11 @@ public final class NovoAtlasRegistries {
             NovoAtlas.id("map_info")
     );
 
-    public static final ResourceKey<Registry<MapImage>> HEIGHTMAP = ResourceKey.createRegistryKey(
+    public static final ResourceKey<Registry<HeightMapImage>> HEIGHTMAP = ResourceKey.createRegistryKey(
             NovoAtlas.id("heightmap")
     );
 
-    public static final ResourceKey<Registry<MapImage>> BIOME_MAP = ResourceKey.createRegistryKey(
+    public static final ResourceKey<Registry<BiomeMapImage>> BIOME_MAP = ResourceKey.createRegistryKey(
             NovoAtlas.id("biome_map")
     );
 
