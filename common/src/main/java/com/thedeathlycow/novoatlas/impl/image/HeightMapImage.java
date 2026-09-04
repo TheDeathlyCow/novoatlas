@@ -4,9 +4,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 
 public final class HeightMapImage extends MapImage {
-    private final short[][] pixels;
+    // char used as an unsigned 16 bit value
+    private final char[] pixels;
 
-    public HeightMapImage(int width, int height, short[][] pixels) {
+    public HeightMapImage(int width, int height, char[] pixels) {
         super(width, height);
         this.pixels = pixels;
     }
@@ -15,18 +16,18 @@ public final class HeightMapImage extends MapImage {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        short[][] pixels = getGrayScalePixels(image, width, height);
+        char[] pixels = getGrayScalePixels(image, width, height);
 
         return new HeightMapImage(width, height, pixels);
     }
 
-    private static short[][] getGrayScalePixels(BufferedImage image, int width, int height) {
-        short[][] pixels = new short[width][height];
+    private static char[] getGrayScalePixels(BufferedImage image, int width, int height) {
+        char[] pixels = new char[width * height];
         Raster raster = image.getRaster();
 
         for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                pixels[x][y] = (short) raster.getSample(x, y, 0);
+            for (int z = 0; z < height; z++) {
+                pixels[z * width + x] = (char) raster.getSample(x, z, 0);
             }
         }
 
@@ -35,7 +36,7 @@ public final class HeightMapImage extends MapImage {
 
     @Override
     public int getPixelValue(int x, int z) {
-        return this.pixels[x][z];
+        return this.pixels[z * this.width() + x];
     }
 
     @Override
