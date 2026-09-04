@@ -1,9 +1,9 @@
-package com.thedeathlycow.novoatlas.impl.gen.biome;
+package com.thedeathlycow.novoatlas.impl.image.biome;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.impl.gen.biome.provider.ColorMapBiomeProvider;
+import com.thedeathlycow.novoatlas.impl.image.biome.provider.ColorMapBiomeProvider;
 
 import java.util.Optional;
 import java.util.function.IntPredicate;
