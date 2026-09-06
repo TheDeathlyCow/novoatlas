@@ -1,9 +1,7 @@
 package com.thedeathlycow.novoatlas.impl.image;
 
 import net.minecraft.util.Mth;
-
-import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
+import org.joml.Vector2fc;
 
 public abstract class MapImage {
     private final int width;
@@ -20,6 +18,11 @@ public abstract class MapImage {
 
     public final int sample(int x, int z, MapInfo info, int fallback) {
         double horizontalScale = info.horizontalScale().value();
+        Vector2fc centerOffset = info.centerOffset();
+
+        x += (int) (-centerOffset.x() * this.width);
+        z += (int) (-centerOffset.y() * this.height);
+
         double xR = (x / horizontalScale) + this.width / 2.0; // these will always be even numbers
         double zR = (z / horizontalScale) + this.height / 2.0;
 

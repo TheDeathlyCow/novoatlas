@@ -13,6 +13,8 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -24,7 +26,8 @@ public record MapInfo(
         Optional<LayeredMapBiomeProvider> caveBiomes,
         int startingY,
         int surfaceRange,
-        Optional<MapScaleConfig> scaling
+        Optional<MapScaleConfig> scaling,
+        Vector2fc centerOffset
 ) {
     public static final Codec<MapInfo> DIRECT_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
@@ -48,7 +51,10 @@ public record MapInfo(
                             .forGetter(MapInfo::surfaceRange),
                     MapScaleConfig.CODEC
                             .optionalFieldOf("scaling")
-                            .forGetter(MapInfo::scaling)
+                            .forGetter(MapInfo::scaling),
+                    ExtraCodecs.VECTOR2F
+                            .optionalFieldOf("center_offset", new Vector2f(0f, 0f))
+                            .forGetter(MapInfo::centerOffset)
             ).apply(instance, MapInfo::new)
     );
 

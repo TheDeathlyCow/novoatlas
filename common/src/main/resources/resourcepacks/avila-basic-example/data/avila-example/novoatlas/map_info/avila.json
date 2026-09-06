@@ -5,6 +5,7 @@
         "vertical_scale": 1
     },
     "height_map": "avila-example:avila",
+    "center_offset": [0.0, 0.0],
     "surface_biomes": {
         "map": "avila-example:avila",
         "biomes": [
