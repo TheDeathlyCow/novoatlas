@@ -4,6 +4,7 @@ import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.gen.*;
 import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeCellColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.biome.ColorMapBiomeSource;
+import com.thedeathlycow.novoatlas.impl.image.EdgeHandling;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Lanczos;
@@ -49,6 +50,16 @@ public final class NovoAtlasFabric implements ModInitializer {
         addDefaultAlias(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"));
         addDefaultAlias(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"));
         addDefaultAlias(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"));
+
+        Registry.register(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("clamp_to_edge"), EdgeHandling.ClampToEdge.CODEC);
+        Registry.register(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("fixed_value"), EdgeHandling.FixedValue.CODEC);
+        Registry.register(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("repeat"), EdgeHandling.Repeat.CODEC);
+        Registry.register(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("mirrored_repeat"), EdgeHandling.MirroredRepeat.CODEC);
+
+        addDefaultAlias(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("clamp_to_edge"));
+        addDefaultAlias(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("fixed_value"));
+        addDefaultAlias(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("repeat"));
+        addDefaultAlias(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("mirrored_repeat"));
 
         ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
         ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);

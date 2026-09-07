@@ -56,11 +56,7 @@ public final class ColorMapBiomeProvider implements BiomeMapProvider {
     @Nullable
     public Holder<Biome> getBiome(int x, int y, int z, MapInfo info) {
         BiomeMapImage image = MapInfo.lookupBiomeMap(this.map);
-        int color = image.sample(x, z, info, Integer.MIN_VALUE);
-
-        if (color == Integer.MIN_VALUE) {
-            return null;
-        }
+        int color = image.sample(x, z, info);
 
         Holder<Biome> mappedBiome = this.biomeToColorCache.get(color);
 

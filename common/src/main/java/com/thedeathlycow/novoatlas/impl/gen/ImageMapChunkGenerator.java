@@ -248,13 +248,14 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
 
                                 noiseChunk.updateForZ(absoluteZ, (double) localZ / cellWidth);
 
-                                // sample from heightmap
-                                int elevation = this.sampleElevation(absoluteX, absoluteZ);
-
-                                // todo: end of the world generation
-                                if (elevation < this.getMinY()) {
-                                    continue blockZ;
-                                }
+                                // no longer necessary
+//                                // sample from heightmap
+//                                int elevation = this.sampleElevation(absoluteX, absoluteZ);
+//
+//                                // todo: end of the world generation
+//                                if (elevation < this.getMinY()) {
+//                                    continue blockZ;
+//                                }
 
                                 BlockState state = this.sampleState(noiseChunk);
 
@@ -283,7 +284,7 @@ public class ImageMapChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     private int sampleElevation(int x, int z) {
-        return this.mapInfo.value().getHeightMapElevation(x, z, this.getMinY() - 1);
+        return this.mapInfo.value().getHeightMapElevation(x, z);
     }
 
     private int sampleFluidElevation(int x, int z) {

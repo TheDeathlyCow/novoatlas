@@ -4,6 +4,7 @@ import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.gen.*;
 import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeCellColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.biome.ColorMapBiomeSource;
+import com.thedeathlycow.novoatlas.impl.image.EdgeHandling;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Lanczos;
@@ -107,6 +108,18 @@ public final class NovoAtlasNeoForge {
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("bilinear"));
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("bicubic"));
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("lanczos"));
+        }
+
+        if (event.getRegistryKey() == NovoAtlasRegistries.EDGE_HANDLING) {
+            event.register(NovoAtlasRegistries.EDGE_HANDLING, NovoAtlas.id("clamp_to_edge"), () -> EdgeHandling.ClampToEdge.CODEC);
+            event.register(NovoAtlasRegistries.EDGE_HANDLING, NovoAtlas.id("fixed_value"), () -> EdgeHandling.FixedValue.CODEC);
+            event.register(NovoAtlasRegistries.EDGE_HANDLING, NovoAtlas.id("repeat"), () -> EdgeHandling.Repeat.CODEC);
+            event.register(NovoAtlasRegistries.EDGE_HANDLING, NovoAtlas.id("mirrored_repeat"), () -> EdgeHandling.MirroredRepeat.CODEC);
+
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("clamp_to_edge"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("fixed_value"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("repeat"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("mirrored_repeat"));
         }
     }
 

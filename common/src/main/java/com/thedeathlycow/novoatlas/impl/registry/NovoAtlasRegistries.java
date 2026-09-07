@@ -2,10 +2,7 @@ package com.thedeathlycow.novoatlas.impl.registry;
 
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
-import com.thedeathlycow.novoatlas.impl.image.BiomeMapImage;
-import com.thedeathlycow.novoatlas.impl.image.HeightMapImage;
-import com.thedeathlycow.novoatlas.impl.image.MapImage;
-import com.thedeathlycow.novoatlas.impl.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.image.*;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Interpolator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -25,6 +22,10 @@ public final class NovoAtlasRegistries {
 
     public static final ResourceKey<Registry<MapCodec<? extends Interpolator>>> INTERPOLATOR_TYPE = ResourceKey.createRegistryKey(
             NovoAtlas.id("interpolator_type")
+    );
+
+    public static final ResourceKey<Registry<MapCodec<? extends EdgeHandling>>> EDGE_HANDLING = ResourceKey.createRegistryKey(
+            NovoAtlas.id("edge_handler")
     );
 
     private NovoAtlasRegistries() {
