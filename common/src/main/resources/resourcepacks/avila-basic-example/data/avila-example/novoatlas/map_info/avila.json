@@ -1,16 +1,13 @@
 {
     "starting_y": 6,
     "scaling": {
-        "horizontal_scale": {
-            "value": 2,
-            "interpolation": "bilinear"
-        },
+        "horizontal_scale": 1,
         "vertical_scale": 1
     },
     "height_map": "avila-example:avila",
     "center_offset": [0.0, 0.0],
     "edge_handling": {
-        "mode": "clamped_to_edge"
+        "mode": "clamp_to_edge"
     },
     "surface_biomes": {
         "map": "avila-example:avila",
