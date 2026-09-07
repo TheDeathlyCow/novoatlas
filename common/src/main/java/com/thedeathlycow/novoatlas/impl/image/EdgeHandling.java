@@ -43,7 +43,11 @@ public interface EdgeHandling {
 
         @Override
         public int transform(int x, int z, int width, int height, ValueGetter pixels) {
-            return this.value;
+            if (x < 0 || z < 0 || x >= width || z >= height) {
+                return this.value;
+            }
+
+            return pixels.getPixelValue(x, z);
         }
 
         @Override
