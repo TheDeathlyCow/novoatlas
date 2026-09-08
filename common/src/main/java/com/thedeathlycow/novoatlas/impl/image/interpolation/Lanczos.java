@@ -3,6 +3,7 @@ package com.thedeathlycow.novoatlas.impl.image.interpolation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.image.MapImage;
+import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import net.minecraft.util.ExtraCodecs;
 
 /// Implementation based on [Lánczos interpolation explained](https://mazzo.li/posts/lanczos.html).
@@ -18,7 +19,7 @@ public record Lanczos(
     );
 
     @Override
-    public double sample(double x, double z, MapImage image) {
+    public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
         // x and z are the truncated (floor) coordinates
         // deltaX and deltaZ are the fractional parts
         double truncatedX = Math.floor(x);
@@ -40,7 +41,7 @@ public record Lanczos(
                 // combine lanczos smoothing across x and z axes
                 double smoothing = lanczosSmoothing1d(deltaX - dx) * lanczosSmoothing1d(deltaZ - dz);
 
-                result += image.getTruncated(tX, tZ) * smoothing;
+                result += image.getTruncated(tX, tZ, mapInfo.imageWrapping()) * smoothing;
                 totalWeight += smoothing;
             }
         }

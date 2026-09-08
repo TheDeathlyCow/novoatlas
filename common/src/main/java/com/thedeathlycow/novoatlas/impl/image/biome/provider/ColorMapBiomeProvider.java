@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.image.BiomeMapImage;
-import com.thedeathlycow.novoatlas.impl.image.MapImage;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.biome.BiomeColorEntry;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
@@ -56,11 +55,7 @@ public final class ColorMapBiomeProvider implements BiomeMapProvider {
     @Nullable
     public Holder<Biome> getBiome(int x, int y, int z, MapInfo info) {
         BiomeMapImage image = MapInfo.lookupBiomeMap(this.map);
-        int color = image.sample(x, z, info, Integer.MIN_VALUE);
-
-        if (color == Integer.MIN_VALUE) {
-            return null;
-        }
+        int color = image.sample(x, z, info);
 
         Holder<Biome> mappedBiome = this.biomeToColorCache.get(color);
 

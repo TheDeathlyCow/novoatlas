@@ -3,6 +3,7 @@ package com.thedeathlycow.novoatlas.impl.image.interpolation;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.impl.image.MapImage;
+import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasBuiltinRegistries;
 
 import java.util.function.Function;
@@ -15,7 +16,7 @@ public interface Interpolator {
                     Function.identity()
             );
 
-    double sample(double x, double z, MapImage image);
+    double sample(double x, double z, MapImage image, MapInfo mapInfo);
 
     MapCodec<? extends Interpolator> codec();
 
