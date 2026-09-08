@@ -37,6 +37,6 @@ public final class BiomeMapImage extends MapImage {
 
     @Override
     protected int sampleInterpolated(double x, double z, MapInfo info) {
-        return this.getTruncated(x, z, info.edgeHandling());
+        return this.getTruncated(x, z, info.imageWrapping());
     }
 }

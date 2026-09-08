@@ -1,7 +1,7 @@
 package com.thedeathlycow.novoatlas.impl.image.interpolation;
 
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.image.EdgeHandling;
+import com.thedeathlycow.novoatlas.impl.image.ImageWrapping;
 import com.thedeathlycow.novoatlas.impl.image.MapImage;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import net.minecraft.util.Mth;
@@ -19,7 +19,7 @@ public final class Bicubic implements Interpolator {
         double deltaZ = z - truncatedZ;
 
 
-        double[][] p = cubicNeighborhood(truncatedX, truncatedZ, image, mapInfo.edgeHandling());
+        double[][] p = cubicNeighborhood(truncatedX, truncatedZ, image, mapInfo.imageWrapping());
 
         double[] arr = new double[4];
         arr[0] = getValue(p[0], deltaZ);
@@ -38,7 +38,7 @@ public final class Bicubic implements Interpolator {
         return CODEC;
     }
 
-    private static double[][] cubicNeighborhood(int x, int z, MapImage image, EdgeHandling edgeHandling) {
+    private static double[][] cubicNeighborhood(int x, int z, MapImage image, ImageWrapping imageWrapping) {
         int width = image.width();
         int height = image.height();
 
@@ -48,7 +48,7 @@ public final class Bicubic implements Interpolator {
             for (int row = -1; row < 3; row++) {
                 int px = Mth.clamp(x + col, 0, width - 1);
                 int pz = Mth.clamp(z + row, 0, height - 1);
-                G[col + 1][row + 1] = image.getPixelValue(px, pz, edgeHandling);
+                G[col + 1][row + 1] = image.getPixelValue(px, pz, imageWrapping);
             }
         }
 

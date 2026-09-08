@@ -9,7 +9,7 @@ public final class NearestNeighbour implements Interpolator {
 
     @Override
     public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
-        return image.getTruncated(x, z, mapInfo.edgeHandling());
+        return image.getTruncated(x, z, mapInfo.imageWrapping());
     }
 
     @Override

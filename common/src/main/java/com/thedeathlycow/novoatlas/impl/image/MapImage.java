@@ -33,14 +33,14 @@ public abstract class MapImage {
         return height;
     }
 
-    public final int getTruncated(double x, double z, EdgeHandling edgeHandling) {
+    public final int getTruncated(double x, double z, ImageWrapping imageWrapping) {
         int truncatedX = Mth.floor(x);
         int truncatedZ = Mth.floor(z);
-        return this.getPixelValue(truncatedX, truncatedZ, edgeHandling);
+        return this.getPixelValue(truncatedX, truncatedZ, imageWrapping);
     }
 
-    public final int getPixelValue(int x, int z, EdgeHandling edgeHandling) {
-        return edgeHandling.transform(x, z, this.width, this.height, this::getPixelValue);
+    public final int getPixelValue(int x, int z, ImageWrapping imageWrapping) {
+        return imageWrapping.transform(x, z, this.width, this.height, this::getPixelValue);
     }
 
     protected abstract int getPixelValue(int x, int z);

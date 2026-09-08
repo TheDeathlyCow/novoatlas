@@ -22,10 +22,10 @@ public final class Bilinear implements Interpolator {
         int nextX = Math.min(truncatedX + 1, image.width() - 1);
         int nextZ = Math.min(truncatedZ + 1, image.height() - 1);
 
-        int topLeft = image.getPixelValue(truncatedX, truncatedZ, mapInfo.edgeHandling());
-        int topRight = image.getPixelValue(nextX, truncatedZ, mapInfo.edgeHandling());
-        int bottomLeft = image.getPixelValue(truncatedX, nextZ, mapInfo.edgeHandling());
-        int bottomRight = image.getPixelValue(nextX, nextZ, mapInfo.edgeHandling());
+        int topLeft = image.getPixelValue(truncatedX, truncatedZ, mapInfo.imageWrapping());
+        int topRight = image.getPixelValue(nextX, truncatedZ, mapInfo.imageWrapping());
+        int bottomLeft = image.getPixelValue(truncatedX, nextZ, mapInfo.imageWrapping());
+        int bottomRight = image.getPixelValue(nextX, nextZ, mapInfo.imageWrapping());
 
         return Mth.lerp2(deltaX, deltaZ, topLeft, topRight, bottomLeft, bottomRight);
     }

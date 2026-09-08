@@ -1,15 +1,17 @@
 package com.thedeathlycow.novoatlas.impl.fabric;
 
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
-import com.thedeathlycow.novoatlas.impl.gen.*;
+import com.thedeathlycow.novoatlas.impl.gen.GetHeightFromMapDensityFunction;
+import com.thedeathlycow.novoatlas.impl.gen.GetPreliminaryHeightFromMapDensityFunction;
+import com.thedeathlycow.novoatlas.impl.gen.HeightmapDensityFunction;
+import com.thedeathlycow.novoatlas.impl.gen.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeCellColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.biome.ColorMapBiomeSource;
-import com.thedeathlycow.novoatlas.impl.image.EdgeHandling;
+import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Lanczos;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.NearestNeighbour;
-import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.platform.Services;
 import com.thedeathlycow.novoatlas.impl.registry.MapImageRegistry;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasBuiltinRegistries;
@@ -50,16 +52,6 @@ public final class NovoAtlasFabric implements ModInitializer {
         addDefaultAlias(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"));
         addDefaultAlias(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"));
         addDefaultAlias(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"));
-
-        Registry.register(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("clamp_to_edge"), EdgeHandling.ClampToEdge.CODEC);
-        Registry.register(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("fixed_value"), EdgeHandling.FixedValue.CODEC);
-        Registry.register(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("repeat"), EdgeHandling.Repeat.CODEC);
-        Registry.register(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("mirrored_repeat"), EdgeHandling.MirroredRepeat.CODEC);
-
-        addDefaultAlias(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("clamp_to_edge"));
-        addDefaultAlias(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("fixed_value"));
-        addDefaultAlias(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("repeat"));
-        addDefaultAlias(NovoAtlasBuiltinRegistries.EDGE_HANDLING, NovoAtlas.id("mirrored_repeat"));
 
         ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
         ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);

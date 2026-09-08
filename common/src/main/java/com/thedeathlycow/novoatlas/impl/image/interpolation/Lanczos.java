@@ -41,7 +41,7 @@ public record Lanczos(
                 // combine lanczos smoothing across x and z axes
                 double smoothing = lanczosSmoothing1d(deltaX - dx) * lanczosSmoothing1d(deltaZ - dz);
 
-                result += image.getTruncated(tX, tZ, mapInfo.edgeHandling()) * smoothing;
+                result += image.getTruncated(tX, tZ, mapInfo.imageWrapping()) * smoothing;
                 totalWeight += smoothing;
             }
         }

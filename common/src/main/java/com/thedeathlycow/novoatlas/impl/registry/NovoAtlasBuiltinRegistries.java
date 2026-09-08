@@ -1,14 +1,12 @@
 package com.thedeathlycow.novoatlas.impl.registry;
 
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.image.EdgeHandling;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Interpolator;
 import com.thedeathlycow.novoatlas.impl.platform.Services;
 import net.minecraft.core.Registry;
 
 public final class NovoAtlasBuiltinRegistries {
     public static final Registry<MapCodec<? extends Interpolator>> INTERPOLATOR_TYPE = Services.PLATFORM.createBuiltinRegistry(NovoAtlasRegistries.INTERPOLATOR_TYPE);
-    public static final Registry<MapCodec<? extends EdgeHandling>> EDGE_HANDLING = Services.PLATFORM.createBuiltinRegistry(NovoAtlasRegistries.EDGE_HANDLING);
 
     private NovoAtlasBuiltinRegistries() {
 

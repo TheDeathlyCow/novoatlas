@@ -28,7 +28,7 @@ public record MapInfo(
         int surfaceRange,
         Optional<MapScaleConfig> scaling,
         Vector2fc centerOffset,
-        EdgeHandling edgeHandling
+        ImageWrapping imageWrapping
 ) {
     public static final Codec<MapInfo> DIRECT_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
@@ -56,9 +56,9 @@ public record MapInfo(
                     ExtraCodecs.VECTOR2F
                             .optionalFieldOf("center_offset", new Vector2f(0f, 0f))
                             .forGetter(MapInfo::centerOffset),
-                    EdgeHandling.BASE_CODEC.codec()
-                            .optionalFieldOf("edge_handling", new EdgeHandling.ClampToEdge())
-                            .forGetter(MapInfo::edgeHandling)
+                    ImageWrapping.CODEC
+                            .optionalFieldOf("image_wrapping", ImageWrapping.CLAMP_TO_EDGE)
+                            .forGetter(MapInfo::imageWrapping)
             ).apply(instance, MapInfo::new)
     );
 
