@@ -35,13 +35,13 @@ public final class HeightMapImage extends MapImage {
     }
 
     @Override
-    public int getPixelValue(int x, int z) {
+    protected int getPixelValue(int x, int z) {
         return this.pixels[z * this.width() + x];
     }
 
     @Override
     protected int sampleInterpolated(double x, double z, MapInfo info) {
-        double height = info.horizontalScale().sample(x, z, this);
+        double height = info.horizontalScale().sample(x, z, this, info);
         return (int) Math.round(info.verticalScale() * height + info.startingY());
     }
 }
