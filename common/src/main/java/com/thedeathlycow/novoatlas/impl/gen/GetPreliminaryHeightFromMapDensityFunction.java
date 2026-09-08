@@ -42,8 +42,7 @@ public record GetPreliminaryHeightFromMapDensityFunction(
 
     @Override
     public double compute(FunctionContext context) {
-        int elevation = mapInfo.value().getHeightMapElevation(context.blockX(), context.blockZ(), Integer.MIN_VALUE);
-
+        int elevation = mapInfo.value().getHeightMapElevation(context.blockX(), context.blockZ());
         return Mth.clamp(elevation - 8, this.lowerBound, this.upperBound);
     }
 

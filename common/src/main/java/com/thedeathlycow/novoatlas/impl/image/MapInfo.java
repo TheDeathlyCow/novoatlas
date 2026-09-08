@@ -27,7 +27,8 @@ public record MapInfo(
         int startingY,
         int surfaceRange,
         Optional<MapScaleConfig> scaling,
-        Vector2fc centerOffset
+        Vector2fc centerOffset,
+        ImageWrapping imageWrapping
 ) {
     public static final Codec<MapInfo> DIRECT_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
@@ -54,7 +55,10 @@ public record MapInfo(
                             .forGetter(MapInfo::scaling),
                     ExtraCodecs.VECTOR2F
                             .optionalFieldOf("center_offset", new Vector2f(0f, 0f))
-                            .forGetter(MapInfo::centerOffset)
+                            .forGetter(MapInfo::centerOffset),
+                    ImageWrapping.CODEC
+                            .optionalFieldOf("image_wrapping", ImageWrapping.CLAMP_TO_EDGE)
+                            .forGetter(MapInfo::imageWrapping)
             ).apply(instance, MapInfo::new)
     );
 
@@ -68,20 +72,16 @@ public record MapInfo(
         return Objects.requireNonNull(MapImageRegistry.BIOME_MAP.getImage(map), "Missing biome map image " + map);
     }
 
-    public int getHeightMapElevation(int x, int z, int fallback) {
-        return lookupHeightmap(this.heightMap).sample(x, z, this, fallback);
+    public int getHeightMapElevation(int x, int z) {
+        return lookupHeightmap(this.heightMap).sample(x, z, this);
     }
 
     public int getFluidHeightMapElevation(int x, int z, int seaLevel) {
         if (this.fluidHeightMap.isPresent()) {
-            return lookupHeightmap(this.fluidHeightMap.orElseThrow()).sample(x, z, this, seaLevel);
+            return lookupHeightmap(this.fluidHeightMap.orElseThrow()).sample(x, z, this);
         } else {
             return seaLevel;
         }
-    }
-
-    public int getHeightMapElevation(int x, int z) {
-        return lookupHeightmap(this.heightMap).sample(x, z, this);
     }
 
     @NotNull
@@ -115,7 +115,7 @@ public record MapInfo(
 
     @Nullable
     private Holder<Biome> getCaveBiome(int x, int y, int z, LayeredMapBiomeProvider caveBiomes) {
-        int height = this.getHeightMapElevation(x, z, Integer.MIN_VALUE);
+        int height = this.getHeightMapElevation(x, z);
 
         if (height == Integer.MIN_VALUE) {
             return null;
