@@ -62,12 +62,6 @@ public record LayeredMapBiomeProvider(
     }
 
     private Holder<Biome> getBiomeFromColorMap(int x, int y, int z, MapInfo info) {
-        int elevation = info.getHeightMapElevation(x, z, Integer.MIN_VALUE);
-
-        if (elevation == Integer.MIN_VALUE) {
-            return null;
-        }
-
         BiomeLayerEntry layer = this.getLayer(y);
         return layer != null ? layer.biomeProvider().getBiome(x, y, z, info) : null;
     }

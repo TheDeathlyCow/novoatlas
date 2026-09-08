@@ -55,8 +55,8 @@ public record MapScaleConfig(
 
         public static final Codec<HorizontalConfig> CODEC = Codec.withAlternative(BASE_CODEC, FLOAT_CODEC);
 
-        public double sample(double x, double z, MapImage image) {
-            return this.interpolation.sample(x, z, image);
+        public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
+            return this.interpolation.sample(x, z, image, mapInfo);
         }
     }
 }

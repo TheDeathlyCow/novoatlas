@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.image.BiomeMapImage;
 import com.thedeathlycow.novoatlas.impl.image.HeightMapImage;
-import com.thedeathlycow.novoatlas.impl.image.MapImage;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Interpolator;
 import net.minecraft.core.Registry;
