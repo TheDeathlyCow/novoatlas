@@ -76,6 +76,10 @@ public record MapInfo(
         return lookupHeightmap(this.heightMap).sample(x, z, this);
     }
 
+    public double getDistanceToEdge(int x, int z) {
+        return lookupHeightmap(this.heightMap).getDistanceToEdge(x, z, this);
+    }
+
     public int getFluidHeightMapElevation(int x, int z, int seaLevel) {
         if (this.fluidHeightMap.isPresent()) {
             return lookupHeightmap(this.fluidHeightMap.orElseThrow()).sample(x, z, this);
