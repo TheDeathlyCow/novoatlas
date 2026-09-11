@@ -7,8 +7,8 @@
     "client": [
     ],
     "mixins": [
-        "accessor.NoiseBasedChunkGeneratorAccessor",
-        "accessor.NoiseChunkAccessor"
+        "accessor.BiomeSourceAccessor",
+        "accessor.NoiseBasedChunkGeneratorAccessor"
     ],
     "injectors": {
         "defaultRequire": 1

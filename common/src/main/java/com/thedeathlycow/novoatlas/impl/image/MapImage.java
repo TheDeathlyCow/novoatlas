@@ -35,6 +35,16 @@ public abstract class MapImage {
         return -Math.sqrt(dx * dx + dz * dz);
     }
 
+    public final boolean isBlockInsideImage(int x, int z, MapInfo info) {
+        double horizontalScale = info.horizontalScale().value();
+        Vector2fc centerOffset = info.centerOffset();
+
+        double xR = getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
+        double zR = getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
+
+        return xR >= 0 && xR <= this.width && zR >= 0 && zR <= this.height;
+    }
+
     public final int sample(int x, int z, MapInfo info) {
         double horizontalScale = info.horizontalScale().value();
         Vector2fc centerOffset = info.centerOffset();

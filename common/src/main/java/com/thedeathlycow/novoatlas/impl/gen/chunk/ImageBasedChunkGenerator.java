@@ -60,11 +60,6 @@ public abstract class ImageBasedChunkGenerator extends NoiseBasedChunkGenerator 
         }
     }
 
-    @Override
-    public int getBaseHeight(int x, int z, Heightmap.Types types, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
-        return this.sampleElevation(x, z);
-    }
-
     public Holder<MapInfo> getMapInfo() {
         return mapInfo;
     }

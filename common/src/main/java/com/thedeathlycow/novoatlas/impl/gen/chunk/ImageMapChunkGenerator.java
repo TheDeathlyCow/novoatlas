@@ -7,6 +7,7 @@ import com.thedeathlycow.novoatlas.impl.gen.density.GetPreliminaryHeightFromMapD
 import com.thedeathlycow.novoatlas.impl.gen.density.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import net.minecraft.core.Holder;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.levelgen.*;
 import org.jspecify.annotations.NonNull;
@@ -101,6 +102,11 @@ public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
         );
 
         return Holder.direct(fixedSettings);
+    }
+
+    @Override
+    public int getBaseHeight(int x, int z, Heightmap.Types types, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
+        return this.sampleElevation(x, z);
     }
 
     @Override

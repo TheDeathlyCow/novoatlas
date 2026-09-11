@@ -2,6 +2,7 @@ package com.thedeathlycow.novoatlas.impl.neoforge;
 
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeCellColorMapBiomeSource;
+import com.thedeathlycow.novoatlas.impl.gen.biome.BoundedMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.biome.ColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.chunk.BlendImageToRandomChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.gen.chunk.ImageMapChunkGenerator;
@@ -95,6 +96,7 @@ public final class NovoAtlasNeoForge {
         if (event.getRegistry() == Registries.BIOME_SOURCE) {
             event.register(Registries.BIOME_SOURCE, NovoAtlas.id("color_map"), () -> ColorMapBiomeSource.CODEC);
             event.register(Registries.BIOME_SOURCE, NovoAtlas.id("biome_cell_color_map"), () -> BiomeCellColorMapBiomeSource.CODEC);
+            event.register(Registries.BIOME_SOURCE, NovoAtlas.id("bounded_biome_cell_color_map"), () -> BoundedMapBiomeSource.CODEC);
         }
 
         if (event.getRegistry() == Registries.DENSITY_FUNCTION_TYPE) {
