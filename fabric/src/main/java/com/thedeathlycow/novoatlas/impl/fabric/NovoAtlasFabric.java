@@ -73,6 +73,12 @@ public final class NovoAtlasFabric implements ModInitializer {
         );
 
         ResourceLoader.registerBuiltinPack(
+                NovoAtlas.id("avila-blend-to-random-example"),
+                mod,
+                PackActivationType.NORMAL
+        );
+
+        ResourceLoader.registerBuiltinPack(
                 NovoAtlas.id("avila-cave-biome-example"),
                 mod,
                 PackActivationType.NORMAL

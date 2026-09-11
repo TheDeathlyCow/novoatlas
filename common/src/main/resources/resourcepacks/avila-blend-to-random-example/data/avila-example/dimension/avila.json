@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:overworld",
+    "generator": {
+        "type": "novoatlas:blend_image_map_to_random",
+        "map_info": "avila-example:avila",
+        "settings": "minecraft:overworld",
+        "underground_density_function": "novoatlas:caves",
+        "biome_source": {
+            "type": "novoatlas:bounded_biome_cell_color_map",
+            "map_info": "avila-example:avila",
+            "default_biome": "minecraft:the_void",
+            "blend_distance": 32,
+            "outside_map": {
+                "type": "minecraft:multi_noise",
+                "preset": "minecraft:overworld"
+            }
+        }
+    }
+}
+
