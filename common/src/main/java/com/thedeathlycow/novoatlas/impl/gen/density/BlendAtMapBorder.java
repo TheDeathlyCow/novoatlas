@@ -53,7 +53,7 @@ public record BlendAtMapBorder(
 
     private double smoothstepDistance(int x, int z) {
         double distance = mapInfo.value().getDistanceToEdge(x, z);
-        return smoothstep(0, blendDistance, distance);
+        return smoothstep(-blendDistance, blendDistance, distance);
     }
 
     /// Hermite Spline interpolation for better blending than simple lerp.
