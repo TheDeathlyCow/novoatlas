@@ -38,16 +38,16 @@ public final class NovoAtlasFabric implements ModInitializer {
         DynamicRegistries.register(NovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
 
         Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), ImageMapChunkGenerator.CODEC);
-        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.id("blend_image_map_to_random"), BlendImageToRandomChunkGenerator.CODEC);
+        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.expId("blend_image_map_to_random"), BlendImageToRandomChunkGenerator.CODEC);
 
         Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.id("color_map"), ColorMapBiomeSource.CODEC);
         Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.id("biome_cell_color_map"), BiomeCellColorMapBiomeSource.CODEC);
-        Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.id("bounded_biome_cell_color_map"), BoundedMapBiomeSource.CODEC);
+        Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.expId("bounded_biome_cell_color_map"), BoundedMapBiomeSource.CODEC);
 
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), HeightmapDensityFunction.DATA_CODEC);
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), GetHeightFromMapDensityFunction.DATA_CODEC);
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_preliminary_height_from_map"), GetPreliminaryHeightFromMapDensityFunction.DATA_CODEC);
-        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("blend_at_map_border"), BlendAtMapBorder.DATA_CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_at_map_border"), BlendAtMapBorder.DATA_CODEC);
 
         Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), NearestNeighbour.CODEC);
         Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), Bilinear.CODEC);

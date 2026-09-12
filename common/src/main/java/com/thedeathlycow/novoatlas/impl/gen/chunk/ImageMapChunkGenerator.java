@@ -105,11 +105,6 @@ public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
     }
 
     @Override
-    public int getBaseHeight(int x, int z, Heightmap.Types types, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
-        return this.sampleElevation(x, z);
-    }
-
-    @Override
     @NonNull
     protected MapCodec<ImageMapChunkGenerator> codec() {
         return CODEC;

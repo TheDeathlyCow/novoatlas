@@ -99,20 +99,20 @@ public final class NovoAtlasNeoForge {
     private static void register(RegisterEvent event) {
         if (event.getRegistry() == Registries.CHUNK_GENERATOR) {
             event.register(Registries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), () -> ImageMapChunkGenerator.CODEC);
-            event.register(Registries.CHUNK_GENERATOR, NovoAtlas.id("blend_image_map_to_random"), () -> BlendImageToRandomChunkGenerator.CODEC);
+            event.register(Registries.CHUNK_GENERATOR, NovoAtlas.expId("blend_image_map_to_random"), () -> BlendImageToRandomChunkGenerator.CODEC);
         }
 
         if (event.getRegistry() == Registries.BIOME_SOURCE) {
             event.register(Registries.BIOME_SOURCE, NovoAtlas.id("color_map"), () -> ColorMapBiomeSource.CODEC);
             event.register(Registries.BIOME_SOURCE, NovoAtlas.id("biome_cell_color_map"), () -> BiomeCellColorMapBiomeSource.CODEC);
-            event.register(Registries.BIOME_SOURCE, NovoAtlas.id("bounded_biome_cell_color_map"), () -> BoundedMapBiomeSource.CODEC);
+            event.register(Registries.BIOME_SOURCE, NovoAtlas.expId("bounded_biome_cell_color_map"), () -> BoundedMapBiomeSource.CODEC);
         }
 
         if (event.getRegistry() == Registries.DENSITY_FUNCTION_TYPE) {
             event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
             event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), () -> GetHeightFromMapDensityFunction.DATA_CODEC);
             event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_preliminary_height_from_map"), () -> GetPreliminaryHeightFromMapDensityFunction.DATA_CODEC);
-            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("blend_at_map_border"), () -> BlendAtMapBorder.DATA_CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_at_map_border"), () -> BlendAtMapBorder.DATA_CODEC);
         }
 
         if (event.getRegistryKey() == NovoAtlasRegistries.INTERPOLATOR_TYPE) {

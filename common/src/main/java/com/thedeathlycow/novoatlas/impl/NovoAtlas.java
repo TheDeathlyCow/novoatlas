@@ -17,6 +17,10 @@ public final class NovoAtlas {
         return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
+    public static Identifier expId(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID + "-experimental", path);
+    }
+
     private NovoAtlas() {
 
     }
