@@ -6,5 +6,7 @@ The `avila-basic-example` data pack provides a basic template for creating NovoA
 
 You can get these datapacks from the [releases page](https://github.com/TheDeathlyCow/novoatlas/releases). These datapacks are also builtin with the mod, and you can enable them in the World Creation menu (Singleplayer > Create New World > More > Datapacks). After the world is created, they will be available in that world's `datapacks` folder.
 
+You can also enable all of the packs by setting the system property `-Dnovoatlas.enable-example-packs=true`. 
+
 These packs are specially licensed under Creative Commons Zero, except for the height maps. You may adapt and modify these packs for your own use with the need for attribution. However, the rest of this repository remains licensed under [LGPL-3.0](../LICENSE). The heightmaps are courtesy of Irene Alvarado, https://medium.com/energeia/printing-mountains-6bbf577294b6.
 
