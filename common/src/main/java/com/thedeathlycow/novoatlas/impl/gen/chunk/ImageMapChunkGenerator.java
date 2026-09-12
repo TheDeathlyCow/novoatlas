@@ -65,7 +65,7 @@ public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
         DensityFunction preliminaryHeightmap = new GetPreliminaryHeightFromMapDensityFunction(mapInfo, minY, maxY);
 
         DensityFunction finalDensity = DensityFunctions.min(
-                new HeightmapDensityFunction(mapInfo),
+                new HeightmapDensityFunction(mapInfo, 128.0),
                 undergroundDensityFunction
         );
 
