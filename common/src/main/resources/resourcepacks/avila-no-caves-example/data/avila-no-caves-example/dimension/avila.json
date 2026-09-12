@@ -2,13 +2,13 @@
     "type": "minecraft:overworld",
     "generator": {
         "type": "novoatlas:image_map",
-        "map_info": "avila-example:avila",
+        "map_info": "avila-no-caves-example:avila",
         "settings": "minecraft:overworld",
         "underground_density_function": "novoatlas:no_caves",
         "enable_carvers": false,
         "biome_source": {
             "type": "novoatlas:biome_cell_color_map",
-            "map_info": "avila-example:avila",
+            "map_info": "avila-no-caves-example:avila",
             "default_biome": "minecraft:the_void"
         }
     }
