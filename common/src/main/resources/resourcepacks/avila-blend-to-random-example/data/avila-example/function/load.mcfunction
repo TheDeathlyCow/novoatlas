@@ -1,0 +1,1 @@
+tellraw @a ["The Avila example pack is loaded in a separate dimension, click ",{"click_event":{"action":"run_command","command":"execute in avila-example:avila run teleport @s 0 200 0"},"color":"green","text":"[here]"}," to teleport there."]

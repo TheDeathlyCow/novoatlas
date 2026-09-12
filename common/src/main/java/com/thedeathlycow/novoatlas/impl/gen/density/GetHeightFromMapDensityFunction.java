@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.impl.gen;
+package com.thedeathlycow.novoatlas.impl.gen.density;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;

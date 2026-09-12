@@ -12,17 +12,52 @@ public abstract class MapImage {
         this.height = height;
     }
 
+    /// Returns a positive distance to the edge of the image if the sampled point is inside the image,
+    /// and a negative distance if the sampled point is outside the image.
+    public final double getDistanceToEdge(int x, int z, MapInfo info) {
+        double horizontalScale = info.horizontalScale().value();
+        Vector2fc centerOffset = info.centerOffset();
+
+        double xR = getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
+        double zR = getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
+
+        boolean insideX = xR >= 0 && xR <= this.width;
+        boolean insideZ = zR >= 0 && zR <= this.height;
+
+        if (insideX && insideZ) {
+            double distX = Math.min(xR, this.width - xR);
+            double distZ = Math.min(zR, this.height - zR);
+            return Math.min(distX, distZ);
+        }
+
+        double dx = Math.max(0, Math.max(-xR, xR - this.width));
+        double dz = Math.max(0, Math.max(-zR, zR - this.height));
+        return -Math.sqrt(dx * dx + dz * dz);
+    }
+
+    public final boolean isBlockInsideImage(int x, int z, MapInfo info) {
+        double horizontalScale = info.horizontalScale().value();
+        Vector2fc centerOffset = info.centerOffset();
+
+        double xR = getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
+        double zR = getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
+
+        return xR >= 0 && xR <= this.width && zR >= 0 && zR <= this.height;
+    }
+
     public final int sample(int x, int z, MapInfo info) {
         double horizontalScale = info.horizontalScale().value();
         Vector2fc centerOffset = info.centerOffset();
 
-        x += (int) (-centerOffset.x() * this.width);
-        z += (int) (-centerOffset.y() * this.height);
-
-        double xR = (x / horizontalScale) + this.width / 2.0; // these will always be even numbers
-        double zR = (z / horizontalScale) + this.height / 2.0;
+        double xR = getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
+        double zR = getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
 
         return this.sampleInterpolated(xR, zR, info);
+    }
+
+    private static double getIndexWithAlpha(int i, double horizontalScale, double centerOffset, double size) {
+        double iR = i - (centerOffset * size);
+        return (iR / horizontalScale) + size * 0.5;
     }
 
     public final int width() {
