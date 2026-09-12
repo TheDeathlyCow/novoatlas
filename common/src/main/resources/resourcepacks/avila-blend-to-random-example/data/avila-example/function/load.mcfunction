@@ -1,1 +1,0 @@
-tellraw @a ["The Avila blend to random example pack is loaded in a separate dimension, click ",{"click_event":{"action":"run_command","command":"execute in avila-example:avila_random run teleport @s ~ ~ ~"},"color":"green","text":"[here]"}," to teleport there."]

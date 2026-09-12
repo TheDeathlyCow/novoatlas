@@ -7,11 +7,11 @@
         },
         "vertical_scale": 1
     },
-    "height_map": "avila-example:avila",
+    "height_map": "avila-random-example:avila",
     "center_offset": [0.0, 0.0],
     "image_wrapping": "clamp_to_edge",
     "surface_biomes": {
-        "map": "avila-example:avila",
+        "map": "avila-random-example:avila",
         "strict": false,
         "biomes": [
             {
