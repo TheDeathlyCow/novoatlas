@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.impl.gen;
+package com.thedeathlycow.novoatlas.impl.gen.density;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -9,14 +9,8 @@ import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
-/**
- * Computes a height density near the surface of the heightmap, but leaves negative density above and below the surface.
- * <p>
- * Essentially creates hollow mountains.
- *
- * @param mapInfo
- * @param transitionRange
- */
+/// Using a heightmap, computes positive density below the surface and negative density above the surface, with some
+/// blending in between.
 public record HeightmapDensityFunction(
         Holder<MapInfo> mapInfo,
         double transitionRange
