@@ -1,7 +1,10 @@
 {
-    "starting_y": 6,
+    "starting_y": 0,
     "scaling": {
-        "horizontal_scale": 1,
+        "horizontal_scale": {
+            "value": 1,
+            "interpolation": "nearest_neighbor"
+        },
         "vertical_scale": 1
     },
     "height_map": "avila-example:avila",
@@ -9,6 +12,7 @@
     "image_wrapping": "clamp_to_edge",
     "surface_biomes": {
         "map": "avila-example:avila",
+        "strict": false,
         "biomes": [
             {
                 "biome": "minecraft:plains",
