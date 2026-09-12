@@ -7,7 +7,6 @@ import com.thedeathlycow.novoatlas.mixin.accessor.NoiseBasedChunkGeneratorAccess
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.WorldGenRegion;
-import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;

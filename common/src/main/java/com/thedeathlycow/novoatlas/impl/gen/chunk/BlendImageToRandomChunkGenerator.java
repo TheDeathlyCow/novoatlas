@@ -126,4 +126,13 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
     public float getBlendDistance() {
         return blendDistance;
     }
+
+    @Override
+    protected int sampleFluidElevation(int x, int z) {
+        if (this.getMapInfo().value().isBlockInsideHeightMap(x, z)) {
+            return super.sampleFluidElevation(x, z);
+        } else {
+            return this.getSeaLevel();
+        }
+    }
 }
