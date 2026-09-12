@@ -76,6 +76,18 @@ public record MapInfo(
         return lookupHeightmap(this.heightMap).sample(x, z, this);
     }
 
+    public double getDistanceToEdge(int x, int z) {
+        return lookupHeightmap(this.heightMap).getDistanceToEdge(x, z, this);
+    }
+
+    public boolean isBlockInsideHeightMap(int x, int z) {
+        return lookupHeightmap(this.heightMap).isBlockInsideImage(x, z, this);
+    }
+
+    public boolean isPointInsideBiomeMap(int x, int z) {
+        return lookupBiomeMap(this.surfaceBiomes.getMap()).isBlockInsideImage(x, z, this);
+    }
+
     public int getFluidHeightMapElevation(int x, int z, int seaLevel) {
         if (this.fluidHeightMap.isPresent()) {
             return lookupHeightmap(this.fluidHeightMap.orElseThrow()).sample(x, z, this);
@@ -85,7 +97,12 @@ public record MapInfo(
     }
 
     @NotNull
-    public Holder<Biome> getBiome(int x, int y, int z, @NotNull Holder<Biome> defaultBiome) {
+    public Holder<Biome> getBiome(int x, int y, int z, Holder<Biome> defaultBiome) {
+        return getBiome(x, y, z, (_, _, _) -> defaultBiome);
+    }
+
+    @NotNull
+    public Holder<Biome> getBiome(int x, int y, int z, Delegate outsideBoundDelegate) {
         if (this.caveBiomes.isPresent()) {
             Holder<Biome> caveBiome = this.getCaveBiome(x, y, z, this.caveBiomes.orElseThrow());
             if (caveBiome != null) {
@@ -94,7 +111,7 @@ public record MapInfo(
         }
 
         Holder<Biome> surfaceBiome = this.surfaceBiomes.getBiome(x, y, z, this);
-        return surfaceBiome != null ? surfaceBiome : defaultBiome;
+        return surfaceBiome != null ? surfaceBiome : outsideBoundDelegate.getBiome(x, y, z);
     }
 
     public MapScaleConfig.HorizontalConfig horizontalScale() {
@@ -117,10 +134,6 @@ public record MapInfo(
     private Holder<Biome> getCaveBiome(int x, int y, int z, LayeredMapBiomeProvider caveBiomes) {
         int height = this.getHeightMapElevation(x, z);
 
-        if (height == Integer.MIN_VALUE) {
-            return null;
-        }
-
         if (y <= height - this.surfaceRange) {
             Holder<Biome> caveBiome = caveBiomes.getBiome(x, y, z, this);
             if (caveBiome != null) {
@@ -129,5 +142,10 @@ public record MapInfo(
         }
 
         return null;
+    }
+
+    @FunctionalInterface
+    public interface Delegate {
+       @NotNull Holder<Biome> getBiome(int x, int y, int z);
     }
 }
