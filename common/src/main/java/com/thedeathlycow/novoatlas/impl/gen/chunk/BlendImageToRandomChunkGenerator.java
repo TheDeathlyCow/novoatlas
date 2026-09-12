@@ -11,8 +11,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.levelgen.*;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NonNull;
 
+@ApiStatus.Experimental
 public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGenerator {
     public static final MapCodec<BlendImageToRandomChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(

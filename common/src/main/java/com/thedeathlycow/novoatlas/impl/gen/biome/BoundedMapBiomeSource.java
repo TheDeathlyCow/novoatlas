@@ -6,15 +6,16 @@ import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProvider;
 import com.thedeathlycow.novoatlas.mixin.accessor.BiomeSourceAccessor;
 import net.minecraft.core.Holder;
-import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
+@ApiStatus.Experimental
 public class BoundedMapBiomeSource extends BiomeSource {
     public static final MapCodec<BoundedMapBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(

@@ -8,7 +8,9 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.DensityFunction;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Experimental
 public record BlendAtMapBorder(
         Holder<MapInfo> mapInfo,
         DensityFunction insideMap,
