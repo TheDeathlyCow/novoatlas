@@ -15,7 +15,6 @@ import com.thedeathlycow.novoatlas.impl.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Lanczos;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.NearestNeighbour;
-import com.thedeathlycow.novoatlas.impl.platform.Services;
 import com.thedeathlycow.novoatlas.impl.registry.MapImageRegistry;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasBuiltinRegistries;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
@@ -64,31 +63,12 @@ public final class NovoAtlasFabric implements ModInitializer {
 
         ModContainer mod = FabricLoader.getInstance().getModContainer(NovoAtlas.MOD_ID).orElseThrow();
 
-        ResourceLoader.registerBuiltinPack(
-                NovoAtlas.id("avila-basic-example"),
-                mod,
-                Services.PLATFORM.isDevelopmentEnvironment()
-                        ? PackActivationType.DEFAULT_ENABLED
-                        : PackActivationType.NORMAL
-        );
+        PackActivationType activation = NovoAtlas.enableExampleDataPacks() ? PackActivationType.DEFAULT_ENABLED : PackActivationType.NORMAL;
 
-        ResourceLoader.registerBuiltinPack(
-                NovoAtlas.id("avila-blend-to-random-example"),
-                mod,
-                PackActivationType.NORMAL
-        );
-
-        ResourceLoader.registerBuiltinPack(
-                NovoAtlas.id("avila-cave-biome-example"),
-                mod,
-                PackActivationType.NORMAL
-        );
-
-        ResourceLoader.registerBuiltinPack(
-                NovoAtlas.id("avila-no-caves-example"),
-                mod,
-                PackActivationType.NORMAL
-        );
+        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-basic-example"), mod, activation);
+        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-blend-to-random-example"), mod, activation);
+        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-cave-biome-example"), mod, activation);
+        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-no-caves-example"), mod, activation);
     }
 
     private static void addDefaultAlias(Registry<?> registry, Identifier id) {

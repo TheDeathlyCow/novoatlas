@@ -1,0 +1,1 @@
+tellraw @a ["The Avila No Caves example pack is loaded in a separate dimension, click ",{"click_event":{"action":"run_command","command":"execute in avila-no-caves-example:avila run teleport @s ~ ~ ~"},"color":"green","text":"[here]"}," to teleport there."]

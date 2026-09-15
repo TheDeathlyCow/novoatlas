@@ -27,7 +27,6 @@ import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
@@ -54,9 +53,7 @@ public final class NovoAtlasNeoForge {
 
     private static void addExamplePacks(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.SERVER_DATA) {
-            PackSource packSource = FMLEnvironment.isProduction()
-                    ? PackSource.FEATURE
-                    : PackSource.WORLD;
+            PackSource packSource = NovoAtlas.enableExampleDataPacks() ? PackSource.WORLD : PackSource.FEATURE;
 
             event.addPackFinders(
                     NovoAtlas.id("resourcepacks/avila-basic-example"),
@@ -71,7 +68,7 @@ public final class NovoAtlasNeoForge {
                     NovoAtlas.id("resourcepacks/avila-blend-to-random-example"),
                     PackType.SERVER_DATA,
                     Component.literal("novoatlas/avila-blend-to-random-example"),
-                    PackSource.FEATURE,
+                    packSource,
                     false,
                     Pack.Position.TOP
             );
@@ -80,7 +77,7 @@ public final class NovoAtlasNeoForge {
                     NovoAtlas.id("resourcepacks/avila-cave-biome-example"),
                     PackType.SERVER_DATA,
                     Component.literal("novoatlas/avila-cave-biome-example"),
-                    PackSource.FEATURE,
+                    packSource,
                     false,
                     Pack.Position.TOP
             );
@@ -89,7 +86,7 @@ public final class NovoAtlasNeoForge {
                     NovoAtlas.id("resourcepacks/avila-no-caves-example"),
                     PackType.SERVER_DATA,
                     Component.literal("novoatlas/avila-no-caves-example"),
-                    PackSource.FEATURE,
+                    packSource,
                     false,
                     Pack.Position.TOP
             );
