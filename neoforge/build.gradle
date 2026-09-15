@@ -38,12 +38,14 @@ loom {
             setConfigName('Neoforge Client')
             ideConfigGenerated(true)
             runDir('runs/client')
+            getSystemProperties().put("novoatlas.enable-example-packs", "true")
         }
         server {
             server()
             setConfigName('Neoforge Server')
             ideConfigGenerated(true)
             runDir('runs/server')
+            getSystemProperties().put("novoatlas.enable-example-packs", "true")
         }
     }
 }

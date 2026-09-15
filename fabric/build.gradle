@@ -37,12 +37,14 @@ loom {
             setConfigName('Fabric Client')
             ideConfigGenerated(true)
             runDir('runs/client')
+            getSystemProperties().put("novoatlas.enable-example-packs", "true")
         }
         server {
             server()
             setConfigName('Fabric Server')
             ideConfigGenerated(true)
             runDir('runs/server')
+            getSystemProperties().put("novoatlas.enable-example-packs", "true")
         }
     }
 }
