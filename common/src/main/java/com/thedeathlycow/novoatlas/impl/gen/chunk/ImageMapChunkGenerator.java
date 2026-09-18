@@ -10,6 +10,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.levelgen.*;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import org.jspecify.annotations.NonNull;
 
 public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
@@ -62,7 +64,7 @@ public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
         final int minY = noiseSettings.minY();
         final int maxY = minY + noiseSettings.height();
 
-        DensityFunction preliminaryHeightmap = new GetPreliminaryHeightFromMapDensityFunction(mapInfo, minY, maxY);
+        DensityFunction chunkSurfaceLevel = new GetPreliminaryHeightFromMapDensityFunction(mapInfo, minY, maxY);
 
         DensityFunction finalDensity = DensityFunctions.min(
                 new HeightmapDensityFunction(mapInfo, 128.0),
@@ -70,21 +72,14 @@ public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
         );
 
         NoiseRouter fixedNoiseRouter = new NoiseRouter(
-                baseNoiseRouter.barrierNoise(),
-                baseNoiseRouter.fluidLevelFloodednessNoise(),
-                baseNoiseRouter.fluidLevelSpreadNoise(),
-                baseNoiseRouter.lavaNoise(),
                 baseNoiseRouter.temperature(),
                 baseNoiseRouter.vegetation(),
                 baseNoiseRouter.continents(),
                 baseNoiseRouter.erosion(),
                 baseNoiseRouter.depth(),
                 baseNoiseRouter.ridges(),
-                preliminaryHeightmap,
-                finalDensity,
-                baseNoiseRouter.veinToggle(),
-                baseNoiseRouter.veinRidged(),
-                baseNoiseRouter.veinGap()
+                chunkSurfaceLevel,
+                finalDensity
         );
 
         NoiseGeneratorSettings fixedSettings = new NoiseGeneratorSettings(
@@ -92,13 +87,13 @@ public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
                 baseSettings.defaultBlock(),
                 baseSettings.defaultFluid(),
                 fixedNoiseRouter,
-                baseSettings.surfaceRule(),
+                baseSettings.materialRule(),
                 baseSettings.spawnTarget(),
                 baseSettings.seaLevel(),
                 baseSettings.disableMobGeneration(),
-                baseSettings.aquifersEnabled(),
-                baseSettings.oreVeinsEnabled(),
-                baseSettings.useLegacyRandomSource()
+                baseSettings.aquifers(),
+                baseSettings.useLegacyRandomSource(),
+                baseSettings.debugFunctions()
         );
 
         return Holder.direct(fixedSettings);

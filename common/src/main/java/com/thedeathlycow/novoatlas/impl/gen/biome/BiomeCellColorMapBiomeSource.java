@@ -6,14 +6,16 @@ import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class BiomeCellColorMapBiomeSource extends BiomeSource {
+public class BiomeCellColorMapBiomeSource extends BiomeSource implements BiomeResolver {
     public static final MapCodec<BiomeCellColorMapBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     MapInfo.CODEC
@@ -60,9 +62,14 @@ public class BiomeCellColorMapBiomeSource extends BiomeSource {
     }
 
     @Override
-    public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ, Climate.Sampler sampler) {
-        MapInfo info = this.mapInfo.value();
+    public BiomeResolver createResolver(Climate.Sampler sampler) {
+        return this;
+    }
 
+    @Override
+    @NonNull
+    public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ) {
+        MapInfo info = this.mapInfo.value();
         return info.getBiome(biomeX, biomeY, biomeZ, this.defaultBiome);
     }
 

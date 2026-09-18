@@ -5,9 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.levelgen.DensityFunction;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Experimental

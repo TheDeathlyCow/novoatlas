@@ -7,15 +7,17 @@ import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProv
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @Deprecated(since = "1.7.4")
-public class ColorMapBiomeSource extends BiomeSource {
+public class ColorMapBiomeSource extends BiomeSource implements BiomeResolver {
     public static final MapCodec<ColorMapBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     MapInfo.CODEC
@@ -62,7 +64,13 @@ public class ColorMapBiomeSource extends BiomeSource {
     }
 
     @Override
-    public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ, Climate.Sampler sampler) {
+    public BiomeResolver createResolver(Climate.Sampler sampler) {
+        return this;
+    }
+
+    @Override
+    @NonNull
+    public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ) {
         MapInfo info = this.mapInfo.value();
 
         int x = QuartPos.toBlock(biomeX);

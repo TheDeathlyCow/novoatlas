@@ -7,6 +7,7 @@ import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProv
 import com.thedeathlycow.novoatlas.mixin.accessor.BiomeSourceAccessor;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import org.jetbrains.annotations.ApiStatus;
@@ -71,15 +72,19 @@ public class BoundedMapBiomeSource extends BiomeSource {
     }
 
     @Override
-    @NonNull
-    public Holder<Biome> getNoiseBiome(int quartX, int quartY, int quartZ, Climate.Sampler sampler) {
+    public BiomeResolver createResolver(Climate.Sampler sampler) {
+        BiomeResolver outsideMapResolver = this.outsideMap.createResolver(sampler);
+        return (quartX, quartY, quartZ) -> this.getNoiseBiome(quartX, quartY, quartZ, outsideMapResolver);
+    }
+
+    private Holder<Biome> getNoiseBiome(int quartX, int quartY, int quartZ, BiomeResolver outsideMapResolver) {
         MapInfo info = this.mapInfo.value();
 
         if (info.isPointInsideBiomeMap(quartX, quartZ)) {
             return info.getBiome(quartX, quartY, quartZ, this.defaultBiome);
         }
 
-        return this.outsideMap.getNoiseBiome(quartX, quartY, quartZ, sampler);
+        return outsideMapResolver.getNoiseBiome(quartX, quartY, quartZ);
     }
 
     public Holder<MapInfo> getMapInfo() {

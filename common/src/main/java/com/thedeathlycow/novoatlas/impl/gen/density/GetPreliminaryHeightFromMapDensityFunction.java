@@ -6,10 +6,12 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import net.minecraft.core.Holder;
-import net.minecraft.util.KeyDispatchDataCodec;
+import net.minecraft.util.Interval;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;
+import net.minecraft.world.level.levelgen.densityfunction.DfRewriteRule;
 
 /// Identical to [GetHeightFromMapDensityFunction] but subtracts elevation by 8 to account for the expected preliminary
 /// surface value.
@@ -17,7 +19,7 @@ public record GetPreliminaryHeightFromMapDensityFunction(
         Holder<MapInfo> mapInfo,
         int lowerBound,
         int upperBound
-) implements DensityFunction.SimpleFunction {
+) implements DensityFunction {
     public static final MapCodec<GetPreliminaryHeightFromMapDensityFunction> DATA_CODEC = RecordCodecBuilder.<GetPreliminaryHeightFromMapDensityFunction>mapCodec(
             instance -> instance.group(
                     MapInfo.CODEC
@@ -54,6 +56,26 @@ public record GetPreliminaryHeightFromMapDensityFunction(
     @Override
     public double maxValue() {
         return this.upperBound;
+    }
+
+    @Override
+    public DensitySampler compileSampler(CompileContext context) {
+        return null;
+    }
+
+    @Override
+    public DensityFunction rewriteChildren(DfRewriteRule rule) {
+        return null;
+    }
+
+    @Override
+    public Interval range() {
+        return null;
+    }
+
+    @Override
+    public @Axes int domainAxes() {
+        return 0;
     }
 
     @Override

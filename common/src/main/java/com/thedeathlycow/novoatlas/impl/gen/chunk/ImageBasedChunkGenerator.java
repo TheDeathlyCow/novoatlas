@@ -14,7 +14,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.*;
+import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.material.rule.MaterialRule;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public abstract class ImageBasedChunkGenerator extends NoiseBasedChunkGenerator {
     private final Holder<MapInfo> mapInfo;
@@ -53,9 +57,9 @@ public abstract class ImageBasedChunkGenerator extends NoiseBasedChunkGenerator 
     }
 
     @Override
-    public void applyCarvers(WorldGenRegion level, long seed, RandomState random, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunk) {
+    protected void generateCarvers(final ChunkAccess chunk, final Blender blender, final NoiseChunk noiseChunk, final RandomState randomState, final BiomeManager biomeManager, final @Nullable WorldGenRegion carverBiomeRegion, final MaterialRule materialRule) {
         if (this.enableCarvers) {
-            super.applyCarvers(level, seed, random, biomeManager, structureManager, chunk);
+            super.generateCarvers(chunk, blender, noiseChunk, randomState, biomeManager, carverBiomeRegion, materialRule);
         }
     }
 

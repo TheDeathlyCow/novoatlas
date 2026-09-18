@@ -7,7 +7,7 @@ import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProv
 import com.thedeathlycow.novoatlas.impl.registry.MapImageRegistry;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.RegistryFileCodec;
+import net.minecraft.core.registries.codec.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;

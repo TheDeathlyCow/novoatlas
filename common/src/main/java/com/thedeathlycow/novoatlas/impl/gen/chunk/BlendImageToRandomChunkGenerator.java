@@ -3,14 +3,18 @@ package com.thedeathlycow.novoatlas.impl.gen.chunk;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.impl.gen.density.BlendAtMapBorder;
 import com.thedeathlycow.novoatlas.impl.gen.density.GetPreliminaryHeightFromMapDensityFunction;
 import com.thedeathlycow.novoatlas.impl.gen.density.HeightmapDensityFunction;
-import com.thedeathlycow.novoatlas.impl.gen.density.BlendAtMapBorder;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.levelgen.*;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.NoiseRouter;
+import net.minecraft.world.level.levelgen.NoiseSettings;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
+import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NonNull;
 
@@ -73,8 +77,8 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
         final int minY = noiseSettings.minY();
         final int maxY = minY + noiseSettings.height();
 
-        DensityFunction preliminaryHeightmap = new GetPreliminaryHeightFromMapDensityFunction(mapInfo, minY, maxY);
-        preliminaryHeightmap = new BlendAtMapBorder(mapInfo, preliminaryHeightmap, baseNoiseRouter.preliminarySurfaceLevel(), blendDistance);
+        DensityFunction chunkSurfaceLevelHeightmap = new GetPreliminaryHeightFromMapDensityFunction(mapInfo, minY, maxY);
+        chunkSurfaceLevelHeightmap = new BlendAtMapBorder(mapInfo, chunkSurfaceLevelHeightmap, baseNoiseRouter.chunkSurfaceLevel(), blendDistance);
 
         DensityFunction finalDensity = DensityFunctions.min(
                 new HeightmapDensityFunction(mapInfo, 128.0),
@@ -83,21 +87,14 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
         finalDensity = new BlendAtMapBorder(mapInfo, finalDensity, baseNoiseRouter.finalDensity(), blendDistance);
 
         NoiseRouter fixedNoiseRouter = new NoiseRouter(
-                baseNoiseRouter.barrierNoise(),
-                baseNoiseRouter.fluidLevelFloodednessNoise(),
-                baseNoiseRouter.fluidLevelSpreadNoise(),
-                baseNoiseRouter.lavaNoise(),
                 baseNoiseRouter.temperature(),
                 baseNoiseRouter.vegetation(),
                 baseNoiseRouter.continents(),
                 baseNoiseRouter.erosion(),
                 baseNoiseRouter.depth(),
                 baseNoiseRouter.ridges(),
-                preliminaryHeightmap,
-                finalDensity,
-                baseNoiseRouter.veinToggle(),
-                baseNoiseRouter.veinRidged(),
-                baseNoiseRouter.veinGap()
+                chunkSurfaceLevelHeightmap,
+                finalDensity
         );
 
         NoiseGeneratorSettings fixedSettings = new NoiseGeneratorSettings(
@@ -105,13 +102,13 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
                 baseSettings.defaultBlock(),
                 baseSettings.defaultFluid(),
                 fixedNoiseRouter,
-                baseSettings.surfaceRule(),
+                baseSettings.materialRule(),
                 baseSettings.spawnTarget(),
                 baseSettings.seaLevel(),
                 baseSettings.disableMobGeneration(),
-                baseSettings.aquifersEnabled(),
-                baseSettings.oreVeinsEnabled(),
-                baseSettings.useLegacyRandomSource()
+                baseSettings.aquifers(),
+                baseSettings.useLegacyRandomSource(),
+                baseSettings.debugFunctions()
         );
 
         return Holder.direct(fixedSettings);
