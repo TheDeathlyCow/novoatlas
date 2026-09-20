@@ -70,9 +70,12 @@ public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
 
         DensityFunction chunkSurfaceLevel = new GetPreliminaryHeightFromMapDensityFunction(mapInfo, minY, maxY);
 
-        DensityFunction finalDensity = DensityFunctions.min(
-                new HeightmapDensityFunction(mapInfo, 128.0f),
-                undergroundDensityFunction
+        DensityFunction finalDensity = DensityFunctions.add(
+                DensityFunctions.min(
+                        new HeightmapDensityFunction(mapInfo, 128.0f),
+                        undergroundDensityFunction
+                ),
+                DensityFunctions.beardifier()
         );
 
         Aquifer.Config aquifers = baseSettings.aquifers().orElse(null);
