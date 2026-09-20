@@ -62,7 +62,7 @@ public record MapInfo(
             ).apply(instance, MapInfo::new)
     );
 
-    public static final Codec<Holder<MapInfo>> CODEC = RegistryFileCodec.create(NovoAtlasRegistries.MAP_INFO, DIRECT_CODEC);
+    public static final Codec<Holder<MapInfo>> CODEC = RegistryFileCodec.create(NovoAtlasRegistries.MAP_INFO, DIRECT_CODEC, false);
 
     public static HeightMapImage lookupHeightmap(ResourceKey<HeightMapImage> map) {
         return Objects.requireNonNull(MapImageRegistry.HEIGHTMAP.getImage(map), "Missing height map image " + map);
@@ -72,11 +72,15 @@ public record MapInfo(
         return Objects.requireNonNull(MapImageRegistry.BIOME_MAP.getImage(map), "Missing biome map image " + map);
     }
 
+    public HeightMapImage getHeightMap() {
+        return lookupHeightmap(this.heightMap);
+    }
+
     public int getHeightMapElevation(int x, int z) {
         return lookupHeightmap(this.heightMap).sample(x, z, this);
     }
 
-    public double getDistanceToEdge(int x, int z) {
+    public float getDistanceToEdge(int x, int z) {
         return lookupHeightmap(this.heightMap).getDistanceToEdge(x, z, this);
     }
 

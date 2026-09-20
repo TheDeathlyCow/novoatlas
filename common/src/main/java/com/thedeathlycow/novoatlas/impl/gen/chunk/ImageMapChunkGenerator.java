@@ -7,9 +7,10 @@ import com.thedeathlycow.novoatlas.impl.gen.density.GetPreliminaryHeightFromMapD
 import com.thedeathlycow.novoatlas.impl.gen.density.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import net.minecraft.core.Holder;
-import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.levelgen.*;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.NoiseRouter;
+import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import org.jspecify.annotations.NonNull;
@@ -67,7 +68,7 @@ public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
         DensityFunction chunkSurfaceLevel = new GetPreliminaryHeightFromMapDensityFunction(mapInfo, minY, maxY);
 
         DensityFunction finalDensity = DensityFunctions.min(
-                new HeightmapDensityFunction(mapInfo, 128.0),
+                new HeightmapDensityFunction(mapInfo, 128.0f),
                 undergroundDensityFunction
         );
 

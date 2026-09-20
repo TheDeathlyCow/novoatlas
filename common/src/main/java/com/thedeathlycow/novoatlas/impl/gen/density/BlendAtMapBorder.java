@@ -2,10 +2,13 @@ package com.thedeathlycow.novoatlas.impl.gen.density;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.impl.image.HeightMapImage;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Interval;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.levelgen.densityfunction.*;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Experimental
@@ -15,7 +18,7 @@ public record BlendAtMapBorder(
         DensityFunction outsideMap,
         float blendDistance
 ) implements DensityFunction {
-    public static final MapCodec<BlendAtMapBorder> DATA_CODEC = RecordCodecBuilder.mapCodec(
+    public static final MapCodec<BlendAtMapBorder> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     MapInfo.CODEC
                             .fieldOf("map_info")
@@ -32,69 +35,110 @@ public record BlendAtMapBorder(
             ).apply(instance, BlendAtMapBorder::new)
     );
 
-    public static final KeyDispatchDataCodec<BlendAtMapBorder> CODEC = KeyDispatchDataCodec.of(DATA_CODEC);
-
     @Override
-    public double compute(FunctionContext context) {
-        double alpha = this.smoothstepDistance(context.blockX(), context.blockZ());
-
-        if (alpha <= 0.0) {
-            return outsideMap.compute(context);
-        }
-
-        if (alpha >= 1.0) {
-            return insideMap.compute(context);
-        }
-
-        double inside = insideMap.compute(context);
-        double outside = outsideMap.compute(context);
-        return Mth.lerp(alpha, outside, inside);
-    }
-
-    private double smoothstepDistance(int x, int z) {
-        double distance = mapInfo.value().getDistanceToEdge(x, z);
-        return smoothstep(-blendDistance, blendDistance, distance);
-    }
-
-    /// Hermite Spline interpolation for better blending than simple lerp.
-    ///
-    /// Implementation is from [the Book of Shaders](https://thebookofshaders.com/glossary/?search=smoothstep).
-    ///
-    /// @param edge0 Lower edge
-    /// @param edge1 Upper edge
-    /// @param x Source value to interpolate
-    private static double smoothstep(double edge0, double edge1, double x) {
-        double t = Mth.clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
-        return t * t * (3.0 - 2.0 * t);
-    }
-
-    @Override
-    public void fillArray(double[] output, ContextProvider contextProvider) {
-        contextProvider.fillAllDirectly(output, this);
-    }
-
-    @Override
-    public DensityFunction mapChildren(Visitor visitor) {
-        return new BlendAtMapBorder(
-                this.mapInfo,
-                visitor.apply(this.insideMap),
-                visitor.apply(this.outsideMap),
+    public DensitySampler compileSampler(CompileContext context) {
+        return new Sampler(
+                this.mapInfo.value(),
+                this.insideMap.compileSampler(context),
+                this.outsideMap.compileSampler(context),
                 this.blendDistance
         );
     }
 
     @Override
-    public double minValue() {
-        return Math.min(this.insideMap.minValue(), this.outsideMap.minValue());
+    public DensityFunction rewriteChildren(DfRewriteRule rule) {
+        DensityFunction insideRewrite = this.insideMap.rewriteChildren(rule);
+        DensityFunction outsideRewrite = this.outsideMap.rewriteChildren(rule);
+
+        return insideRewrite != this.insideMap || outsideRewrite != this.outsideMap
+                ? new BlendAtMapBorder(this.mapInfo, insideRewrite, outsideRewrite, this.blendDistance)
+                : this;
     }
 
     @Override
-    public double maxValue() {
-        return Math.max(this.insideMap.maxValue(), this.outsideMap.maxValue());
+    public Interval range() {
+        return Interval.sub(this.insideMap.range(), this.outsideMap.range());
     }
 
     @Override
-    public KeyDispatchDataCodec<BlendAtMapBorder> codec() {
+    public @Axes int domainAxes() {
+        return DensityFunction.ALL_AXES;
+    }
+
+    @Override
+    public MapCodec<BlendAtMapBorder> codec() {
         return CODEC;
+    }
+
+    private record Sampler(
+            MapInfo mapInfo,
+            DensitySampler insideMap,
+            DensitySampler outsideMap,
+            float blendDistance
+    ) implements DensitySampler {
+
+        @Override
+        public void sampleVolume(SamplerContext context, DensityBuffer outputBuffer, DensityVolume volume) {
+            HeightMapImage heightmap = mapInfo.getHeightMap();
+            this.insideMap.sampleVolume(context, outputBuffer, volume);
+
+            try (ScopedDensityBuffer outsideBuffer = context.acquireBuffer(volume)) {
+                this.outsideMap.sampleVolume(context, outsideBuffer, volume);
+                int index = 0;
+
+                for (int x = 0; x < volume.sizeX(); x++) {
+                    for (int y = 0; y < volume.sizeY(); y++) {
+                        for (int z = 0; z < volume.sizeZ(); z++) {
+                            float alpha = this.smoothstepDistance(heightmap.getDistanceToEdge(volume.blockX(x), volume.blockZ(z), this.mapInfo));
+
+                            if (alpha <= 0.0) {
+                                outputBuffer.set(index, outsideBuffer.get(index));
+                            } else if (alpha <= 1.0) {
+                                float outsideValue = outsideBuffer.get(index);
+                                float insideValue = outputBuffer.get(index);
+
+                                float blendedValue = Mth.lerp(alpha, outsideValue, insideValue);
+                                outputBuffer.set(index, blendedValue);
+                            } // else do nothing, output buffer is already populated with inside value
+
+                            index++;
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public float sampleValue(SamplerContext context, int blockX, int blockY, int blockZ) {
+            float alpha = this.smoothstepDistance(mapInfo.getDistanceToEdge(blockX, blockZ));
+
+            if (alpha <= 0.0) {
+                return outsideMap.sampleValue(context, blockX, blockY, blockZ);
+            }
+
+            if (alpha >= 1.0) {
+                return insideMap.sampleValue(context, blockX, blockY, blockZ);
+            }
+
+            float inside = insideMap.sampleValue(context, blockX, blockY, blockZ);
+            float outside = outsideMap.sampleValue(context, blockX, blockY, blockZ);
+            return Mth.lerp(alpha, outside, inside);
+        }
+
+        private float smoothstepDistance(float distance) {
+            return smoothstep(-blendDistance, blendDistance, distance);
+        }
+
+        /// Hermite Spline interpolation for better blending than simple lerp.
+        ///
+        /// Implementation is from [the Book of Shaders](https://thebookofshaders.com/glossary/?search=smoothstep).
+        ///
+        /// @param edge0 Lower edge
+        /// @param edge1 Upper edge
+        /// @param x     Source value to interpolate
+        private static float smoothstep(float edge0, float edge1, float x) {
+            float t = Mth.clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
+            return t * t * (3.0f - 2.0f * t);
+        }
     }
 }

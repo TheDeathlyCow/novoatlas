@@ -14,25 +14,25 @@ public abstract class MapImage {
 
     /// Returns a positive distance to the edge of the image if the sampled point is inside the image,
     /// and a negative distance if the sampled point is outside the image.
-    public final double getDistanceToEdge(int x, int z, MapInfo info) {
-        double horizontalScale = info.horizontalScale().value();
+    public final float getDistanceToEdge(int x, int z, MapInfo info) {
+        float horizontalScale = info.horizontalScale().value();
         Vector2fc centerOffset = info.centerOffset();
 
-        double xR = getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
-        double zR = getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
+        float xR = (float)getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
+        float zR = (float)getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
 
         boolean insideX = xR >= 0 && xR <= this.width;
         boolean insideZ = zR >= 0 && zR <= this.height;
 
         if (insideX && insideZ) {
-            double distX = Math.min(xR, this.width - xR);
-            double distZ = Math.min(zR, this.height - zR);
+            float distX = Math.min(xR, this.width - xR);
+            float distZ = Math.min(zR, this.height - zR);
             return Math.min(distX, distZ);
         }
 
-        double dx = Math.max(0, Math.max(-xR, xR - this.width));
-        double dz = Math.max(0, Math.max(-zR, zR - this.height));
-        return -Math.sqrt(dx * dx + dz * dz);
+        float dx = Math.max(0, Math.max(-xR, xR - this.width));
+        float dz = Math.max(0, Math.max(-zR, zR - this.height));
+        return -Mth.sqrt(dx * dx + dz * dz);
     }
 
     public final boolean isBlockInsideImage(int x, int z, MapInfo info) {

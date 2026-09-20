@@ -43,10 +43,10 @@ public final class NovoAtlasFabric implements ModInitializer {
         Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.id("biome_cell_color_map"), BiomeCellColorMapBiomeSource.CODEC);
         Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.expId("bounded_biome_cell_color_map"), BoundedMapBiomeSource.CODEC);
 
-        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), HeightmapDensityFunction.DATA_CODEC);
-        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), GetHeightFromMapDensityFunction.DATA_CODEC);
-        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_preliminary_height_from_map"), GetPreliminaryHeightFromMapDensityFunction.DATA_CODEC);
-        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_at_map_border"), BlendAtMapBorder.DATA_CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), HeightmapDensityFunction.CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), GetHeightFromMapDensityFunction.CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_preliminary_height_from_map"), GetPreliminaryHeightFromMapDensityFunction.CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_at_map_border"), BlendAtMapBorder.CODEC);
 
         Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), NearestNeighbour.CODEC);
         Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), Bilinear.CODEC);
