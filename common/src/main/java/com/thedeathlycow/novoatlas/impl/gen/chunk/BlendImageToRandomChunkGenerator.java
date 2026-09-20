@@ -83,9 +83,12 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
         DensityFunction chunkSurfaceLevelHeightmap = new GetPreliminaryHeightFromMapDensityFunction(mapInfo, minY, maxY);
         chunkSurfaceLevelHeightmap = new BlendAtMapBorder(mapInfo, chunkSurfaceLevelHeightmap, baseNoiseRouter.chunkSurfaceLevel(), blendDistance);
 
-        DensityFunction finalDensity = DensityFunctions.min(
-                new HeightmapDensityFunction(mapInfo, 128.0f),
-                undergroundDensityFunction
+        DensityFunction finalDensity = DensityFunctions.add(
+                DensityFunctions.min(
+                        new HeightmapDensityFunction(mapInfo, 128.0f),
+                        undergroundDensityFunction
+                ),
+                DensityFunctions.beardifier()
         );
         finalDensity = new BlendAtMapBorder(mapInfo, finalDensity, baseNoiseRouter.finalDensity(), blendDistance);
 
