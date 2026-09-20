@@ -10,6 +10,7 @@ import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.NoiseSettings;
@@ -17,6 +18,8 @@ import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NonNull;
+
+import java.util.Optional;
 
 @ApiStatus.Experimental
 public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGenerator {
@@ -86,6 +89,18 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
         );
         finalDensity = new BlendAtMapBorder(mapInfo, finalDensity, baseNoiseRouter.finalDensity(), blendDistance);
 
+        Aquifer.Config aquifers = baseSettings.aquifers().orElse(null);
+        if (aquifers != null) {
+            aquifers = new Aquifer.Config(
+                    aquifers.barrierNoise(),
+                    aquifers.fluidLevelFloodednessNoise(),
+                    aquifers.fluidLevelSpreadNoise(),
+                    aquifers.lavaNoise(),
+                    aquifers.exclusion(),
+                    chunkSurfaceLevelHeightmap
+            );
+        }
+
         NoiseRouter fixedNoiseRouter = new NoiseRouter(
                 baseNoiseRouter.temperature(),
                 baseNoiseRouter.vegetation(),
@@ -106,7 +121,7 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
                 baseSettings.spawnTarget(),
                 baseSettings.seaLevel(),
                 baseSettings.disableMobGeneration(),
-                baseSettings.aquifers(),
+                Optional.ofNullable(aquifers),
                 baseSettings.useLegacyRandomSource(),
                 baseSettings.debugFunctions()
         );

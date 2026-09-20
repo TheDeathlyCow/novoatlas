@@ -68,12 +68,15 @@ public record GetHeightFromMapDensityFunction(
             int index = 0;
             HeightMapImage heightmap = mapInfo.getHeightMap();
 
-            for (int x = 0; x < volume.sizeX(); x++) {
-                for (int z = 0; z < volume.sizeZ(); z++) {
+            for (int z = 0; z < volume.sizeZ(); z++) {
+                for (int x = 0; x < volume.sizeX(); x++) {
                     int elevation = heightmap.sample(volume.blockX(x), volume.blockZ(z), mapInfo);
                     float density = Mth.clamp(elevation, this.minValue, this.maxValue);
-                    outputBuffer.set(index, density);
-                    index++;
+
+                    for (int y = 0; y < volume.sizeY(); y++) {
+                        outputBuffer.set(index, density);
+                        index++;
+                    }
                 }
             }
         }

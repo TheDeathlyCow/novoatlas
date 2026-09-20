@@ -61,13 +61,14 @@ public record HeightmapDensityFunction(
             int index = 0;
             HeightMapImage heightmap = mapInfo.getHeightMap();
 
-            for (int x = 0; x < volume.sizeX(); x++) {
-                for (int y = 0; y < volume.sizeY(); y++) {
-                    for (int z = 0; z < volume.sizeZ(); z++) {
-                        int elevation = heightmap.sample(volume.blockX(x), volume.blockZ(z), mapInfo);
+            for (int z = 0; z < volume.sizeZ(); z++) {
+                for (int x = 0; x < volume.sizeX(); x++) {
+                    final int elevation = heightmap.sample(volume.blockX(x), volume.blockZ(z), mapInfo);
+
+                    for (int y = 0; y < volume.sizeY(); y++) {
                         int yOffset = elevation - volume.blockY(y);
                         float density = Mth.clampedMap(yOffset, -transitionRange, transitionRange, -1.0f, 1.0f);
-                        outputBuffer.addTo(index, density);
+                        outputBuffer.set(index, density);
 
                         index++;
                     }

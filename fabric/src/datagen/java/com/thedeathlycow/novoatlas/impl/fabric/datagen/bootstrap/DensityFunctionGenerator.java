@@ -30,7 +30,7 @@ public final class DensityFunctionGenerator {
             final ResourceKey<DensityFunction> name,
             final boolean applyEntrances
     ) {
-        DensityFunction slopedCheese = NoiseRouterData.getFunction(functions, NoiseRouterData.OVERWORLD_FUNCTIONS.slopedCheese());
+        DensityFunction slopedCheese = DensityFunctions.constant(0.1f); //NoiseRouterData.getFunction(functions, NoiseRouterData.OVERWORLD_FUNCTIONS.slopedCheese());
         DensityFunction surface = slopedCheese;
 
         if (applyEntrances) {

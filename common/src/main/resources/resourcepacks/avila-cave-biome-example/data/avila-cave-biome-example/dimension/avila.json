@@ -4,7 +4,7 @@
         "type": "novoatlas:image_map",
         "map_info": "avila-cave-biome-example:avila",
         "settings": "minecraft:overworld",
-        "underground_density_function": "novoatlas:caves",
+        "underground_density_function": "novoatlas:no_cave_entrances",
         "biome_source": {
             "type": "novoatlas:biome_cell_color_map",
             "map_info": "avila-cave-biome-example:avila",

@@ -86,23 +86,26 @@ public record BlendAtMapBorder(
                 this.outsideMap.sampleVolume(context, outsideBuffer, volume);
                 int index = 0;
 
-                for (int x = 0; x < volume.sizeX(); x++) {
-                    for (int y = 0; y < volume.sizeY(); y++) {
-                        for (int z = 0; z < volume.sizeZ(); z++) {
-                            float alpha = this.smoothstepDistance(heightmap.getDistanceToEdge(volume.blockX(x), volume.blockZ(z), this.mapInfo));
+                for (int z = 0; z < volume.sizeZ(); z++) {
+                    for (int x = 0; x < volume.sizeX(); x++) {
+                        final float alpha = this.smoothstepDistance(heightmap.getDistanceToEdge(volume.blockX(x), volume.blockZ(z), this.mapInfo));
 
-                            if (alpha <= 0.0) {
+                        if (alpha <= 0.0) {
+                            for (int y = 0; y < volume.sizeY(); y++) {
                                 outputBuffer.set(index, outsideBuffer.get(index));
-                            } else if (alpha <= 1.0) {
+                                index++;
+                            }
+                        } else if (alpha <= 1.0) {
+                            for (int y = 0; y < volume.sizeY(); y++) {
                                 float outsideValue = outsideBuffer.get(index);
                                 float insideValue = outputBuffer.get(index);
 
                                 float blendedValue = Mth.lerp(alpha, outsideValue, insideValue);
                                 outputBuffer.set(index, blendedValue);
-                            } // else do nothing, output buffer is already populated with inside value
 
-                            index++;
-                        }
+                                index++;
+                            }
+                        } // else do nothing, output buffer is already populated with inside value
                     }
                 }
             }

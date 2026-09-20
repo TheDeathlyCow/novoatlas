@@ -11,6 +11,7 @@ import net.minecraft.util.Interval;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.densityfunction.*;
+import net.minecraft.world.level.levelgen.densityfunction.generator.NoiseFunction;
 
 /// Identical to [GetHeightFromMapDensityFunction] but subtracts elevation by 8 to account for the expected preliminary
 /// surface value.
@@ -70,12 +71,15 @@ public record GetPreliminaryHeightFromMapDensityFunction(
             int index = 0;
             HeightMapImage heightmap = mapInfo.getHeightMap();
 
-            for (int x = 0; x < volume.sizeX(); x++) {
-                for (int z = 0; z < volume.sizeZ(); z++) {
+            for (int z = 0; z < volume.sizeZ(); z++) {
+                for (int x = 0; x < volume.sizeX(); x++) {
                     int elevation = heightmap.sample(volume.blockX(x), volume.blockZ(z), mapInfo) - 8;
                     float density = Mth.clamp(elevation, this.minValue, this.maxValue);
-                    outputBuffer.set(index, density);
-                    index++;
+
+                    for (int y = 0; y < volume.sizeY(); y++) {
+                        outputBuffer.set(index, density);
+                        index++;
+                    }
                 }
             }
         }
