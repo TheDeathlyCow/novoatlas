@@ -35,6 +35,8 @@ loom {
     }
 }
 
+sourceSets.main.resources { srcDir project(":common").file("src/main/generated") }
+
 configurations {
     commonJava {
         canBeResolved = false
@@ -44,11 +46,16 @@ configurations {
         canBeResolved = false
         canBeConsumed = true
     }
+    commonGeneratedResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
 }
 
 artifacts {
-    commonJava sourceSets.main.java.sourceDirectories.singleFile
-    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+    commonJava file("src/main/java")
+    commonResources file("src/main/resources")
+    commonGeneratedResources file("src/main/generated")
 }
 
 // Implement mcgradleconventions loader attribute

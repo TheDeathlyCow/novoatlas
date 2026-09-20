@@ -1,0 +1,4 @@
+// 26.3	-999999999-01-01T00:00:00	NovoAtlas/NovoAtlasBootstrappedRegistryProvider
+3b7c40ddc395321c8e7ed55ff479af87563775b9 data/novoatlas/worldgen/density_function/caves.json
+95024d5f69629ead81a42319ad5f2b080f9593a8 data/novoatlas/worldgen/density_function/no_cave_entrances.json
+180505679cfe0cca79bae51fdda0296b7cd9c493 data/novoatlas/worldgen/density_function/no_caves.json

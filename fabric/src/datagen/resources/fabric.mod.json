@@ -1,0 +1,13 @@
+{
+    "schemaVersion": 1,
+    "id": "novoatlas-datagen",
+    "name": "NovoAtlas Datagen Mod",
+    "version": "1.0.0",
+    "environment": "*",
+    "license": "LGPL-3.0",
+    "entrypoints": {
+        "fabric-datagen": [
+            "com.thedeathlycow.novoatlas.impl.fabric.datagen.NovoAtlasDatagen"
+        ]
+    }
+}

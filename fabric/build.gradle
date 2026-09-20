@@ -4,6 +4,18 @@ plugins {
     id 'me.modmuss50.mod-publish-plugin'
 }
 
+def commonProject = project(':common')
+
+fabricApi {
+    configureDataGeneration() {
+        client = true
+        createSourceSet = true
+        addToResources = false
+        modId = "novoatlas-datagen"
+        outputDirectory = commonProject.file("src/main/generated")
+    }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
