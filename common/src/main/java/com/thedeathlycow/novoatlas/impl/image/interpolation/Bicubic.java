@@ -39,15 +39,12 @@ public final class Bicubic implements Interpolator {
     }
 
     private static double[][] cubicNeighborhood(int x, int z, MapImage image, ImageWrapping imageWrapping) {
-        int width = image.width();
-        int height = image.height();
-
         double[][] G = new double[4][4];
 
         for (int col = -1; col < 3; col++) {
             for (int row = -1; row < 3; row++) {
-                int px = Mth.clamp(x + col, 0, width - 1);
-                int pz = Mth.clamp(z + row, 0, height - 1);
+                int px = x + col;
+                int pz = z + row;
                 G[col + 1][row + 1] = image.getPixelValue(px, pz, imageWrapping);
             }
         }

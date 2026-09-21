@@ -2,14 +2,14 @@
     "starting_y": 0,
     "scaling": {
         "horizontal_scale": {
-            "value": 1,
-            "interpolation": "nearest_neighbor"
+            "value": 2,
+            "interpolation": "bicubic"
         },
         "vertical_scale": 1
     },
     "height_map": "avila-example:avila",
     "center_offset": [0.0, 0.0],
-    "image_wrapping": "clamp_to_edge",
+    "image_wrapping": "repeat",
     "surface_biomes": {
         "map": "avila-example:avila",
         "strict": false,
