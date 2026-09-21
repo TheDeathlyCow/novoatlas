@@ -8,15 +8,12 @@ import com.thedeathlycow.novoatlas.impl.gen.density.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.levelgen.Aquifer;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseRouter;
 import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 import org.jspecify.annotations.NonNull;
-
-import java.util.Optional;
 
 public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
     public static final MapCodec<ImageMapChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(
@@ -41,15 +38,15 @@ public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
     );
 
     public ImageMapChunkGenerator(
-            BiomeSource biomeSource,
-            Holder<NoiseGeneratorSettings> settings,
-            Holder<MapInfo> mapInfo,
-            DensityFunction undergroundDensityFunction,
-            boolean enableCarvers
+            final BiomeSource biomeSource,
+            final Holder<NoiseGeneratorSettings> settings,
+            final Holder<MapInfo> mapInfo,
+            final DensityFunction undergroundDensityFunction,
+            final boolean enableCarvers
     ) {
         super(
                 biomeSource,
-                applyHeightMapToDensityFunctions(settings, mapInfo, undergroundDensityFunction),
+                applyHeightMapToDensityFunctions(settings.value(), mapInfo, undergroundDensityFunction),
                 mapInfo,
                 undergroundDensityFunction,
                 enableCarvers
@@ -57,65 +54,17 @@ public final class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
     }
 
     private static Holder<NoiseGeneratorSettings> applyHeightMapToDensityFunctions(
-            Holder<NoiseGeneratorSettings> settings,
-            Holder<MapInfo> mapInfo,
-            DensityFunction undergroundDensityFunction
+            final NoiseGeneratorSettings baseSettings,
+            final Holder<MapInfo> mapInfo,
+            final DensityFunction undergroundDensityFunction
     ) {
-        final NoiseGeneratorSettings baseSettings = settings.value();
         final NoiseRouter baseNoiseRouter = baseSettings.noiseRouter();
         final NoiseSettings noiseSettings = baseSettings.noiseSettings();
 
-        final int minY = noiseSettings.minY();
-        final int maxY = minY + noiseSettings.height();
+        DensityFunction chunkSurfaceLevel = createPatchedPreliminaryDensity(mapInfo, noiseSettings);
+        DensityFunction finalDensity = createPatchedFinalDensity(mapInfo, undergroundDensityFunction);
 
-        DensityFunction chunkSurfaceLevel = new GetPreliminaryHeightFromMapDensityFunction(mapInfo, minY, maxY);
-
-        DensityFunction finalDensity = DensityFunctions.add(
-                DensityFunctions.min(
-                        new HeightmapDensityFunction(mapInfo, 128.0f),
-                        undergroundDensityFunction
-                ),
-                DensityFunctions.beardifier()
-        );
-
-        Aquifer.Config aquifers = baseSettings.aquifers().orElse(null);
-        if (aquifers != null) {
-            aquifers = new Aquifer.Config(
-                    aquifers.barrierNoise(),
-                    aquifers.fluidLevelFloodednessNoise(),
-                    aquifers.fluidLevelSpreadNoise(),
-                    aquifers.lavaNoise(),
-                    aquifers.exclusion(),
-                    chunkSurfaceLevel
-            );
-        }
-
-        NoiseRouter fixedNoiseRouter = new NoiseRouter(
-                baseNoiseRouter.temperature(),
-                baseNoiseRouter.vegetation(),
-                baseNoiseRouter.continents(),
-                baseNoiseRouter.erosion(),
-                baseNoiseRouter.depth(),
-                baseNoiseRouter.ridges(),
-                chunkSurfaceLevel,
-                finalDensity
-        );
-
-        NoiseGeneratorSettings fixedSettings = new NoiseGeneratorSettings(
-                baseSettings.noiseSettings(),
-                baseSettings.defaultBlock(),
-                baseSettings.defaultFluid(),
-                fixedNoiseRouter,
-                baseSettings.materialRule(),
-                baseSettings.spawnTarget(),
-                baseSettings.seaLevel(),
-                baseSettings.disableMobGeneration(),
-                Optional.ofNullable(aquifers),
-                baseSettings.useLegacyRandomSource(),
-                baseSettings.debugFunctions()
-        );
-
-        return Holder.direct(fixedSettings);
+        return applyPatchedDensityFunctionsToNoiseSettings(baseSettings, baseNoiseRouter, chunkSurfaceLevel, finalDensity);
     }
 
     @Override
