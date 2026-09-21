@@ -26,7 +26,7 @@ public record MapInfo(
         Optional<LayeredMapBiomeProvider> caveBiomes,
         int startingY,
         int surfaceRange,
-        Optional<MapScaleConfig> scaling,
+        MapScaleConfig scaling,
         Vector2fc centerOffset,
         ImageWrapping imageWrapping
 ) {
@@ -51,7 +51,7 @@ public record MapInfo(
                             .optionalFieldOf("surface_range", 16)
                             .forGetter(MapInfo::surfaceRange),
                     MapScaleConfig.CODEC
-                            .optionalFieldOf("scaling")
+                            .optionalFieldOf("scaling", MapScaleConfig.DEFAULT)
                             .forGetter(MapInfo::scaling),
                     ExtraCodecs.VECTOR2F
                             .optionalFieldOf("center_offset", new Vector2f(0f, 0f))
@@ -119,19 +119,11 @@ public record MapInfo(
     }
 
     public MapScaleConfig.HorizontalConfig horizontalScale() {
-        if (this.scaling.isPresent()) {
-            return this.scaling.orElseThrow().horizontalScale();
-        } else {
-            return MapScaleConfig.HorizontalConfig.DEFAULT;
-        }
+        return scaling.horizontalScale();
     }
 
     public float verticalScale() {
-        if (this.scaling.isPresent()) {
-            return this.scaling.orElseThrow().verticalScale();
-        } else {
-            return 1.0f;
-        }
+        return this.scaling.verticalScale();
     }
 
     @Nullable
@@ -150,6 +142,6 @@ public record MapInfo(
 
     @FunctionalInterface
     public interface Delegate {
-       @NotNull Holder<Biome> getBiome(int x, int y, int z);
+        @NotNull Holder<Biome> getBiome(int x, int y, int z);
     }
 }

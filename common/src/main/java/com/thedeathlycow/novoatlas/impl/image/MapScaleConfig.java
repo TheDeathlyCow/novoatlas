@@ -10,6 +10,8 @@ public record MapScaleConfig(
         float verticalScale,
         HorizontalConfig horizontalScale
 ) {
+    public static final MapScaleConfig DEFAULT = new MapScaleConfig(1f, HorizontalConfig.DEFAULT);
+
     public static final Codec<MapScaleConfig> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     ExtraCodecs.POSITIVE_FLOAT
