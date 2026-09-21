@@ -105,7 +105,10 @@ public record BlendAtMapBorder(
 
                                 index++;
                             }
-                        } // else do nothing, output buffer is already populated with inside value
+                        } else {
+                            // dont need to update the output buffer as it already holds the desired inside value
+                            index += volume.sizeY();
+                        }
                     }
                 }
             }
