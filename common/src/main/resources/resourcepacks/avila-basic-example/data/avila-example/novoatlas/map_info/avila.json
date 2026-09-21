@@ -2,8 +2,8 @@
     "starting_y": 0,
     "scaling": {
         "horizontal_scale": {
-            "value": 2,
-            "interpolation": "bicubic"
+            "value": 1,
+            "interpolation": "nearest_neighbor"
         },
         "vertical_scale": 1
     },

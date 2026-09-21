@@ -9,6 +9,8 @@ import net.minecraft.util.Mth;
 public final class Bicubic implements Interpolator {
     public static final MapCodec<Bicubic> CODEC = MapCodec.unit(new Bicubic());
 
+    private static final int NEIGHBORHOOD_WIDTH = 4;
+
     /// Implementation by [Paul Breeuwsma](https://www.paulinternet.nl/?page=bicubic)
     @Override
     public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
@@ -18,19 +20,24 @@ public final class Bicubic implements Interpolator {
         double deltaX = x - truncatedX;
         double deltaZ = z - truncatedZ;
 
+        double[] neighborHood = new double[NEIGHBORHOOD_WIDTH * NEIGHBORHOOD_WIDTH];
+        cubicNeighborhood(neighborHood, truncatedX, truncatedZ, image, mapInfo.imageWrapping());
 
-        double[][] p = cubicNeighborhood(truncatedX, truncatedZ, image, mapInfo.imageWrapping());
-
-        double[] arr = new double[4];
-        arr[0] = getValue(p[0], deltaZ);
-        arr[1] = getValue(p[1], deltaZ);
-        arr[2] = getValue(p[2], deltaZ);
-        arr[3] = getValue(p[3], deltaZ);
-        return getValue(arr, deltaX);
+        double[] arr = new double[NEIGHBORHOOD_WIDTH];
+        arr[0] = getValue(neighborHood, 0, deltaZ);
+        arr[1] = getValue(neighborHood, NEIGHBORHOOD_WIDTH, deltaZ);
+        arr[2] = getValue(neighborHood, 2 * NEIGHBORHOOD_WIDTH, deltaZ);
+        arr[3] = getValue(neighborHood, 3 * NEIGHBORHOOD_WIDTH, deltaZ);
+        return getValue(arr, 0, deltaX);
     }
 
-    private static double getValue(double[] p, double x) {
-        return p[1] + 0.5 * x * (p[2] - p[0] + x * (2.0 * p[0] - 5.0 * p[1] + 4.0 * p[2] - p[3] + x * (3.0 * (p[1] - p[2]) + p[3] - p[0])));
+    private static double getValue(double[] p, int offset, double x) {
+        double p0 = p[offset];
+        double p1 = p[offset + 1];
+        double p2 = p[offset + 2];
+        double p3 = p[offset + 3];
+
+        return p1 + 0.5 * x * (p2 - p0 + x * (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3 + x * (3.0 * (p1 - p2) + p3 - p0)));
     }
 
     @Override
@@ -38,17 +45,13 @@ public final class Bicubic implements Interpolator {
         return CODEC;
     }
 
-    private static double[][] cubicNeighborhood(int x, int z, MapImage image, ImageWrapping imageWrapping) {
-        double[][] G = new double[4][4];
-
+    private static void cubicNeighborhood(double[] output, int x, int z, MapImage image, ImageWrapping imageWrapping) {
         for (int col = -1; col < 3; col++) {
             for (int row = -1; row < 3; row++) {
                 int px = x + col;
                 int pz = z + row;
-                G[col + 1][row + 1] = image.getPixelValue(px, pz, imageWrapping);
+                output[(col + 1) * NEIGHBORHOOD_WIDTH + row + 1] = image.getPixelValue(px, pz, imageWrapping);
             }
         }
-
-        return G;
     }
 }
