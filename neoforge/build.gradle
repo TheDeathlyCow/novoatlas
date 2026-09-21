@@ -72,7 +72,7 @@ sourceSets.configureEach {
 }
 
 publishMods {
-    type = STABLE
+    type = BETA
     def changelogFile = rootProject.file("./changelogs/${project.version}.md")
 
     changelog = changelogFile.text

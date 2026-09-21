@@ -78,7 +78,7 @@ sourceSets.configureEach {
 }
 
 publishMods {
-    type = STABLE
+    type = BETA
     changelog = rootProject.file("./changelogs/${project.version}.md").text
 
     github {
