@@ -1,102 +1,88 @@
 package com.thedeathlycow.novoatlas.impl.image;
 
 import net.minecraft.util.Mth;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 
-public record MapImage(
-        int width,
-        int height,
-        int[][] pixels,
-        Type type
-) {
-    public enum Type {
-        BIOME_MAP,
-        HEIGHTMAP
+public abstract class MapImage {
+    private final int width;
+    private final int height;
+
+    protected MapImage(int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
-    public static MapImage fromBufferedImage(BufferedImage image, Type type) {
-        int width = image.getWidth();
-        int height = image.getHeight();
+    /// Returns a positive distance to the edge of the image if the sampled point is inside the image,
+    /// and a negative distance if the sampled point is outside the image.
+    public final float getDistanceToEdge(int x, int z, MapInfo info) {
+        float horizontalScale = info.horizontalScale().value();
+        Vector2fc centerOffset = new Vector2f(0, 0);// info.centerOffset();
 
-        int[][] pixels = type == Type.BIOME_MAP ? getColorPixels(image, width, height) : getGrayScalePixels(image, width, height);
+        float xR = (float)getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
+        float zR = (float)getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
 
-        return new MapImage(width, height, pixels, type);
-    }
+        boolean insideX = xR >= 0 && xR <= this.width;
+        boolean insideZ = zR >= 0 && zR <= this.height;
 
-    private static int[][] getGrayScalePixels(BufferedImage image, int width, int height) {
-        int[][] pixels = new int[width][height];
-        Raster raster = image.getRaster();
-
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                pixels[x][y] = raster.getSample(x, y, 0);
-            }
+        if (insideX && insideZ) {
+            float distX = Math.min(xR, this.width - xR);
+            float distZ = Math.min(zR, this.height - zR);
+            return Math.min(distX, distZ);
         }
 
-        return pixels;
+        float dx = Math.max(0, Math.max(-xR, xR - this.width));
+        float dz = Math.max(0, Math.max(-zR, zR - this.height));
+        return -Mth.sqrt(dx * dx + dz * dz);
     }
 
-    private static int[][] getColorPixels(BufferedImage image, int width, int height) {
-        int[] data = new int[width * height];
-        image.getRGB(0, 0, width, height, data, 0, width);
+    public final boolean isBlockInsideImage(int x, int z, MapInfo info) {
+        double horizontalScale = info.horizontalScale().value();
+        Vector2fc centerOffset = new Vector2f(0, 0);// info.centerOffset();
 
-        int x = 0;
-        int y = 0;
-        int[][] pixels = new int[width][height];
+        double xR = getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
+        double zR = getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
 
-        for (int datum : data) {
-            if (x >= width) {
-                x = 0;
-                y++;
-            }
-            pixels[x++][y] = datum & 0xffffff;
-        }
-
-        return pixels;
+        return xR >= 0 && xR <= this.width && zR >= 0 && zR <= this.height;
     }
 
-    public int sample(int x, int z, MapInfo info) {
-        return this.sample(x, z, info, Integer.MIN_VALUE);
+    public final int sample(int x, int z, MapInfo info) {
+        double horizontalScale = info.horizontalScale().value();
+        Vector2fc centerOffset = new Vector2f(0, 0);// info.centerOffset();
+
+        double xR = getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
+        double zR = getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
+
+        return this.sampleInterpolated(xR, zR, info);
     }
 
-    public int sample(int x, int z, MapInfo info, int fallback) {
-        double xR = (x / info.horizontalScale()) + this.width() / 2.0; // these will always be even numbers
-        double zR = (z / info.horizontalScale()) + this.height() / 2.0;
-
-        if (xR < 0 || zR < 0 || xR >= this.width() || zR >= this.height()) {
-            return fallback;
-        }
-
-        int truncatedX = Mth.floor(xR);
-        int truncatedZ = Mth.floor(zR);
-
-        if (this.type == Type.HEIGHTMAP) {
-            // xR - truncatedX gets the fractional part of the sampled point, to use for lerp deltas
-            double deltaX = xR - truncatedX;
-            double deltaZ = zR - truncatedZ;
-
-            double height = this.bilerp(truncatedX, deltaX, truncatedZ, deltaZ);
-
-            return Mth.floor(info.verticalScale() * height + info.startingY());
-        } else {
-            return this.pixels[truncatedX][truncatedZ];
-        }
+    private static double getIndexWithAlpha(int i, double horizontalScale, double centerOffset, double size) {
+        double iR = i - (centerOffset * size);
+        return (iR / horizontalScale) + size * 0.5;
     }
 
-    private double bilerp(int x, double deltaX, int z, double deltaZ) {
-        int u0 = Math.max(0, x);
-        int v0 = Math.max(0, z);
-
-        int u1 = Math.min(width - 1, u0 + 1);
-        int v1 = Math.min(v0 + 1, height - 1);
-
-        double i00 = pixels[u0][v0];
-        double i01 = pixels[u1][v0];
-        double i10 = pixels[u0][v1];
-        double i11 = pixels[u1][v1];
-
-        return Mth.lerp2(Math.abs(deltaX), Math.abs(deltaZ), i00, i10, i01, i11);
+    public final int width() {
+        return width;
     }
+
+    public final int height() {
+        return height;
+    }
+
+    public final int getTruncated(double x, double z, ImageWrapping imageWrapping) {
+        int truncatedX = Mth.floor(x);
+        int truncatedZ = Mth.floor(z);
+        return this.getPixelValue(truncatedX, truncatedZ, imageWrapping);
+    }
+
+    public final int getPixelValue(int x, int z, ImageWrapping imageWrapping) {
+        return imageWrapping.transform(x, z, this.width, this.height, this::getPixelValue);
+    }
+
+    protected abstract int getPixelValue(int x, int z);
+
+    protected abstract int sampleInterpolated(double x, double z, MapInfo info);
 }

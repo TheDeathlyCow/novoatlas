@@ -1,10 +1,10 @@
-package com.thedeathlycow.novoatlas.impl.gen.biome.provider;
+package com.thedeathlycow.novoatlas.impl.image.biome.provider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
-import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeLayerEntry;
+import com.thedeathlycow.novoatlas.impl.image.biome.BiomeLayerEntry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -19,7 +19,7 @@ public record LayeredMapBiomeProvider(
 ) implements BiomeMapProvider {
     public static final ResourceKey<Biome> SURFACE_BIOME = ResourceKey.create(
             Registries.BIOME,
-            NovoAtlas.loc("surface_biome")
+            NovoAtlas.id("surface_biome")
     );
 
     public static final MapCodec<LayeredMapBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(
@@ -62,12 +62,6 @@ public record LayeredMapBiomeProvider(
     }
 
     private Holder<Biome> getBiomeFromColorMap(int x, int y, int z, MapInfo info) {
-        int elevation = info.getHeightMapElevation(x, z, Integer.MIN_VALUE);
-
-        if (elevation == Integer.MIN_VALUE) {
-            return null;
-        }
-
         BiomeLayerEntry layer = this.getLayer(y);
         return layer != null ? layer.biomeProvider().getBiome(x, y, z, info) : null;
     }

@@ -1,17 +1,64 @@
 package com.thedeathlycow.novoatlas.impl.image;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.Interpolator;
 import net.minecraft.util.ExtraCodecs;
 
 public record MapScaleConfig(
-        float verticalScale
+        float verticalScale,
+        HorizontalConfig horizontalScale
 ) {
+    public static final MapScaleConfig DEFAULT = new MapScaleConfig(1f, HorizontalConfig.DEFAULT);
+
     public static final Codec<MapScaleConfig> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     ExtraCodecs.POSITIVE_FLOAT
                             .optionalFieldOf("vertical_scale", 1.0f)
-                            .forGetter(MapScaleConfig::verticalScale)
+                            .forGetter(MapScaleConfig::verticalScale),
+                    HorizontalConfig.CODEC
+                            .optionalFieldOf("horizontal_scale", HorizontalConfig.DEFAULT)
+                            .forGetter(MapScaleConfig::horizontalScale)
             ).apply(instance, MapScaleConfig::new)
     );
+
+    public record HorizontalConfig(
+            Interpolator interpolation,
+            float value
+    ) {
+        public static final HorizontalConfig DEFAULT = new HorizontalConfig(Interpolator.nearestNeighbour(), 1.0f);
+
+        public HorizontalConfig(float value) {
+            this(DEFAULT.interpolation(), value);
+        }
+
+        private static final Codec<HorizontalConfig> BASE_CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                        Interpolator.BASE_CODEC
+                                .forGetter(HorizontalConfig::interpolation),
+                        ExtraCodecs.POSITIVE_FLOAT
+                                .fieldOf("value")
+                                .forGetter(HorizontalConfig::value)
+                ).apply(instance, HorizontalConfig::new)
+        );
+
+        private static final Codec<HorizontalConfig> FLOAT_CODEC = ExtraCodecs.POSITIVE_FLOAT
+                .flatComapMap(
+                        HorizontalConfig::new,
+                        config -> {
+                            if (config.interpolation == DEFAULT.interpolation()) {
+                                return DataResult.success(config.value);
+                            } else {
+                                return DataResult.error(() -> "Only a nearest neighbour interpolator can be mapped to a float, but was given:" + config);
+                            }
+                        }
+                );
+
+        public static final Codec<HorizontalConfig> CODEC = Codec.withAlternative(BASE_CODEC, FLOAT_CODEC);
+
+        public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
+            return this.interpolation.sample(x, z, image, mapInfo);
+        }
+    }
 }

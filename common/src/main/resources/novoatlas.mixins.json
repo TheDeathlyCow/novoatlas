@@ -7,6 +7,7 @@
     "client": [
     ],
     "mixins": [
+        "accessor.NoiseBasedChunkGeneratorAccessor",
         "accessor.NoiseChunkAccessor",
         "accessor.SurfaceRulesContextAccessor",
         "compat.terrablender.present.LevelUtilsMixin"
