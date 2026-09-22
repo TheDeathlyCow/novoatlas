@@ -19,8 +19,8 @@ public final class Bilinear implements Interpolator {
         double deltaX = x - truncatedX;
         double deltaZ = z - truncatedZ;
 
-        int nextX = Math.min(truncatedX + 1, image.width() - 1);
-        int nextZ = Math.min(truncatedZ + 1, image.height() - 1);
+        int nextX = truncatedX + 1;
+        int nextZ = truncatedZ + 1;
 
         int topLeft = image.getPixelValue(truncatedX, truncatedZ, mapInfo.imageWrapping());
         int topRight = image.getPixelValue(nextX, truncatedZ, mapInfo.imageWrapping());
