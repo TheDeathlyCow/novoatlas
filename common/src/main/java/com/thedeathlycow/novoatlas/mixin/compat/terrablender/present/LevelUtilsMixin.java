@@ -1,7 +1,7 @@
 package com.thedeathlycow.novoatlas.mixin.compat.terrablender.present;
 
-import com.thedeathlycow.novoatlas.world.gen.ImageMapChunkGenerator;
-import com.thedeathlycow.novoatlas.world.gen.biome.ColorMapBiomeSource;
+import com.thedeathlycow.novoatlas.impl.gen.chunk.ImageMapChunkGenerator;
+import com.thedeathlycow.novoatlas.impl.gen.biome.ColorMapBiomeSource;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
