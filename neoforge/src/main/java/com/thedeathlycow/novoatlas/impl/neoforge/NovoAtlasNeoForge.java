@@ -1,13 +1,22 @@
 package com.thedeathlycow.novoatlas.impl.neoforge;
 
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
-import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasResourceKeys;
+import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeCellColorMapBiomeSource;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.Bicubic;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.Bilinear;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.Lanczos;
+import com.thedeathlycow.novoatlas.impl.image.interpolation.NearestNeighbour;
+import com.thedeathlycow.novoatlas.impl.registry.MapImageRegistry;
+import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasBuiltinRegistries;
+import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import com.thedeathlycow.novoatlas.impl.gen.density.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.impl.gen.chunk.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.gen.biome.ColorMapBiomeSource;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
@@ -17,11 +26,13 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 @Mod(NovoAtlas.MOD_ID)
 public final class NovoAtlasNeoForge {
     public NovoAtlasNeoForge(IEventBus bus) {
+        bus.addListener(NovoAtlasNeoForge::registerRegistries);
         NovoAtlas.init();
 
         NeoForge.EVENT_BUS.addListener(NovoAtlasNeoForge::registerResourceReloader);
@@ -31,48 +42,83 @@ public final class NovoAtlasNeoForge {
         bus.addListener(NovoAtlasNeoForge::addExamplePacks);
     }
 
+    private static void registerRegistries(NewRegistryEvent event) {
+        event.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE);
+    }
+
     private static void addExamplePacks(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.SERVER_DATA) {
+            PackSource packSource = NovoAtlas.enableExampleDataPacks() ? PackSource.WORLD : PackSource.FEATURE;
+
             event.addPackFinders(
-                    NovoAtlas.loc("resourcepacks/avila-basic-example"),
+                    NovoAtlas.id("resourcepacks/avila-basic-example"),
                     PackType.SERVER_DATA,
                     Component.literal("novoatlas/avila-basic-example"),
-                    PackSource.FEATURE,
+                    packSource,
                     false,
-                    Pack.Position.BOTTOM
+                    Pack.Position.TOP
             );
 
             event.addPackFinders(
-                    NovoAtlas.loc("resourcepacks/avila-cave-biome-example"),
+                    NovoAtlas.id("resourcepacks/avila-cave-biome-example"),
                     PackType.SERVER_DATA,
                     Component.literal("novoatlas/avila-cave-biome-example"),
-                    PackSource.FEATURE,
+                    packSource,
                     false,
-                    Pack.Position.BOTTOM
+                    Pack.Position.TOP
             );
 
             event.addPackFinders(
-                    NovoAtlas.loc("resourcepacks/avila-no-caves-example"),
+                    NovoAtlas.id("resourcepacks/avila-no-caves-example"),
                     PackType.SERVER_DATA,
                     Component.literal("novoatlas/avila-no-caves-example"),
-                    PackSource.FEATURE,
+                    packSource,
                     false,
-                    Pack.Position.BOTTOM
+                    Pack.Position.TOP
             );
         }
     }
 
     private static void register(RegisterEvent event) {
-        event.register(Registries.CHUNK_GENERATOR, NovoAtlas.loc("image_map"), () -> ImageMapChunkGenerator.CODEC);
-        event.register(Registries.BIOME_SOURCE, NovoAtlas.loc("color_map"), () -> ColorMapBiomeSource.CODEC);
-        event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.loc("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
+        if (event.getRegistryKey() == Registries.CHUNK_GENERATOR) {
+            event.register(Registries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), () -> ImageMapChunkGenerator.CODEC);
+//            event.register(Registries.CHUNK_GENERATOR, NovoAtlas.expId("blend_image_map_to_random"), () -> BlendImageToRandomChunkGenerator.CODEC);
+        }
+
+        if (event.getRegistryKey() == Registries.BIOME_SOURCE) {
+            event.register(Registries.BIOME_SOURCE, NovoAtlas.id("color_map"), () -> ColorMapBiomeSource.CODEC);
+            event.register(Registries.BIOME_SOURCE, NovoAtlas.id("biome_cell_color_map"), () -> BiomeCellColorMapBiomeSource.CODEC);
+//            event.register(Registries.BIOME_SOURCE, NovoAtlas.expId("bounded_biome_cell_color_map"), () -> BoundedMapBiomeSource.CODEC);
+        }
+
+        if (event.getRegistryKey() == Registries.DENSITY_FUNCTION_TYPE) {
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
+//            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_at_map_border"), () -> BlendAtMapBorder.CODEC);
+        }
+
+        if (event.getRegistryKey() == NovoAtlasRegistries.INTERPOLATOR_TYPE) {
+            event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), () -> NearestNeighbour.CODEC);
+            event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), () -> Bilinear.CODEC);
+            event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"), () -> Bicubic.CODEC);
+            event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"), () -> Lanczos.CODEC);
+
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("nearest_neighbor"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("bilinear"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("bicubic"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("lanczos"));
+        }
     }
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(NovoAtlasResourceKeys.MAP_INFO, MapInfo.DIRECT_CODEC);
+        event.dataPackRegistry(NovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
     }
 
     private static void registerResourceReloader(AddReloadListenerEvent event) {
-        event.addListener(new MapImageLoader());
+        event.addListener(MapImageRegistry.HEIGHTMAP);
+        event.addListener(MapImageRegistry.BIOME_MAP);
+    }
+
+    private static void addDefaultAlias(Registry<?> registry, ResourceLocation id) {
+        registry.addAlias(ResourceLocation.withDefaultNamespace(id.getPath()), id);
     }
 }

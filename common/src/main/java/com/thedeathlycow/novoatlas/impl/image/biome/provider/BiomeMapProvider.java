@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.impl.gen.biome.provider;
+package com.thedeathlycow.novoatlas.impl.image.biome.provider;
 
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;

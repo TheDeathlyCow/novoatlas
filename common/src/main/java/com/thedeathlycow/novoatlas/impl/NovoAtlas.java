@@ -7,13 +7,22 @@ import org.slf4j.LoggerFactory;
 public final class NovoAtlas {
     public static final String MOD_ID = "novoatlas";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    private static final boolean ENABLE_EXAMPLE_PACKS = Boolean.parseBoolean(System.getProperty("novoatlas.enable-example-packs"));;
 
     public static void init() {
         // Write common init code here.
     }
 
-    public static ResourceLocation loc(String path) {
+    public static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
+
+    public static ResourceLocation expId(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID + "-experimental", path);
+    }
+
+    public static boolean enableExampleDataPacks() {
+        return ENABLE_EXAMPLE_PACKS;
     }
 
     private NovoAtlas() {

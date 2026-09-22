@@ -1,14 +1,16 @@
-package com.thedeathlycow.novoatlas.impl.gen.biome.provider;
+package com.thedeathlycow.novoatlas.impl.image.biome.provider;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasResourceKeys;
+import com.thedeathlycow.novoatlas.impl.image.BiomeMapImage;
+import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import com.thedeathlycow.novoatlas.impl.image.MapImage;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
-import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeColorEntry;
+import com.thedeathlycow.novoatlas.impl.image.biome.BiomeColorEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
@@ -17,10 +19,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
+
 public final class ColorMapBiomeProvider implements BiomeMapProvider {
     public static final MapCodec<ColorMapBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
-                    ResourceKey.codec(NovoAtlasResourceKeys.BIOME_MAP)
+                    ResourceKey.codec(NovoAtlasRegistries.BIOME_MAP)
                             .fieldOf("map")
                             .forGetter(ColorMapBiomeProvider::getMap),
                     BiomeColorEntry.LIST_CODEC
@@ -32,15 +35,18 @@ public final class ColorMapBiomeProvider implements BiomeMapProvider {
             ).apply(instance, ColorMapBiomeProvider::new)
     );
 
-    private final ResourceKey<MapImage> map;
+    private final ResourceKey<BiomeMapImage> map;
     private final List<BiomeColorEntry> biomeColors;
     private final boolean strict;
-    private final Int2ObjectMap<Holder<Biome>> biomeToColorCache = new Int2ObjectArrayMap<>();
+    private final Int2ObjectMap<Holder<Biome>> biomeToColorCache;
 
-    public ColorMapBiomeProvider(ResourceKey<MapImage> map, List<BiomeColorEntry> biomeColors, boolean strict) {
+    public ColorMapBiomeProvider(ResourceKey<BiomeMapImage> map, List<BiomeColorEntry> biomeColors, boolean strict) {
         this.map = map;
         this.biomeColors = biomeColors;
         this.strict = strict;
+        this.biomeToColorCache = biomeColors.size() > 10
+                ? new Int2ObjectOpenHashMap<>()
+                : new Int2ObjectArrayMap<>();
 
         for (BiomeColorEntry entry : biomeColors) {
             this.biomeToColorCache.put(entry.color(), entry.biome());
@@ -50,12 +56,8 @@ public final class ColorMapBiomeProvider implements BiomeMapProvider {
     @Override
     @Nullable
     public Holder<Biome> getBiome(int x, int y, int z, MapInfo info) {
-        MapImage image = MapInfo.lookupBiomeMap(this.map);
-        int color = image.sample(x, z, info, Integer.MIN_VALUE);
-
-        if (color == Integer.MIN_VALUE) {
-            return null;
-        }
+        BiomeMapImage image = MapInfo.lookupBiomeMap(this.map);
+        int color = image.sample(x, z, info);
 
         Holder<Biome> mappedBiome = this.biomeToColorCache.get(color);
 
@@ -79,7 +81,7 @@ public final class ColorMapBiomeProvider implements BiomeMapProvider {
         return CODEC;
     }
 
-    public ResourceKey<MapImage> getMap() {
+    public ResourceKey<BiomeMapImage> getMap() {
         return map;
     }
 

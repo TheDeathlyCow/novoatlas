@@ -2,10 +2,11 @@ package com.thedeathlycow.novoatlas.impl.image;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.impl.registry.ImageManager;
-import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasResourceKeys;
-import com.thedeathlycow.novoatlas.impl.gen.biome.provider.ColorMapBiomeProvider;
-import com.thedeathlycow.novoatlas.impl.gen.biome.provider.LayeredMapBiomeProvider;
+import com.thedeathlycow.novoatlas.impl.registry.MapImageRegistry;
+import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.image.biome.provider.ColorMapBiomeProvider;
+import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProvider;
+import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
@@ -13,23 +14,39 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2f;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public record MapInfo(
-        ResourceKey<MapImage> heightMap,
+        ResourceKey<HeightMapImage> heightMap,
+        Optional<ResourceKey<HeightMapImage>> fluidHeightMap,
         ColorMapBiomeProvider surfaceBiomes,
         Optional<LayeredMapBiomeProvider> caveBiomes,
         int startingY,
         int surfaceRange,
-        Optional<MapScaleConfig> scaling
+        MapScaleConfig scaling,
+        Vector2f centerOffset,
+        ImageWrapping imageWrapping
 ) {
+    private static final Codec<Vector2f> VECTOR2F_CODEC = Codec.FLOAT.listOf()
+            .comapFlatMap(list ->
+                    Util.fixedSize(list, 2).map(
+                            floats -> new Vector2f(floats.get(0), floats.get(1))
+                    ),
+                    vector2f -> List.of(vector2f.x(), vector2f.y())
+            );
+
     public static final Codec<MapInfo> DIRECT_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    ResourceKey.codec(NovoAtlasResourceKeys.HEIGHTMAP)
+                    ResourceKey.codec(NovoAtlasRegistries.HEIGHTMAP)
                             .fieldOf("height_map")
                             .forGetter(MapInfo::heightMap),
+                    ResourceKey.codec(NovoAtlasRegistries.HEIGHTMAP)
+                            .optionalFieldOf("fluid_height_map")
+                            .forGetter(MapInfo::fluidHeightMap),
                     ColorMapBiomeProvider.CODEC.codec()
                             .fieldOf("surface_biomes")
                             .forGetter(MapInfo::surfaceBiomes),
@@ -43,31 +60,62 @@ public record MapInfo(
                             .optionalFieldOf("surface_range", 16)
                             .forGetter(MapInfo::surfaceRange),
                     MapScaleConfig.CODEC
-                            .optionalFieldOf("scaling")
-                            .forGetter(MapInfo::scaling)
+                            .optionalFieldOf("scaling", MapScaleConfig.DEFAULT)
+                            .forGetter(MapInfo::scaling),
+                    VECTOR2F_CODEC
+                            .optionalFieldOf("center_offset", new Vector2f(0f, 0f))
+                            .forGetter(MapInfo::centerOffset),
+                    ImageWrapping.CODEC
+                            .optionalFieldOf("image_wrapping", ImageWrapping.CLAMP_TO_EDGE)
+                            .forGetter(MapInfo::imageWrapping)
             ).apply(instance, MapInfo::new)
     );
 
-    public static final Codec<Holder<MapInfo>> CODEC = RegistryFileCodec.create(NovoAtlasResourceKeys.MAP_INFO, DIRECT_CODEC);
+    public static final Codec<Holder<MapInfo>> CODEC = RegistryFileCodec.create(NovoAtlasRegistries.MAP_INFO, DIRECT_CODEC, false);
 
-    public static MapImage lookupHeightmap(ResourceKey<MapImage> map) {
-        return Objects.requireNonNull(ImageManager.HEIGHTMAP.getImage(map), "Missing height map image " + map);
+    public static HeightMapImage lookupHeightmap(ResourceKey<HeightMapImage> map) {
+        return Objects.requireNonNull(MapImageRegistry.HEIGHTMAP.getImage(map), "Missing height map image " + map);
     }
 
-    public static MapImage lookupBiomeMap(ResourceKey<MapImage> map) {
-        return Objects.requireNonNull(ImageManager.BIOME_MAP.getImage(map), "Missing biome map image " + map);
+    public static BiomeMapImage lookupBiomeMap(ResourceKey<BiomeMapImage> map) {
+        return Objects.requireNonNull(MapImageRegistry.BIOME_MAP.getImage(map), "Missing biome map image " + map);
     }
 
-    public int getHeightMapElevation(int x, int z, int fallback) {
-        return lookupHeightmap(this.heightMap).sample(x, z, this, fallback);
+    public HeightMapImage getHeightMap() {
+        return lookupHeightmap(this.heightMap);
     }
 
     public int getHeightMapElevation(int x, int z) {
         return lookupHeightmap(this.heightMap).sample(x, z, this);
     }
 
+    public float getDistanceToEdge(int x, int z) {
+        return lookupHeightmap(this.heightMap).getDistanceToEdge(x, z, this);
+    }
+
+    public boolean isBlockInsideHeightMap(int x, int z) {
+        return lookupHeightmap(this.heightMap).isBlockInsideImage(x, z, this);
+    }
+
+    public boolean isPointInsideBiomeMap(int x, int z) {
+        return lookupBiomeMap(this.surfaceBiomes.getMap()).isBlockInsideImage(x, z, this);
+    }
+
+    public int getFluidHeightMapElevation(int x, int z, int seaLevel) {
+        if (this.fluidHeightMap.isPresent()) {
+            return lookupHeightmap(this.fluidHeightMap.orElseThrow()).sample(x, z, this);
+        } else {
+            return seaLevel;
+        }
+    }
+
     @NotNull
-    public Holder<Biome> getBiome(int x, int y, int z, @NotNull Holder<Biome> defaultBiome) {
+    public Holder<Biome> getBiome(int x, int y, int z, Holder<Biome> defaultBiome) {
+        return getBiome(x, y, z, (ix, iy, iz) -> defaultBiome);
+    }
+
+    @NotNull
+    public Holder<Biome> getBiome(int x, int y, int z, Delegate outsideBoundDelegate) {
         if (this.caveBiomes.isPresent()) {
             Holder<Biome> caveBiome = this.getCaveBiome(x, y, z, this.caveBiomes.orElseThrow());
             if (caveBiome != null) {
@@ -76,28 +124,20 @@ public record MapInfo(
         }
 
         Holder<Biome> surfaceBiome = this.surfaceBiomes.getBiome(x, y, z, this);
-        return surfaceBiome != null ? surfaceBiome : defaultBiome;
+        return surfaceBiome != null ? surfaceBiome : outsideBoundDelegate.getBiome(x, y, z);
     }
 
-    public float horizontalScale() {
-        return 1.0f;
+    public MapScaleConfig.HorizontalConfig horizontalScale() {
+        return scaling.horizontalScale();
     }
 
     public float verticalScale() {
-        if (this.scaling.isPresent()) {
-            return this.scaling.orElseThrow().verticalScale();
-        } else {
-            return 1.0f;
-        }
+        return this.scaling.verticalScale();
     }
 
     @Nullable
     private Holder<Biome> getCaveBiome(int x, int y, int z, LayeredMapBiomeProvider caveBiomes) {
-        int height = this.getHeightMapElevation(x, z, Integer.MIN_VALUE);
-
-        if (height == Integer.MIN_VALUE) {
-            return null;
-        }
+        int height = this.getHeightMapElevation(x, z);
 
         if (y <= height - this.surfaceRange) {
             Holder<Biome> caveBiome = caveBiomes.getBiome(x, y, z, this);
@@ -107,5 +147,10 @@ public record MapInfo(
         }
 
         return null;
+    }
+
+    @FunctionalInterface
+    public interface Delegate {
+        @NotNull Holder<Biome> getBiome(int x, int y, int z);
     }
 }

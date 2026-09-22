@@ -5,8 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProvider;
 import net.minecraft.core.Holder;
-import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import org.jetbrains.annotations.NotNull;
@@ -14,28 +14,28 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class ColorMapBiomeSource extends BiomeSource {
-    public static final MapCodec<ColorMapBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
+public class BiomeCellColorMapBiomeSource extends BiomeSource implements BiomeResolver {
+    public static final MapCodec<BiomeCellColorMapBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     MapInfo.CODEC
                             .fieldOf("map_info")
-                            .forGetter(ColorMapBiomeSource::getMapInfo),
+                            .forGetter(BiomeCellColorMapBiomeSource::getMapInfo),
                     Biome.CODEC
                             .fieldOf("default_biome")
-                            .forGetter(ColorMapBiomeSource::getDefaultBiome)
-            ).apply(instance, ColorMapBiomeSource::new)
+                            .forGetter(BiomeCellColorMapBiomeSource::getDefaultBiome)
+            ).apply(instance, BiomeCellColorMapBiomeSource::new)
     );
 
     private final Holder<MapInfo> mapInfo;
     private final Holder<Biome> defaultBiome;
 
-    public ColorMapBiomeSource(Holder<MapInfo> mapInfo, Holder<Biome> defaultBiome) {
+    public BiomeCellColorMapBiomeSource(Holder<MapInfo> mapInfo, Holder<Biome> defaultBiome) {
         this.mapInfo = mapInfo;
         this.defaultBiome = defaultBiome;
     }
 
     @Override
-    protected MapCodec<? extends ColorMapBiomeSource> codec() {
+    protected MapCodec<? extends BiomeCellColorMapBiomeSource> codec() {
         return CODEC;
     }
 
@@ -61,13 +61,10 @@ public class ColorMapBiomeSource extends BiomeSource {
     }
 
     @Override
+    @NotNull
     public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ, Climate.Sampler sampler) {
         MapInfo info = this.mapInfo.value();
-        int x = QuartPos.toBlock(biomeX);
-        int y = QuartPos.toBlock(biomeY);
-        int z = QuartPos.toBlock(biomeZ);
-
-        return info.getBiome(x, y, z, this.defaultBiome);
+        return info.getBiome(biomeX, biomeY, biomeZ, this.defaultBiome);
     }
 
     public Holder<MapInfo> getMapInfo() {
