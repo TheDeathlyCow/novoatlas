@@ -33,10 +33,10 @@ public record Lanczos(
         double totalWeight = 0.0;
 
         // for loops provide a convolution
-        for (int dx = -window; dx <= window; dx++) {
-            for (int dz = -window; dz <= window; dz++) {
-                double tX = Math.clamp(truncatedX + dx, 0, image.width() - 1.0);
-                double tZ = Math.clamp(truncatedZ + dz, 0, image.height() - 1.0);
+        for (int dx = -window + 1; dx <= window; dx++) {
+            for (int dz = -window + 1; dz <= window; dz++) {
+                double tX = truncatedX + dx;
+                double tZ = truncatedZ + dz;
 
                 // combine lanczos smoothing across x and z axes
                 double smoothing = lanczosSmoothing1d(deltaX - dx) * lanczosSmoothing1d(deltaZ - dz);
