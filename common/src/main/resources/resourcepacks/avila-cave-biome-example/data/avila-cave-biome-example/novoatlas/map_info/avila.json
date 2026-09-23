@@ -7,11 +7,11 @@
         },
         "vertical_scale": 1
     },
-    "height_map": "avila-example:avila",
+    "height_map": "avila-cave-biome-example:avila",
     "center_offset": [0.0, 0.0],
     "image_wrapping": "clamp_to_edge",
     "surface_biomes": {
-        "map": "avila-example:avila",
+        "map": "avila-cave-biome-example:avila",
         "strict": false,
         "biomes": [
             {
@@ -77,6 +77,29 @@
             {
                 "biome": "minecraft:taiga",
                 "color": "#338553"
+            }
+        ]
+    },
+    "cave_biomes": {
+        "layers": [
+            {
+                "y_range": {
+                    "max": 0
+                },
+                "biomes": {
+                    "map": "avila-cave-biome-example:avila_caves",
+                    "strict": false,
+                    "biomes": [
+                        {
+                            "biome": "minecraft:deep_dark",
+                            "color": "#000000"
+                        },
+                        {
+                            "biome": "novoatlas:surface_biome",
+                            "color": "#FFFFFF"
+                        }
+                    ]
+                }
             }
         ]
     }
