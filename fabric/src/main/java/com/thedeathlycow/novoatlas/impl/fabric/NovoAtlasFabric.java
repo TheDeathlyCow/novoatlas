@@ -5,6 +5,7 @@ import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeCellColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.biome.ColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.chunk.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.gen.density.HeightmapDensityFunction;
+import com.thedeathlycow.novoatlas.impl.gen.density.InitialDensityHeightmapDF;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bilinear;
@@ -37,6 +38,7 @@ public final class NovoAtlasFabric implements ModInitializer {
         Registry.register(BuiltInRegistries.BIOME_SOURCE, NovoAtlas.id("biome_cell_color_map"), BiomeCellColorMapBiomeSource.CODEC);
 
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), HeightmapDensityFunction.DATA_CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("initial_density_heightmap"), InitialDensityHeightmapDF.DATA_CODEC);
 
         Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), NearestNeighbour.CODEC);
         Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), Bilinear.CODEC);
