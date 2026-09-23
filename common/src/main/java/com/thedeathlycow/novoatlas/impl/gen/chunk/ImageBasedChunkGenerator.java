@@ -3,6 +3,7 @@ package com.thedeathlycow.novoatlas.impl.gen.chunk;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.impl.gen.density.HeightmapDensityFunction;
+import com.thedeathlycow.novoatlas.impl.gen.density.InitialDensityHeightmapDF;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.mixin.accessor.NoiseBasedChunkGeneratorAccessor;
 import net.minecraft.SharedConstants;
@@ -63,7 +64,7 @@ public abstract class ImageBasedChunkGenerator extends NoiseBasedChunkGenerator 
     protected abstract MapCodec<? extends ImageBasedChunkGenerator> codec();
 
     static DensityFunction createPatchedPreliminaryDensity(final Holder<MapInfo> mapInfo) {
-        return new HeightmapDensityFunction(mapInfo, 10.f);
+        return new InitialDensityHeightmapDF(mapInfo, 128.f);
     }
 
     static DensityFunction createPatchedFinalDensity(final Holder<MapInfo> mapInfo, final DensityFunction undergroundDensityFunction) {

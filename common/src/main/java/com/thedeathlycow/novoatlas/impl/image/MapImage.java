@@ -20,7 +20,7 @@ public abstract class MapImage {
     /// and a negative distance if the sampled point is outside the image.
     public final float getDistanceToEdge(int x, int z, MapInfo info) {
         float horizontalScale = info.horizontalScale().value();
-        Vector2fc centerOffset = new Vector2f(0, 0);// info.centerOffset();
+        Vector2fc centerOffset = info.centerOffset();
 
         float xR = (float)getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
         float zR = (float)getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
@@ -41,7 +41,7 @@ public abstract class MapImage {
 
     public final boolean isBlockInsideImage(int x, int z, MapInfo info) {
         double horizontalScale = info.horizontalScale().value();
-        Vector2fc centerOffset = new Vector2f(0, 0);// info.centerOffset();
+        Vector2fc centerOffset = info.centerOffset();
 
         double xR = getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
         double zR = getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
@@ -51,7 +51,7 @@ public abstract class MapImage {
 
     public final int sample(int x, int z, MapInfo info) {
         double horizontalScale = info.horizontalScale().value();
-        Vector2fc centerOffset = new Vector2f(0, 0);// info.centerOffset();
+        Vector2fc centerOffset = info.centerOffset();
 
         double xR = getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
         double zR = getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
