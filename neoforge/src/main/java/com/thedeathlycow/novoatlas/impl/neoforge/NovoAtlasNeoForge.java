@@ -2,7 +2,9 @@ package com.thedeathlycow.novoatlas.impl.neoforge;
 
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.gen.biome.BiomeCellColorMapBiomeSource;
-import com.thedeathlycow.novoatlas.impl.gen.density.InitialDensityHeightmapDF;
+import com.thedeathlycow.novoatlas.impl.gen.density.GetHeightFromMapDensityFunction;
+import com.thedeathlycow.novoatlas.impl.gen.density.GetPreliminaryHeightFromMapDensityFunction;
+import com.thedeathlycow.novoatlas.impl.gen.density.InitialDensityHeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Lanczos;
@@ -95,8 +97,10 @@ public final class NovoAtlasNeoForge {
 
         if (event.getRegistryKey() == Registries.DENSITY_FUNCTION_TYPE) {
             event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), () -> HeightmapDensityFunction.DATA_CODEC);
-            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("initial_density_heightmap"), () -> InitialDensityHeightmapDF.DATA_CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), () -> GetHeightFromMapDensityFunction.DATA_CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_preliminary_height_from_map"), () -> GetPreliminaryHeightFromMapDensityFunction.DATA_CODEC);
 //            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_at_map_border"), () -> BlendAtMapBorder.CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("initial_density_heightmap"), () -> InitialDensityHeightmapDensityFunction.DATA_CODEC);
         }
 
         if (event.getRegistryKey() == NovoAtlasRegistries.INTERPOLATOR_TYPE) {
