@@ -9,22 +9,26 @@ import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.DensityFunction;
 
-public record InitialDensityHeightmapDF(
+/**
+ * @deprecated Replaced by {@link GetPreliminaryHeightFromMapDensityFunction} in 1.21.11+
+ */
+@Deprecated
+public record InitialDensityHeightmapDensityFunction(
         Holder<MapInfo> mapInfo,
         double transitionRange
 ) implements DensityFunction.SimpleFunction {
-    public static final MapCodec<InitialDensityHeightmapDF> DATA_CODEC = RecordCodecBuilder.mapCodec(
+    public static final MapCodec<InitialDensityHeightmapDensityFunction> DATA_CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     MapInfo.CODEC
                             .fieldOf("map_info")
-                            .forGetter(InitialDensityHeightmapDF::mapInfo),
+                            .forGetter(InitialDensityHeightmapDensityFunction::mapInfo),
                     Codec.DOUBLE
                             .optionalFieldOf("transition_range", 10.0)
-                            .forGetter(InitialDensityHeightmapDF::transitionRange)
-            ).apply(instance, InitialDensityHeightmapDF::new)
+                            .forGetter(InitialDensityHeightmapDensityFunction::transitionRange)
+            ).apply(instance, InitialDensityHeightmapDensityFunction::new)
     );
 
-    public static final KeyDispatchDataCodec<InitialDensityHeightmapDF> CODEC = KeyDispatchDataCodec.of(DATA_CODEC);
+    public static final KeyDispatchDataCodec<InitialDensityHeightmapDensityFunction> CODEC = KeyDispatchDataCodec.of(DATA_CODEC);
 
     @Override
     public double compute(FunctionContext context) {
@@ -46,7 +50,7 @@ public record InitialDensityHeightmapDF(
     }
 
     @Override
-    public KeyDispatchDataCodec<? extends InitialDensityHeightmapDF> codec() {
+    public KeyDispatchDataCodec<? extends InitialDensityHeightmapDensityFunction> codec() {
         return CODEC;
     }
 }
