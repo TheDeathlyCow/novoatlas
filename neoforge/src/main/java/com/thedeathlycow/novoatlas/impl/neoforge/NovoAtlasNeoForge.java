@@ -72,6 +72,15 @@ public final class NovoAtlasNeoForge {
             );
 
             event.addPackFinders(
+                    NovoAtlas.id("resourcepacks/avila-blend-to-random-example"),
+                    PackType.SERVER_DATA,
+                    Component.literal("novoatlas/avila-blend-to-random-example"),
+                    packSource,
+                    false,
+                    Pack.Position.TOP
+            );
+
+            event.addPackFinders(
                     NovoAtlas.id("resourcepacks/avila-no-caves-example"),
                     PackType.SERVER_DATA,
                     Component.literal("novoatlas/avila-no-caves-example"),
