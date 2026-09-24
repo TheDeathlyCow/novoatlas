@@ -27,6 +27,15 @@ configurations {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    runs {
+        client {
+            property("novoatlas.enable-example-packs", "true")
+        }
+        server {
+            property("novoatlas.enable-example-packs", "true")
+        }
+    }
 }
 
 dependencies {
