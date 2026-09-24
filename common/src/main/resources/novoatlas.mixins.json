@@ -7,6 +7,7 @@
     "client": [
     ],
     "mixins": [
+        "accessor.BiomeSourceAccessor",
         "accessor.NoiseBasedChunkGeneratorAccessor",
         "accessor.NoiseChunkAccessor",
         "accessor.SurfaceRulesContextAccessor",
