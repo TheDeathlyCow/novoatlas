@@ -9,6 +9,7 @@ import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 
 @ApiStatus.Experimental
@@ -77,12 +78,15 @@ public record BlendAtMapBorder(
     }
 
     @Override
+    @NotNull
     public DensityFunction mapAll(Visitor visitor) {
-        return new BlendAtMapBorder(
-                this.mapInfo,
-                visitor.apply(this.insideMap),
-                visitor.apply(this.outsideMap),
-                this.blendDistance
+        return visitor.apply(
+                new BlendAtMapBorder(
+                        this.mapInfo,
+                        this.insideMap.mapAll(visitor),
+                        this.outsideMap.mapAll(visitor),
+                        this.blendDistance
+                )
         );
     }
 
