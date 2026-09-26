@@ -10,10 +10,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: 'true'
       - uses: actions/download-artifact@v4
         with:
           name: Artifacts
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
       - name: Setup JDK 25
         uses: actions/setup-java@v4
         with:
@@ -29,10 +33,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: 'true'
       - uses: actions/download-artifact@v4
         with:
           name: Artifacts
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
       - name: Setup JDK 25
         uses: actions/setup-java@v4
         with:
@@ -48,10 +56,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: 'true'
       - uses: actions/download-artifact@v4
         with:
           name: Artifacts
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
       - name: Setup JDK 25
         uses: actions/setup-java@v4
         with:
@@ -67,10 +79,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: 'true'
       - uses: actions/download-artifact@v4
         with:
           name: Artifacts
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
       - name: Setup JDK 25
         uses: actions/setup-java@v4
         with:
@@ -86,10 +102,14 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: 'true'
       - uses: actions/download-artifact@v4
         with:
           name: Artifacts
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
       - name: Setup JDK 25
         uses: actions/setup-java@v4
         with:
