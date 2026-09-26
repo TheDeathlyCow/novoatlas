@@ -22,10 +22,10 @@ public record BlendAtMapBorder(
                     MapInfo.CODEC
                             .fieldOf("map_info")
                             .forGetter(BlendAtMapBorder::mapInfo),
-                    DensityFunction.CODEC
+                    DensityFunction.HOLDER_HELPER_CODEC
                             .fieldOf("inside_map")
                             .forGetter(BlendAtMapBorder::insideMap),
-                    DensityFunction.CODEC
+                    DensityFunction.HOLDER_HELPER_CODEC
                             .fieldOf("outside_map")
                             .forGetter(BlendAtMapBorder::outsideMap),
                     ExtraCodecs.POSITIVE_FLOAT
@@ -76,12 +76,14 @@ public record BlendAtMapBorder(
     }
 
     @Override
-    public DensityFunction mapChildren(Visitor visitor) {
-        return new BlendAtMapBorder(
-                this.mapInfo,
-                visitor.apply(this.insideMap),
-                visitor.apply(this.outsideMap),
-                this.blendDistance
+    public DensityFunction mapAll(Visitor visitor) {
+        return visitor.apply(
+                new BlendAtMapBorder(
+                        this.mapInfo,
+                        this.insideMap.mapAll(visitor),
+                        this.outsideMap.mapAll(visitor),
+                        this.blendDistance
+                )
         );
     }
 
