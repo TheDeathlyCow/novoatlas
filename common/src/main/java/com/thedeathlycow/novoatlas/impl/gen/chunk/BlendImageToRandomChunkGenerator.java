@@ -27,7 +27,7 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
                             MapInfo.CODEC
                                     .fieldOf("map_info")
                                     .forGetter(BlendImageToRandomChunkGenerator::getMapInfo),
-                            DensityFunction.CODEC
+                            DensityFunction.HOLDER_HELPER_CODEC
                                     .fieldOf("underground_density_function")
                                     .forGetter(BlendImageToRandomChunkGenerator::getUndergroundDensityFunction),
                             Codec.BOOL
