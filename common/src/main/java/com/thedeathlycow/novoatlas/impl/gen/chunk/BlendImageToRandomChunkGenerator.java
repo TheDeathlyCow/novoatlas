@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.gen.density.BlendAtMapBorder;
+import com.thedeathlycow.novoatlas.impl.gen.density.BlendSurfaceLevel;
 import com.thedeathlycow.novoatlas.impl.gen.density.GetPreliminaryHeightFromMapDensityFunction;
 import com.thedeathlycow.novoatlas.impl.gen.density.HeightmapDensityFunction;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
@@ -74,10 +75,10 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
         final NoiseSettings noiseSettings = baseSettings.noiseSettings();
 
         DensityFunction chunkSurfaceLevelHeightmap = createPatchedPreliminaryDensity(mapInfo, noiseSettings);
-        chunkSurfaceLevelHeightmap = new BlendAtMapBorder(mapInfo, chunkSurfaceLevelHeightmap, baseNoiseRouter.chunkSurfaceLevel(), blendDistance);
+        chunkSurfaceLevelHeightmap = new BlendSurfaceLevel(mapInfo, chunkSurfaceLevelHeightmap, baseNoiseRouter.chunkSurfaceLevel(), blendDistance);
 
         DensityFunction finalDensity = createPatchedFinalDensity(mapInfo, undergroundDensityFunction);
-        finalDensity = new BlendAtMapBorder(mapInfo, finalDensity, baseNoiseRouter.finalDensity(), blendDistance);
+        finalDensity = new BlendAtMapBorder(mapInfo, chunkSurfaceLevelHeightmap, finalDensity, baseNoiseRouter.finalDensity(), blendDistance);
 
         return applyPatchedDensityFunctionsToNoiseSettings(baseSettings, baseNoiseRouter, chunkSurfaceLevelHeightmap, finalDensity);
     }

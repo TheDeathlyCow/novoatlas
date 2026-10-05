@@ -5,7 +5,7 @@
         "map_info": "avila-random-example:avila",
         "settings": "minecraft:overworld",
         "underground_density_function": "novoatlas:caves",
-        "blend_distance": 32,
+        "blend_distance": 128,
         "biome_source": {
             "type": "novoatlas-experimental:bounded_biome_cell_color_map",
             "map_info": "avila-random-example:avila",

@@ -9,41 +9,34 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Interval;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.densityfunction.*;
-import org.jetbrains.annotations.ApiStatus;
 
-@ApiStatus.Experimental
-public record BlendAtMapBorder(
+public record BlendSurfaceLevel(
         Holder<MapInfo> mapInfo,
-        DensityFunction preliminaryHeight,
         DensityFunction insideMap,
         DensityFunction outsideMap,
         float blendDistance
 ) implements DensityFunction {
-    public static final MapCodec<BlendAtMapBorder> CODEC = RecordCodecBuilder.mapCodec(
+    public static final MapCodec<BlendSurfaceLevel> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     MapInfo.CODEC
                             .fieldOf("map_info")
-                            .forGetter(BlendAtMapBorder::mapInfo),
-                    DensityFunction.CODEC
-                            .fieldOf("preliminary_height")
-                            .forGetter(BlendAtMapBorder::preliminaryHeight),
+                            .forGetter(BlendSurfaceLevel::mapInfo),
                     DensityFunction.CODEC
                             .fieldOf("inside_map")
-                            .forGetter(BlendAtMapBorder::insideMap),
+                            .forGetter(BlendSurfaceLevel::insideMap),
                     DensityFunction.CODEC
                             .fieldOf("outside_map")
-                            .forGetter(BlendAtMapBorder::outsideMap),
+                            .forGetter(BlendSurfaceLevel::outsideMap),
                     ExtraCodecs.POSITIVE_FLOAT
                             .fieldOf("blend_distance")
-                            .forGetter(BlendAtMapBorder::blendDistance)
-            ).apply(instance, BlendAtMapBorder::new)
+                            .forGetter(BlendSurfaceLevel::blendDistance)
+            ).apply(instance, BlendSurfaceLevel::new)
     );
 
     @Override
     public DensitySampler compileSampler(CompileContext context) {
-        return new Sampler(
+        return new BlendSurfaceLevel.Sampler(
                 this.mapInfo.value(),
-                this.preliminaryHeight.compileSampler(context),
                 this.insideMap.compileSampler(context),
                 this.outsideMap.compileSampler(context),
                 this.blendDistance
@@ -52,12 +45,11 @@ public record BlendAtMapBorder(
 
     @Override
     public DensityFunction rewriteChildren(DfRewriteRule rule) {
-        DensityFunction preliminaryHeight = rule.rewrite(this.preliminaryHeight);
         DensityFunction insideRewrite = rule.rewrite(this.insideMap);
         DensityFunction outsideRewrite = rule.rewrite(this.outsideMap);
 
-        return insideRewrite != this.insideMap || outsideRewrite != this.outsideMap || preliminaryHeight != this.preliminaryHeight
-                ? new BlendAtMapBorder(this.mapInfo, preliminaryHeight, insideRewrite, outsideRewrite, this.blendDistance)
+        return insideRewrite != this.insideMap || outsideRewrite != this.outsideMap
+                ? new BlendSurfaceLevel(this.mapInfo, insideRewrite, outsideRewrite, this.blendDistance)
                 : this;
     }
 
@@ -72,13 +64,12 @@ public record BlendAtMapBorder(
     }
 
     @Override
-    public MapCodec<BlendAtMapBorder> codec() {
+    public MapCodec<BlendSurfaceLevel> codec() {
         return CODEC;
     }
 
     private record Sampler(
             MapInfo mapInfo,
-            DensitySampler preliminaryHeight,
             DensitySampler insideMap,
             DensitySampler outsideMap,
             float blendDistance
@@ -88,13 +79,9 @@ public record BlendAtMapBorder(
         public void sampleVolume(SamplerContext context, DensityBuffer outputBuffer, DensityVolume volume) {
             HeightMapImage heightmap = mapInfo.getHeightMap();
 
-            this.preliminaryHeight.sampleVolume(context, outputBuffer, volume);
+            this.insideMap.sampleVolume(context, outputBuffer, volume);
 
-            try (
-                    ScopedDensityBuffer insideBuffer = context.acquireBuffer(volume);
-                    ScopedDensityBuffer outsideBuffer = context.acquireBuffer(volume)
-            ) {
-                this.insideMap.sampleVolume(context, insideBuffer, volume);
+            try (ScopedDensityBuffer outsideBuffer = context.acquireBuffer(volume)) {
                 this.outsideMap.sampleVolume(context, outsideBuffer, volume);
                 int index = 0;
 
@@ -108,26 +95,18 @@ public record BlendAtMapBorder(
                                 index++;
                             }
                         } else if (alpha <= 1.0) {
-                            float w = taperWeight(alpha);
-
                             for (int y = 0; y < volume.sizeY(); y++) {
-                                float height = outputBuffer.get(index) + 8;
-                                float yOffset = Mth.clamp(height - volume.blockY(y), -5, 5);
-                                float heightDensity = Mth.clampedMap(yOffset, -5, 5, -1.0f, 1.0f);
-
                                 float outsideValue = outsideBuffer.get(index);
-                                float insideValue = insideBuffer.get(index);
+                                float insideValue = outputBuffer.get(index);
                                 float blended3DValue = Mth.lerp(alpha, outsideValue, insideValue);
 
-                                outputBuffer.set(index, w * heightDensity + blended3DValue);
+                                outputBuffer.set(index, blended3DValue);
 
                                 index++;
                             }
                         } else {
-                            for (int y = 0; y < volume.sizeY(); y++) {
-                                outputBuffer.set(index, insideBuffer.get(index));
-                                index++;
-                            }
+                            // dont need to do anything here
+                            index += volume.sizeY();
                         }
                     }
                 }
@@ -146,21 +125,13 @@ public record BlendAtMapBorder(
                 return insideMap.sampleValue(context, blockX, blockY, blockZ);
             }
 
-            float elevation = this.preliminaryHeight.sampleValue(context, blockX, blockY, blockZ) + 8;
-            float yOffset = Mth.clamp(elevation - blockY, -5, 5);
-            float heightDensity = Mth.clampedMap(yOffset, -5, 5, -1.0f, 1.0f);
-
-            float inside = insideMap.sampleValue(context, blockX, blockY, blockZ);
-            float outside = outsideMap.sampleValue(context, blockX, blockY, blockZ);
-            return taperWeight(alpha) * heightDensity + Mth.lerp(alpha, outside, inside);
+            float inside = insideMap.sampleValue(context, blockX, blockY, blockZ) + 8;
+            float outside = outsideMap.sampleValue(context, blockX, blockY, blockZ) + 8;
+            return Mth.lerp(alpha, outside, inside);
         }
 
         private float smoothstepDistance(float distance) {
             return smoothstep(-blendDistance, blendDistance, distance);
-        }
-
-        private static float taperWeight(float alpha) {
-            return 4.0f * alpha * (1.0f - alpha);
         }
 
         /// Hermite Spline interpolation for better blending than simple lerp.
