@@ -125,8 +125,8 @@ public record BlendSurfaceLevel(
                 return insideMap.sampleValue(context, blockX, blockY, blockZ);
             }
 
-            float inside = insideMap.sampleValue(context, blockX, blockY, blockZ) + 8;
-            float outside = outsideMap.sampleValue(context, blockX, blockY, blockZ) + 8;
+            float inside = insideMap.sampleValue(context, blockX, blockY, blockZ);
+            float outside = outsideMap.sampleValue(context, blockX, blockY, blockZ);
             return Mth.lerp(alpha, outside, inside);
         }
 
