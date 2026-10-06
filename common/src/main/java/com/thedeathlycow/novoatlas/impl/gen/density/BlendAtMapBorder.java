@@ -87,7 +87,7 @@ public record BlendAtMapBorder(
         @Override
         public void sampleVolume(SamplerContext context, DensityBuffer outputBuffer, DensityVolume volume) {
             HeightMapImage heightmap = mapInfo.getHeightMap();
-
+            
             this.preliminaryHeight.sampleVolume(context, outputBuffer, volume);
 
             try (
@@ -108,18 +108,18 @@ public record BlendAtMapBorder(
                                 index++;
                             }
                         } else if (alpha <= 1.0) {
-                            float w = taperWeight(alpha);
+                            float tapering = taperWeight(alpha);
 
                             for (int y = 0; y < volume.sizeY(); y++) {
                                 float height = outputBuffer.get(index) + 8;
                                 float yOffset = Mth.clamp(height - volume.blockY(y), -5, 5);
-                                float heightDensity = Mth.clampedMap(yOffset, -5, 5, -1.0f, 1.0f);
+                                float heightDensity = yOffset / 5;
 
                                 float outsideValue = outsideBuffer.get(index);
                                 float insideValue = insideBuffer.get(index);
                                 float blended3DValue = Mth.lerp(alpha, outsideValue, insideValue);
 
-                                outputBuffer.set(index, w * heightDensity + blended3DValue);
+                                outputBuffer.set(index, tapering * heightDensity + blended3DValue);
 
                                 index++;
                             }
@@ -148,7 +148,7 @@ public record BlendAtMapBorder(
 
             float elevation = this.preliminaryHeight.sampleValue(context, blockX, blockY, blockZ) + 8;
             float yOffset = Mth.clamp(elevation - blockY, -5, 5);
-            float heightDensity = Mth.clampedMap(yOffset, -5, 5, -1.0f, 1.0f);
+            float heightDensity = yOffset / 5;
 
             float inside = insideMap.sampleValue(context, blockX, blockY, blockZ);
             float outside = outsideMap.sampleValue(context, blockX, blockY, blockZ);

@@ -63,11 +63,11 @@ public record HeightmapDensityFunction(
 
             for (int z = 0; z < volume.sizeZ(); z++) {
                 for (int x = 0; x < volume.sizeX(); x++) {
-                    final int elevation = heightmap.sample(volume.blockX(x), volume.blockZ(z), mapInfo);
+                    final float elevation = heightmap.sample(volume.blockX(x), volume.blockZ(z), mapInfo);
 
                     for (int y = 0; y < volume.sizeY(); y++) {
-                        int yOffset = elevation - volume.blockY(y);
-                        float density = Mth.clampedMap(yOffset, -transitionRange, transitionRange, -1.0f, 1.0f);
+                        float yOffset = Mth.clamp(elevation - volume.blockY(y), -transitionRange, transitionRange);
+                        float density = yOffset / transitionRange;
                         outputBuffer.set(index, density);
 
                         index++;
@@ -78,9 +78,9 @@ public record HeightmapDensityFunction(
 
         @Override
         public float sampleValue(SamplerContext context, int blockX, int blockY, int blockZ) {
-            int elevation = mapInfo.getHeightMapElevation(blockX, blockZ);
-            int yOffset = elevation - blockY;
-            return Mth.clampedMap(yOffset, -transitionRange, transitionRange, -1.0f, 1.0f);
+            float elevation = mapInfo.getHeightMapElevation(blockX, blockZ);
+            float yOffset = Mth.clamp(elevation - blockY, -transitionRange, transitionRange);
+            return yOffset / transitionRange;
         }
     }
 }
