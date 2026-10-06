@@ -6,10 +6,7 @@ import com.thedeathlycow.novoatlas.impl.gen.biome.BoundedMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.biome.ColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.chunk.BlendImageToRandomChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.gen.chunk.ImageMapChunkGenerator;
-import com.thedeathlycow.novoatlas.impl.gen.density.BlendAtMapBorder;
-import com.thedeathlycow.novoatlas.impl.gen.density.GetHeightFromMapDensityFunction;
-import com.thedeathlycow.novoatlas.impl.gen.density.GetPreliminaryHeightFromMapDensityFunction;
-import com.thedeathlycow.novoatlas.impl.gen.density.HeightmapDensityFunction;
+import com.thedeathlycow.novoatlas.impl.gen.density.*;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bilinear;
@@ -110,6 +107,7 @@ public final class NovoAtlasNeoForge {
             event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), () -> GetHeightFromMapDensityFunction.CODEC);
             event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_preliminary_height_from_map"), () -> GetPreliminaryHeightFromMapDensityFunction.CODEC);
             event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_at_map_border"), () -> BlendAtMapBorder.CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_surface_level"), () -> BlendSurfaceLevel.CODEC);
         }
 
         if (event.getRegistryKey() == NovoAtlasRegistries.INTERPOLATOR_TYPE) {
