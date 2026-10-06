@@ -73,12 +73,9 @@ public record BlendSurfaceLevel(
             DensitySampler insideMap,
             DensitySampler outsideMap,
             float blendDistance
-    ) implements DensitySampler {
-
+    ) implements BlendedSampler {
         @Override
-        public void sampleVolume(SamplerContext context, DensityBuffer outputBuffer, DensityVolume volume) {
-            HeightMapImage heightmap = mapInfo.getHeightMap();
-
+        public void sampleBlendedVolume(SamplerContext context, DensityBuffer outputBuffer, DensityVolume volume, HeightMapImage heightmap) {
             this.insideMap.sampleVolume(context, outputBuffer, volume);
 
             try (ScopedDensityBuffer outsideBuffer = context.acquireBuffer(volume)) {
@@ -87,26 +84,20 @@ public record BlendSurfaceLevel(
 
                 for (int z = 0; z < volume.sizeZ(); z++) {
                     for (int x = 0; x < volume.sizeX(); x++) {
-                        final float alpha = this.smoothstepDistance((float) heightmap.getDistanceToEdge(volume.blockX(x), volume.blockZ(z), this.mapInfo));
+                        final float alpha = BlendedSampler.smoothstep(
+                                0,
+                                this.blendDistance,
+                                (float) heightmap.getDistanceToEdge(volume.blockX(x), volume.blockZ(z), this.mapInfo)
+                        );
 
-                        if (alpha >= 1.0) {
-                            for (int y = 0; y < volume.sizeY(); y++) {
-                                outputBuffer.set(index, outsideBuffer.get(index));
-                                index++;
-                            }
-                        } else if (alpha > 0) {
-                            for (int y = 0; y < volume.sizeY(); y++) {
-                                float outsideValue = outsideBuffer.get(index);
-                                float insideValue = outputBuffer.get(index);
-                                float blended3DValue = Mth.lerp(alpha, insideValue, outsideValue);
+                        for (int y = 0; y < volume.sizeY(); y++) {
+                            float outsideValue = outsideBuffer.get(index);
+                            float insideValue = outputBuffer.get(index);
+                            float blended3DValue = Mth.lerp(alpha, insideValue, outsideValue);
 
-                                outputBuffer.set(index, blended3DValue);
+                            outputBuffer.set(index, blended3DValue);
 
-                                index++;
-                            }
-                        } else {
-                            // dont need to do anything here
-                            index += volume.sizeY();
+                            index++;
                         }
                     }
                 }
@@ -114,36 +105,10 @@ public record BlendSurfaceLevel(
         }
 
         @Override
-        public float sampleValue(SamplerContext context, int blockX, int blockY, int blockZ) {
-            float alpha = this.smoothstepDistance((float) mapInfo.getDistanceToEdge(blockX, blockZ));
-
-            if (alpha >= 1.0) {
-                return outsideMap.sampleValue(context, blockX, blockY, blockZ);
-            }
-
-            if (alpha < 0) {
-                return insideMap.sampleValue(context, blockX, blockY, blockZ);
-            }
-
+        public float sampleBlendedValue(SamplerContext context, int blockX, int blockY, int blockZ, float alpha) {
             float inside = insideMap.sampleValue(context, blockX, blockY, blockZ);
             float outside = outsideMap.sampleValue(context, blockX, blockY, blockZ);
             return Mth.lerp(alpha, inside, outside);
-        }
-
-        private float smoothstepDistance(float distance) {
-            return smoothstep(0f, blendDistance, distance);
-        }
-
-        /// Hermite Spline interpolation for better blending than simple lerp.
-        ///
-        /// Implementation is from [the Book of Shaders](https://thebookofshaders.com/glossary/?search=smoothstep).
-        ///
-        /// @param edge0 Lower edge
-        /// @param edge1 Upper edge
-        /// @param x     Source value to interpolate
-        private static float smoothstep(float edge0, float edge1, float x) {
-            float t = Mth.clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
-            return t * t * (3.0f - 2.0f * t);
         }
     }
 }

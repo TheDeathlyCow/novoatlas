@@ -3,6 +3,7 @@ package com.thedeathlycow.novoatlas.impl.image;
 import net.minecraft.util.Mth;
 import org.joml.Vector2d;
 import org.joml.Vector2fc;
+import org.joml.Vector2i;
 
 public abstract class MapImage {
     private final int width;
@@ -14,18 +15,13 @@ public abstract class MapImage {
     }
 
     public final double getDistanceToEdge(int x, int z, MapInfo info) {
-        float horizontalScale = info.horizontalScale().value();
-        Vector2fc centerOffset = info.centerOffset();
+        int minX = this.minBlockX(info);
+        int maxX = this.maxBlockX(info);
+        int minZ = this.minBlockZ(info);
+        int maxZ = this.maxBlockZ(info);
 
-        Vector2d p = new Vector2d(
-                getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width),
-                getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height)
-        );
-
-        Vector2d clampedEdgePoint = new Vector2d(
-                Mth.clamp(p.x(), 0, this.width),
-                Mth.clamp(p.y(), 0, this.height)
-        );
+        Vector2i p = new Vector2i(x, z);
+        Vector2i clampedEdgePoint = new Vector2i(Mth.clamp(p.x(), minX, maxX), Mth.clamp(p.y(), minZ, maxZ));
 
         return p.distance(clampedEdgePoint);
     }
