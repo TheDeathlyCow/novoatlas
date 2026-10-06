@@ -87,18 +87,18 @@ public record BlendSurfaceLevel(
 
                 for (int z = 0; z < volume.sizeZ(); z++) {
                     for (int x = 0; x < volume.sizeX(); x++) {
-                        final float alpha = this.smoothstepDistance(heightmap.getDistanceToEdge(volume.blockX(x), volume.blockZ(z), this.mapInfo));
+                        final float alpha = this.smoothstepDistance((float) heightmap.getDistanceToEdge(volume.blockX(x), volume.blockZ(z), this.mapInfo));
 
-                        if (alpha <= 0.0) {
+                        if (alpha >= 1.0) {
                             for (int y = 0; y < volume.sizeY(); y++) {
                                 outputBuffer.set(index, outsideBuffer.get(index));
                                 index++;
                             }
-                        } else if (alpha <= 1.0) {
+                        } else if (alpha > 0) {
                             for (int y = 0; y < volume.sizeY(); y++) {
                                 float outsideValue = outsideBuffer.get(index);
                                 float insideValue = outputBuffer.get(index);
-                                float blended3DValue = Mth.lerp(alpha, outsideValue, insideValue);
+                                float blended3DValue = Mth.lerp(alpha, insideValue, outsideValue);
 
                                 outputBuffer.set(index, blended3DValue);
 
@@ -115,23 +115,23 @@ public record BlendSurfaceLevel(
 
         @Override
         public float sampleValue(SamplerContext context, int blockX, int blockY, int blockZ) {
-            float alpha = this.smoothstepDistance(mapInfo.getDistanceToEdge(blockX, blockZ));
+            float alpha = this.smoothstepDistance((float) mapInfo.getDistanceToEdge(blockX, blockZ));
 
-            if (alpha <= 0.0) {
+            if (alpha >= 1.0) {
                 return outsideMap.sampleValue(context, blockX, blockY, blockZ);
             }
 
-            if (alpha >= 1.0) {
+            if (alpha < 0) {
                 return insideMap.sampleValue(context, blockX, blockY, blockZ);
             }
 
             float inside = insideMap.sampleValue(context, blockX, blockY, blockZ);
             float outside = outsideMap.sampleValue(context, blockX, blockY, blockZ);
-            return Mth.lerp(alpha, outside, inside);
+            return Mth.lerp(alpha, inside, outside);
         }
 
         private float smoothstepDistance(float distance) {
-            return smoothstep(-blendDistance, blendDistance, distance);
+            return smoothstep(0f, blendDistance, distance);
         }
 
         /// Hermite Spline interpolation for better blending than simple lerp.

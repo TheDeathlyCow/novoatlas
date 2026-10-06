@@ -1,6 +1,7 @@
 package com.thedeathlycow.novoatlas.impl.image;
 
 import net.minecraft.util.Mth;
+import org.joml.Vector2d;
 import org.joml.Vector2fc;
 
 public abstract class MapImage {
@@ -12,27 +13,21 @@ public abstract class MapImage {
         this.height = height;
     }
 
-    /// Returns a positive distance to the edge of the image if the sampled point is inside the image,
-    /// and a negative distance if the sampled point is outside the image.
-    public final float getDistanceToEdge(int x, int z, MapInfo info) {
+    public final double getDistanceToEdge(int x, int z, MapInfo info) {
         float horizontalScale = info.horizontalScale().value();
         Vector2fc centerOffset = info.centerOffset();
 
-        float xR = (float)getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
-        float zR = (float)getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
+        Vector2d p = new Vector2d(
+                getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width),
+                getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height)
+        );
 
-        boolean insideX = xR >= 0 && xR <= this.width;
-        boolean insideZ = zR >= 0 && zR <= this.height;
+        Vector2d clampedEdgePoint = new Vector2d(
+                Mth.clamp(p.x(), 0, this.width),
+                Mth.clamp(p.y(), 0, this.height)
+        );
 
-        if (insideX && insideZ) {
-            float distX = Math.min(xR, this.width - xR);
-            float distZ = Math.min(zR, this.height - zR);
-            return Math.min(distX, distZ);
-        }
-
-        float dx = Math.max(0, Math.max(-xR, xR - this.width));
-        float dz = Math.max(0, Math.max(-zR, zR - this.height));
-        return -Mth.sqrt(dx * dx + dz * dz);
+        return p.distance(clampedEdgePoint);
     }
 
     public final boolean isBlockInsideImage(int x, int z, MapInfo info) {
@@ -45,6 +40,22 @@ public abstract class MapImage {
         return xR >= 0 && xR <= this.width && zR >= 0 && zR <= this.height;
     }
 
+    public final int minBlockX(MapInfo info) {
+        return Mth.floor(indexToBlock(0, info.horizontalScale().value(), info.centerOffset().x(), this.width));
+    }
+
+    public final int minBlockZ(MapInfo info) {
+        return Mth.floor(indexToBlock(0, info.horizontalScale().value(), info.centerOffset().y(), this.height));
+    }
+
+    public final int maxBlockX(MapInfo info) {
+        return Mth.floor(indexToBlock(this.width, info.horizontalScale().value(), info.centerOffset().x(), this.width));
+    }
+
+    public final int maxBlockZ(MapInfo info) {
+        return Mth.floor(indexToBlock(this.height, info.horizontalScale().value(), info.centerOffset().y(), this.height));
+    }
+
     public final int sample(int x, int z, MapInfo info) {
         double horizontalScale = info.horizontalScale().value();
         Vector2fc centerOffset = info.centerOffset();
@@ -55,9 +66,13 @@ public abstract class MapImage {
         return this.sampleInterpolated(xR, zR, info);
     }
 
-    private static double getIndexWithAlpha(int i, double horizontalScale, double centerOffset, double size) {
-        double iR = i - (centerOffset * size);
+    private static double getIndexWithAlpha(int block, double horizontalScale, double centerOffset, double size) {
+        double iR = block - (centerOffset * size);
         return (iR / horizontalScale) + size * 0.5;
+    }
+
+    public static double indexToBlock(int index, double horizontalScale, double centerOffset, double size) {
+        return horizontalScale * (index - (size * 0.5)) + centerOffset * size;
     }
 
     public final int width() {

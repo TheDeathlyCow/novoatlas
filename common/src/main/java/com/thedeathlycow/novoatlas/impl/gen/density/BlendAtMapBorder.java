@@ -87,7 +87,7 @@ public record BlendAtMapBorder(
         @Override
         public void sampleVolume(SamplerContext context, DensityBuffer outputBuffer, DensityVolume volume) {
             HeightMapImage heightmap = mapInfo.getHeightMap();
-            
+
             this.preliminaryHeight.sampleVolume(context, outputBuffer, volume);
 
             try (
@@ -100,14 +100,14 @@ public record BlendAtMapBorder(
 
                 for (int z = 0; z < volume.sizeZ(); z++) {
                     for (int x = 0; x < volume.sizeX(); x++) {
-                        final float alpha = this.smoothstepDistance(heightmap.getDistanceToEdge(volume.blockX(x), volume.blockZ(z), this.mapInfo));
+                        final float alpha = this.smoothstepDistance((float) heightmap.getDistanceToEdge(volume.blockX(x), volume.blockZ(z), this.mapInfo));
 
-                        if (alpha <= 0.0) {
+                        if (alpha >= 1.0) {
                             for (int y = 0; y < volume.sizeY(); y++) {
                                 outputBuffer.set(index, outsideBuffer.get(index));
                                 index++;
                             }
-                        } else if (alpha <= 1.0) {
+                        } else if (alpha > 0) {
                             float tapering = taperWeight(alpha);
 
                             for (int y = 0; y < volume.sizeY(); y++) {
@@ -117,7 +117,7 @@ public record BlendAtMapBorder(
 
                                 float outsideValue = outsideBuffer.get(index);
                                 float insideValue = insideBuffer.get(index);
-                                float blended3DValue = Mth.lerp(alpha, outsideValue, insideValue);
+                                float blended3DValue = Mth.lerp(alpha, insideValue, outsideValue);
 
                                 outputBuffer.set(index, tapering * heightDensity + blended3DValue);
 
@@ -134,15 +134,29 @@ public record BlendAtMapBorder(
             }
         }
 
+//        private boolean volumeIntersectionsTransitionRange(HeightMapImage image, DensityVolume volume) {
+//            int minVolX = volume.minBlockX();
+//            int maxVolX = volume.maxBlockX();
+//            int minVolZ = volume.minBlockZ();
+//            int maxVolZ = volume.maxBlockZ();
+//
+//            int minImgX = image.minBlockX(this.mapInfo);
+//            int maxImgX = image.maxBlockX(this.mapInfo);
+//            int minImgZ = image.minBlockZ(this.mapInfo);
+//            int maxImgZ = image.maxBlockZ(this.mapInfo);
+//
+//            return
+//        }
+
         @Override
         public float sampleValue(SamplerContext context, int blockX, int blockY, int blockZ) {
-            float alpha = this.smoothstepDistance(mapInfo.getDistanceToEdge(blockX, blockZ));
+            float alpha = this.smoothstepDistance((float) mapInfo.getDistanceToEdge(blockX, blockZ));
 
-            if (alpha <= 0.0) {
+            if (alpha >= 1.0) {
                 return outsideMap.sampleValue(context, blockX, blockY, blockZ);
             }
 
-            if (alpha >= 1.0) {
+            if (alpha < 0) {
                 return insideMap.sampleValue(context, blockX, blockY, blockZ);
             }
 
@@ -152,11 +166,11 @@ public record BlendAtMapBorder(
 
             float inside = insideMap.sampleValue(context, blockX, blockY, blockZ);
             float outside = outsideMap.sampleValue(context, blockX, blockY, blockZ);
-            return taperWeight(alpha) * heightDensity + Mth.lerp(alpha, outside, inside);
+            return taperWeight(alpha) * heightDensity + Mth.lerp(alpha, inside, outside);
         }
 
         private float smoothstepDistance(float distance) {
-            return smoothstep(-blendDistance, blendDistance, distance);
+            return smoothstep(0, blendDistance, distance);
         }
 
         private static float taperWeight(float alpha) {
