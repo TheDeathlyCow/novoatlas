@@ -6,10 +6,7 @@ import com.thedeathlycow.novoatlas.impl.gen.biome.BoundedMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.biome.ColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.gen.chunk.BlendImageToRandomChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.gen.chunk.ImageMapChunkGenerator;
-import com.thedeathlycow.novoatlas.impl.gen.density.BlendAtMapBorder;
-import com.thedeathlycow.novoatlas.impl.gen.density.GetHeightFromMapDensityFunction;
-import com.thedeathlycow.novoatlas.impl.gen.density.GetPreliminaryHeightFromMapDensityFunction;
-import com.thedeathlycow.novoatlas.impl.gen.density.HeightmapDensityFunction;
+import com.thedeathlycow.novoatlas.impl.gen.density.*;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.image.interpolation.Bilinear;
@@ -47,6 +44,7 @@ public final class NovoAtlasFabric implements ModInitializer {
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), GetHeightFromMapDensityFunction.CODEC);
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_preliminary_height_from_map"), GetPreliminaryHeightFromMapDensityFunction.CODEC);
         Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_at_map_border"), BlendAtMapBorder.CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_surface_level"), BlendSurfaceLevel.CODEC);
 
         Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), NearestNeighbour.CODEC);
         Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), Bilinear.CODEC);
