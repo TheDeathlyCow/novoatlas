@@ -80,7 +80,7 @@ public record MapInfo(
         return lookupHeightmap(this.heightMap).sample(x, z, this);
     }
 
-    public float getDistanceToEdge(int x, int z) {
+    public double getDistanceToEdge(int x, int z) {
         return lookupHeightmap(this.heightMap).getDistanceToEdge(x, z, this);
     }
 
