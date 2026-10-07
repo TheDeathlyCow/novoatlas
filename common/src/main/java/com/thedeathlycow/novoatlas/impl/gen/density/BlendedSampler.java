@@ -38,7 +38,7 @@ public interface BlendedSampler extends DensitySampler {
 
     @Override
     default float sampleValue(SamplerContext context, int blockX, int blockY, int blockZ) {
-        float alpha = smoothstep(0, this.blendDistance(), (float) this.mapInfo().getDistanceToEdge(blockX, blockZ));
+        float alpha = smoothstep(0, this.blendDistance(), (float) this.mapInfo().getHeightmapDistanceToEdge(blockX, blockZ));
 
         if (alpha >= 1.0) {
             return this.outsideMap().sampleValue(context, blockX, blockY, blockZ);
