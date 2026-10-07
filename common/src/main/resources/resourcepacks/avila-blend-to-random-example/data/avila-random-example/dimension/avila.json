@@ -10,6 +10,7 @@
             "type": "novoatlas-experimental:bounded_biome_cell_color_map",
             "map_info": "avila-random-example:avila",
             "default_biome": "minecraft:the_void",
+            "blend_distance": 64,
             "outside_map": {
                 "type": "minecraft:multi_noise",
                 "preset": "minecraft:overworld"

@@ -1,7 +1,6 @@
 package com.thedeathlycow.novoatlas.impl.image;
 
 import net.minecraft.util.Mth;
-import org.joml.Vector2d;
 import org.joml.Vector2fc;
 import org.joml.Vector2i;
 

@@ -80,8 +80,12 @@ public record MapInfo(
         return lookupHeightmap(this.heightMap).sample(x, z, this);
     }
 
-    public double getDistanceToEdge(int x, int z) {
+    public double getHeightmapDistanceToEdge(int x, int z) {
         return lookupHeightmap(this.heightMap).getDistanceToEdge(x, z, this);
+    }
+
+    public double getBiomeMapDistanceToEdge(int x, int z) {
+        return lookupBiomeMap(this.surfaceBiomes.getMap()).getDistanceToEdge(x, z, this);
     }
 
     public boolean isBlockInsideHeightMap(int x, int z) {

@@ -8,6 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Interval;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.densityfunction.*;
 import org.jetbrains.annotations.ApiStatus;
 
