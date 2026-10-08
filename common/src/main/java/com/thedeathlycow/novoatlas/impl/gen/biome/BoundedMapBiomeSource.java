@@ -3,6 +3,7 @@ package com.thedeathlycow.novoatlas.impl.gen.biome;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.gen.density.BlendedSampler;
+import com.thedeathlycow.novoatlas.impl.image.BiomeMapImage;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProvider;
 import com.thedeathlycow.novoatlas.mixin.accessor.BiomeSourceAccessor;
@@ -10,12 +11,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.NoiseData;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeResolver;
-import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.biome.Climate;
+import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.synth.Noise;
+import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Optional;
@@ -36,7 +35,10 @@ public class BoundedMapBiomeSource extends BiomeSource {
                             .forGetter(BoundedMapBiomeSource::getOutsideMap),
                     ExtraCodecs.POSITIVE_FLOAT
                             .fieldOf("blend_distance")
-                            .forGetter(BoundedMapBiomeSource::getBlendDistance)
+                            .forGetter(BoundedMapBiomeSource::getBlendDistance),
+                    NormalNoise.CODEC
+                            .optionalFieldOf("normal_noise", Holder.direct(NoiseData.DEFAULT_SHIFT))
+                            .forGetter(BoundedMapBiomeSource::getBlendNoise)
             ).apply(instance, BoundedMapBiomeSource::new)
     );
 
@@ -44,13 +46,20 @@ public class BoundedMapBiomeSource extends BiomeSource {
     private final Holder<Biome> defaultBiome;
     private final BiomeSource outsideMap;
     private final float blendDistance;
-    private static final Noise SHIFT_NOISE = NoiseData.DEFAULT_SHIFT.create(new XoroshiroRandomSource(42L));
+    private final Holder<NormalNoise> blendNoise;
 
-    public BoundedMapBiomeSource(Holder<MapInfo> mapInfo, Holder<Biome> defaultBiome, BiomeSource outsideMap, float blendDistance) {
+    public BoundedMapBiomeSource(
+            Holder<MapInfo> mapInfo,
+            Holder<Biome> defaultBiome,
+            BiomeSource outsideMap,
+            float blendDistance,
+            Holder<NormalNoise> blendNoise
+    ) {
         this.mapInfo = mapInfo;
         this.defaultBiome = defaultBiome;
         this.outsideMap = outsideMap;
         this.blendDistance = blendDistance;
+        this.blendNoise = blendNoise;
     }
 
     @Override
@@ -84,31 +93,16 @@ public class BoundedMapBiomeSource extends BiomeSource {
 
     @Override
     public BiomeResolver createResolver(Climate.Sampler sampler) {
+        BiomeResolver insideMapResolver = this.mapInfo.value().createBiomeResolver(this.defaultBiome);
         BiomeResolver outsideMapResolver = this.outsideMap.createResolver(sampler);
-        return (quartX, quartY, quartZ) -> this.getNoiseBiome(quartX, quartY, quartZ, outsideMapResolver);
-    }
-
-    private Holder<Biome> getNoiseBiome(int quartX, int quartY, int quartZ, BiomeResolver outsideMapResolver) {
-        MapInfo info = this.mapInfo.value();
-
-        if (info.isPointInsideBiomeMap(quartX, quartZ)) {
-            return info.getBiome(quartX, quartY, quartZ, this.defaultBiome);
-        }
-
-        float distanceToEdge = (float) this.mapInfo.value().getBiomeMapDistanceToEdge(quartX, quartZ);
-
-        float alpha = BlendedSampler.smoothstep(0, this.blendDistance, distanceToEdge);
-
-        if (alpha >= 1.0f) {
-            return outsideMapResolver.getNoiseBiome(quartX, quartY, quartZ);
-        }
-
-        alpha = BlendedSampler.smoothstep(0f, 1f, alpha);
-        float noise = Mth.clamp(0.25f + SHIFT_NOISE.get(quartX, 0, quartZ) * 0.5f, 0.0f, 1.0f);
-
-        return noise < alpha
-                ? outsideMapResolver.getNoiseBiome(quartX, quartY, quartZ)
-                : info.getBiome(quartX, quartY, quartZ, this.defaultBiome);
+        return new BlendedBiomeResolver(
+                this.mapInfo.value(),
+                this.defaultBiome,
+                insideMapResolver,
+                outsideMapResolver,
+                this.blendDistance,
+                this.blendNoise.value().create(new XoroshiroRandomSource(67L))
+        );
     }
 
     public Holder<MapInfo> getMapInfo() {
@@ -125,5 +119,56 @@ public class BoundedMapBiomeSource extends BiomeSource {
 
     public float getBlendDistance() {
         return blendDistance;
+    }
+
+    public Holder<NormalNoise> getBlendNoise() {
+        return blendNoise;
+    }
+
+    private record BlendedBiomeResolver(
+            MapInfo mapInfo,
+            Holder<Biome> defaultBiome,
+            BiomeResolver insideMapResolver,
+            BiomeResolver outsideMapResolver,
+            float blendDistance,
+            Noise blendNoise
+    ) implements BiomeResolver {
+        @Override
+        public Holder<Biome> getNoiseBiome(int quartX, int quartY, int quartZ) {
+            BiomeMapImage surfaceBiomes = this.mapInfo.getSurfaceBiomeMap();
+
+            if (surfaceBiomes.isBlockInsideImage(quartX, quartZ, this.mapInfo)) {
+                return this.insideMapResolver.getNoiseBiome(quartX, quartY, quartZ);
+            }
+
+            float distanceToEdge = (float) surfaceBiomes.getDistanceToEdge(quartX, quartZ, this.mapInfo);
+
+            float alpha = BlendedSampler.smoothstep(0, this.blendDistance, distanceToEdge);
+
+            if (alpha >= 1.0f) {
+                return this.outsideMapResolver.getNoiseBiome(quartX, quartY, quartZ);
+            }
+
+            alpha = BlendedSampler.smoothstep(0f, 1f, alpha);
+
+            int clampedQuartX = Mth.clamp(quartX, surfaceBiomes.minBlockX(this.mapInfo), surfaceBiomes.maxBlockX(this.mapInfo));
+            int clampedQuartZ = Mth.clamp(quartZ, surfaceBiomes.minBlockZ(this.mapInfo), surfaceBiomes.maxBlockZ(this.mapInfo));
+
+            float noise = Mth.clamp(this.generateNoise(clampedQuartX, clampedQuartZ, 0.25f, 0.15f), 0f, 1f);
+
+            if (noise < alpha) {
+                return this.outsideMapResolver.getNoiseBiome(quartX, quartY, quartZ);
+            }
+
+            return this.insideMapResolver.getNoiseBiome(
+                    Mth.floor(this.generateNoise(quartX, quartZ, quartX, 4f)),
+                    quartY,
+                    Mth.floor(this.generateNoise(quartX, quartZ, quartZ, 4f))
+            );
+        }
+
+        private float generateNoise(int x, int z, float offset, float blurriness) {
+            return offset + this.blendNoise.get(x, 0, z) * blurriness;
+        }
     }
 }

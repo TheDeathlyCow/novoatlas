@@ -11,6 +11,7 @@ import net.minecraft.core.registries.codec.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
@@ -76,41 +77,63 @@ public record MapInfo(
         return lookupHeightmap(this.heightMap);
     }
 
+    public Optional<HeightMapImage> getFluidHeightMap() {
+        return this.fluidHeightMap.map(MapInfo::lookupHeightmap);
+    }
+
+    public BiomeMapImage getSurfaceBiomeMap() {
+        return lookupBiomeMap(this.surfaceBiomes.getMap());
+    }
+
+    public BiomeResolver createBiomeResolver(Holder<Biome> defaultBiome) {
+        if (this.caveBiomes.isPresent()) {
+            return (quartX, quartY, quartZ) -> {
+                return this.getBiomeWithCaves(quartX, quartY, quartZ, defaultBiome);
+            };
+        } else {
+            return (quartX, quartY, quartZ) -> {
+                return this.getSurfaceBiome(quartX, quartY, quartZ, (_, _, _) -> defaultBiome);
+            };
+        }
+    }
+
     public int getHeightMapElevation(int x, int z) {
-        return lookupHeightmap(this.heightMap).sample(x, z, this);
+        return this.getHeightMap().sample(x, z, this);
     }
 
     public double getHeightmapDistanceToEdge(int x, int z) {
-        return lookupHeightmap(this.heightMap).getDistanceToEdge(x, z, this);
+        return this.getHeightMap().getDistanceToEdge(x, z, this);
     }
 
     public double getBiomeMapDistanceToEdge(int x, int z) {
-        return lookupBiomeMap(this.surfaceBiomes.getMap()).getDistanceToEdge(x, z, this);
+        return this.getSurfaceBiomeMap().getDistanceToEdge(x, z, this);
     }
 
     public boolean isBlockInsideHeightMap(int x, int z) {
-        return lookupHeightmap(this.heightMap).isBlockInsideImage(x, z, this);
+        return this.getHeightMap().isBlockInsideImage(x, z, this);
     }
 
     public boolean isPointInsideBiomeMap(int x, int z) {
-        return lookupBiomeMap(this.surfaceBiomes.getMap()).isBlockInsideImage(x, z, this);
+        return this.getSurfaceBiomeMap().isBlockInsideImage(x, z, this);
     }
 
     public int getFluidHeightMapElevation(int x, int z, int seaLevel) {
-        if (this.fluidHeightMap.isPresent()) {
-            return lookupHeightmap(this.fluidHeightMap.orElseThrow()).sample(x, z, this);
+        Optional<HeightMapImage> fluidMap = this.getFluidHeightMap();
+
+        if (fluidMap.isPresent()) {
+            return fluidMap.orElseThrow().sample(x, z, this);
         } else {
             return seaLevel;
         }
     }
 
     @NotNull
-    public Holder<Biome> getBiome(int x, int y, int z, Holder<Biome> defaultBiome) {
-        return getBiome(x, y, z, (_, _, _) -> defaultBiome);
+    public Holder<Biome> getBiomeWithCaves(int x, int y, int z, Holder<Biome> defaultBiome) {
+        return getBiomeWithCaves(x, y, z, (_, _, _) -> defaultBiome);
     }
 
     @NotNull
-    public Holder<Biome> getBiome(int x, int y, int z, Delegate outsideBoundDelegate) {
+    public Holder<Biome> getBiomeWithCaves(int x, int y, int z, Delegate outsideBoundDelegate) {
         if (this.caveBiomes.isPresent()) {
             Holder<Biome> caveBiome = this.getCaveBiome(x, y, z, this.caveBiomes.orElseThrow());
             if (caveBiome != null) {
@@ -118,6 +141,11 @@ public record MapInfo(
             }
         }
 
+        return this.getSurfaceBiome(x, y, z, outsideBoundDelegate);
+    }
+
+    @NotNull
+    public Holder<Biome> getSurfaceBiome(int x, int y, int z, Delegate outsideBoundDelegate) {
         Holder<Biome> surfaceBiome = this.surfaceBiomes.getBiome(x, y, z, this);
         return surfaceBiome != null ? surfaceBiome : outsideBoundDelegate.getBiome(x, y, z);
     }

@@ -8,7 +8,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Interval;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.densityfunction.*;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -90,7 +89,7 @@ public record BlendAtMapBorder(
 
             try (
                     ScopedDensityBuffer insideBuffer = context.acquireBuffer(volume);
-                    ScopedDensityBuffer outsideBuffer = context.acquireBuffer(volume)
+                    ScopedDensityBuffer outsideBuffer = context.acquireBuffer(volume);
             ) {
                 this.insideMap.sampleVolume(context, insideBuffer, volume);
                 this.outsideMap.sampleVolume(context, outsideBuffer, volume);

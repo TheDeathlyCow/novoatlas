@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Deprecated(since = "1.7.4")
-public class ColorMapBiomeSource extends BiomeSource implements BiomeResolver {
+public class ColorMapBiomeSource extends BiomeSource {
     public static final MapCodec<ColorMapBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     MapInfo.CODEC
@@ -65,19 +65,15 @@ public class ColorMapBiomeSource extends BiomeSource implements BiomeResolver {
 
     @Override
     public BiomeResolver createResolver(Climate.Sampler sampler) {
-        return this;
-    }
+        BiomeResolver resolver = this.mapInfo.value().createBiomeResolver(this.defaultBiome);
 
-    @Override
-    @NonNull
-    public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ) {
-        MapInfo info = this.mapInfo.value();
+        return (quartX, quartY, quartZ) -> {
+            int x = QuartPos.toBlock(quartX);
+            int y = QuartPos.toBlock(quartY);
+            int z = QuartPos.toBlock(quartZ);
 
-        int x = QuartPos.toBlock(biomeX);
-        int y = QuartPos.toBlock(biomeY);
-        int z = QuartPos.toBlock(biomeZ);
-
-        return info.getBiome(x, y, z, this.defaultBiome);
+            return resolver.getNoiseBiome(x, y, z);
+        };
     }
 
     public Holder<MapInfo> getMapInfo() {
