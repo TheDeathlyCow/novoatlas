@@ -4,7 +4,6 @@ import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.densityfunction.DensityFunction;
-import net.minecraft.world.level.levelgen.densityfunction.DensityFunctions;
 
 public final class NovoAtlasDensityFunctions {
     public static final ResourceKey<DensityFunction> CAVES = key("caves");
