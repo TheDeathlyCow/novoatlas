@@ -64,7 +64,7 @@ public class ColorMapBiomeSource extends BiomeSource {
 
     @Override
     public BiomeResolver createResolver(Climate.Sampler sampler) {
-        BiomeResolver resolver = this.mapInfo.value().createBiomeResolver(this.defaultBiome);
+        BiomeResolver resolver = this.mapInfo.value().createBiomeResolver(this.defaultBiome, quart -> quart);
 
         return (quartX, quartY, quartZ) -> {
             int x = QuartPos.toBlock(quartX);

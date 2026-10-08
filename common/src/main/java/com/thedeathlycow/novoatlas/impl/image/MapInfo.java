@@ -7,6 +7,7 @@ import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProv
 import com.thedeathlycow.novoatlas.impl.registry.MapImageRegistry;
 import com.thedeathlycow.novoatlas.impl.registry.NovoAtlasRegistries;
 import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.codec.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
@@ -86,13 +87,17 @@ public record MapInfo(
     }
 
     public BiomeResolver createBiomeResolver(Holder<Biome> defaultBiome) {
+        return this.createBiomeResolver(defaultBiome, QuartPos::toBlock);
+    }
+
+    public BiomeResolver createBiomeResolver(Holder<Biome> defaultBiome, QuartPosConverter converter) {
         if (this.caveBiomes.isPresent()) {
             return (quartX, quartY, quartZ) -> {
-                return this.getBiomeWithCaves(quartX, quartY, quartZ, defaultBiome);
+                return this.getBiomeWithCaves(quartX, quartY, quartZ, converter, defaultBiome);
             };
         } else {
             return (quartX, quartY, quartZ) -> {
-                return this.getSurfaceBiome(quartX, quartY, quartZ, (_, _, _) -> defaultBiome);
+                return this.getSurfaceBiome(quartX, quartY, quartZ, converter, (_, _, _) -> defaultBiome);
             };
         }
     }
@@ -128,26 +133,26 @@ public record MapInfo(
     }
 
     @NotNull
-    public Holder<Biome> getBiomeWithCaves(int x, int y, int z, Holder<Biome> defaultBiome) {
-        return getBiomeWithCaves(x, y, z, (_, _, _) -> defaultBiome);
+    public Holder<Biome> getBiomeWithCaves(int quartX, int quartY, int quartZ, QuartPosConverter converter, Holder<Biome> defaultBiome) {
+        return this.getBiomeWithCaves(quartX, quartY, quartZ, converter, (_, _, _) -> defaultBiome);
     }
 
     @NotNull
-    public Holder<Biome> getBiomeWithCaves(int x, int y, int z, Delegate outsideBoundDelegate) {
+    public Holder<Biome> getBiomeWithCaves(int quartX, int quartY, int quartZ, QuartPosConverter converter, Delegate outsideBoundDelegate) {
         if (this.caveBiomes.isPresent()) {
-            Holder<Biome> caveBiome = this.getCaveBiome(x, y, z, this.caveBiomes.orElseThrow());
+            Holder<Biome> caveBiome = this.getCaveBiome(quartX, quartY, quartZ, converter, this.caveBiomes.orElseThrow());
             if (caveBiome != null) {
                 return caveBiome;
             }
         }
 
-        return this.getSurfaceBiome(x, y, z, outsideBoundDelegate);
+        return this.getSurfaceBiome(quartX, quartY, quartZ, converter, outsideBoundDelegate);
     }
 
     @NotNull
-    public Holder<Biome> getSurfaceBiome(int x, int y, int z, Delegate outsideBoundDelegate) {
-        Holder<Biome> surfaceBiome = this.surfaceBiomes.getBiome(x, y, z, this);
-        return surfaceBiome != null ? surfaceBiome : outsideBoundDelegate.getBiome(x, y, z);
+    public Holder<Biome> getSurfaceBiome(int quartX, int quartY, int quartZ, QuartPosConverter converter, Delegate outsideBoundDelegate) {
+        Holder<Biome> surfaceBiome = this.surfaceBiomes.getBiome(quartX, converter.toBlockPos(quartY), quartZ, this);
+        return surfaceBiome != null ? surfaceBiome : outsideBoundDelegate.getBiome(quartX, quartY, quartZ);
     }
 
     public MapScaleConfig.HorizontalConfig horizontalScale() {
@@ -159,11 +164,12 @@ public record MapInfo(
     }
 
     @Nullable
-    private Holder<Biome> getCaveBiome(int x, int y, int z, LayeredMapBiomeProvider caveBiomes) {
-        int height = this.getHeightMapElevation(x, z);
+    private Holder<Biome> getCaveBiome(int quartX, int quartY, int quartZ, QuartPosConverter converter, LayeredMapBiomeProvider caveBiomes) {
+        int height = this.getHeightMapElevation(converter.toBlockPos(quartX), converter.toBlockPos(quartZ));
+        int blockY = QuartPos.toBlock(quartY);
 
-        if (y <= height - this.surfaceRange) {
-            Holder<Biome> caveBiome = caveBiomes.getBiome(x, y, z, this);
+        if (blockY <= height - this.surfaceRange) {
+            Holder<Biome> caveBiome = caveBiomes.getBiome(quartX, blockY, quartZ, this);
             if (caveBiome != null) {
                 return caveBiome;
             }
@@ -174,6 +180,11 @@ public record MapInfo(
 
     @FunctionalInterface
     public interface Delegate {
-        @NotNull Holder<Biome> getBiome(int x, int y, int z);
+        @NotNull Holder<Biome> getBiome(int quartX, int quartY, int quartZ);
+    }
+
+    @FunctionalInterface
+    public interface QuartPosConverter {
+        int toBlockPos(int quart);
     }
 }
