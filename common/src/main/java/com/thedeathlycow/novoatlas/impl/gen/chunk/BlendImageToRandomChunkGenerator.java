@@ -36,7 +36,7 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
                                     .optionalFieldOf("enable_carvers", true)
                                     .forGetter(BlendImageToRandomChunkGenerator::isEnableCarvers),
                             ExtraCodecs.POSITIVE_FLOAT
-                                    .optionalFieldOf("blend_distance", 64f)
+                                    .optionalFieldOf("blend_distance", 256f)
                                     .forGetter(BlendImageToRandomChunkGenerator::getBlendDistance)
                     )
                     .apply(instance, BlendImageToRandomChunkGenerator::new)
