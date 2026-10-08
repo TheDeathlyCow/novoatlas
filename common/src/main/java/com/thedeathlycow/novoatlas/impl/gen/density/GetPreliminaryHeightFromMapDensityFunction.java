@@ -11,7 +11,6 @@ import net.minecraft.util.Interval;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.densityfunction.*;
-import net.minecraft.world.level.levelgen.densityfunction.generator.NoiseFunction;
 
 /// Identical to [GetHeightFromMapDensityFunction] but subtracts elevation by 8 to account for the expected preliminary
 /// surface value.
