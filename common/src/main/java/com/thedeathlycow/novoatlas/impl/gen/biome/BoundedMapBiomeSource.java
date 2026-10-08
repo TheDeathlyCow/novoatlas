@@ -151,10 +151,7 @@ public class BoundedMapBiomeSource extends BiomeSource {
 
             alpha = BlendedSampler.smoothstep(0f, 1f, alpha);
 
-            int clampedQuartX = Mth.clamp(quartX, surfaceBiomes.minBlockX(this.mapInfo), surfaceBiomes.maxBlockX(this.mapInfo));
-            int clampedQuartZ = Mth.clamp(quartZ, surfaceBiomes.minBlockZ(this.mapInfo), surfaceBiomes.maxBlockZ(this.mapInfo));
-
-            float noise = Mth.clamp(this.generateNoise(clampedQuartX, clampedQuartZ, 0.25f, 0.15f), 0f, 1f);
+            float noise = Mth.clamp(this.generateNoise(quartX, quartZ, 0.25f, 0.15f), 0f, 1f);
 
             if (noise < alpha) {
                 return this.outsideMapResolver.getNoiseBiome(quartX, quartY, quartZ);
