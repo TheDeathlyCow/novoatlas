@@ -15,7 +15,7 @@ import org.jspecify.annotations.NonNull;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class BiomeCellColorMapBiomeSource extends BiomeSource implements BiomeResolver {
+public class BiomeCellColorMapBiomeSource extends BiomeSource {
     public static final MapCodec<BiomeCellColorMapBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     MapInfo.CODEC
@@ -63,14 +63,7 @@ public class BiomeCellColorMapBiomeSource extends BiomeSource implements BiomeRe
 
     @Override
     public BiomeResolver createResolver(Climate.Sampler sampler) {
-        return this;
-    }
-
-    @Override
-    @NonNull
-    public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ) {
-        MapInfo info = this.mapInfo.value();
-        return info.getBiome(biomeX, biomeY, biomeZ, this.defaultBiome);
+        return this.mapInfo.value().createBiomeResolver(this.defaultBiome);
     }
 
     public Holder<MapInfo> getMapInfo() {
