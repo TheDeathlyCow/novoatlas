@@ -28,10 +28,12 @@ public class BiomeCellColorMapBiomeSource extends BiomeSource implements BiomeRe
 
     private final Holder<MapInfo> mapInfo;
     private final Holder<Biome> defaultBiome;
+    private final BiomeResolver resolver;
 
     public BiomeCellColorMapBiomeSource(Holder<MapInfo> mapInfo, Holder<Biome> defaultBiome) {
         this.mapInfo = mapInfo;
         this.defaultBiome = defaultBiome;
+        this.resolver = mapInfo.value().createBiomeResolver(defaultBiome);
     }
 
     @Override
@@ -63,8 +65,7 @@ public class BiomeCellColorMapBiomeSource extends BiomeSource implements BiomeRe
     @Override
     @NotNull
     public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ, Climate.Sampler sampler) {
-        MapInfo info = this.mapInfo.value();
-        return info.getBiome(biomeX, biomeY, biomeZ, this.defaultBiome);
+        return resolver.getNoiseBiome(biomeX, biomeY, biomeZ, sampler);
     }
 
     public Holder<MapInfo> getMapInfo() {

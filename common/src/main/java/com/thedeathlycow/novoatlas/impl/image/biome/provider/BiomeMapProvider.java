@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 public interface BiomeMapProvider {
     @Nullable
-    Holder<Biome> getBiome(int x, int y, int z, MapInfo info);
+    Holder<Biome> getBiome(int quartX, int blockY, int quartZ, MapInfo info);
 
     Stream<Holder<Biome>> collectPossibleBiomes();
 

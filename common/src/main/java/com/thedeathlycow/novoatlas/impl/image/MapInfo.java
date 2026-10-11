@@ -8,10 +8,13 @@ import com.thedeathlycow.novoatlas.impl.image.biome.provider.ColorMapBiomeProvid
 import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProvider;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeResolver;
+import net.minecraft.world.level.biome.Climate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
@@ -109,22 +112,36 @@ public record MapInfo(
         }
     }
 
-    @NotNull
-    public Holder<Biome> getBiome(int x, int y, int z, Holder<Biome> defaultBiome) {
-        return getBiome(x, y, z, (ix, iy, iz) -> defaultBiome);
+    public BiomeResolver createBiomeResolver(Holder<Biome> defaultBiome) {
+        return this.createBiomeResolver(QuartPos::toBlock, defaultBiome);
+    }
+
+    public BiomeResolver createBiomeResolver(QuartPosConverter converter, Holder<Biome> defaultBiome) {
+        BiomeResolver defaultBiomeResolver = (ix, iy, iz, is) -> defaultBiome;
+
+        if (this.caveBiomes.isPresent()) {
+            return (quartX, quartY, quartZ, sampler) -> this.getBiome(quartX, quartY, quartZ, sampler, converter, defaultBiomeResolver);
+        } else {
+            return (quartX, quartY, quartZ, sampler) -> this.getSurfaceBiome(quartX, quartY, quartZ, sampler, converter, defaultBiomeResolver);
+        }
     }
 
     @NotNull
-    public Holder<Biome> getBiome(int x, int y, int z, Delegate outsideBoundDelegate) {
+    public Holder<Biome> getBiome(int quartX, int quartY, int quartZ, Climate.Sampler sampler, QuartPosConverter converter, BiomeResolver outsideBoundDelegate) {
         if (this.caveBiomes.isPresent()) {
-            Holder<Biome> caveBiome = this.getCaveBiome(x, y, z, this.caveBiomes.orElseThrow());
+            Holder<Biome> caveBiome = this.getCaveBiome(quartX, quartY, quartZ, converter, this.caveBiomes.orElseThrow());
             if (caveBiome != null) {
                 return caveBiome;
             }
         }
 
-        Holder<Biome> surfaceBiome = this.surfaceBiomes.getBiome(x, y, z, this);
-        return surfaceBiome != null ? surfaceBiome : outsideBoundDelegate.getBiome(x, y, z);
+        return this.getSurfaceBiome(quartX, quartY, quartZ, sampler, converter, outsideBoundDelegate);
+    }
+
+    @NotNull
+    public Holder<Biome> getSurfaceBiome(int quartX, int quartY, int quartZ, Climate.Sampler sampler, QuartPosConverter converter, BiomeResolver outsideBoundDelegate) {
+        Holder<Biome> surfaceBiome = this.surfaceBiomes.getBiome(quartX, converter.toBlockPos(quartY), quartZ, this);
+        return surfaceBiome != null ? surfaceBiome : outsideBoundDelegate.getNoiseBiome(quartX, quartY, quartZ, sampler);
     }
 
     public MapScaleConfig.HorizontalConfig horizontalScale() {
@@ -136,11 +153,12 @@ public record MapInfo(
     }
 
     @Nullable
-    private Holder<Biome> getCaveBiome(int x, int y, int z, LayeredMapBiomeProvider caveBiomes) {
-        int height = this.getHeightMapElevation(x, z);
+    private Holder<Biome> getCaveBiome(int quartX, int quartY, int quartZ, QuartPosConverter converter, LayeredMapBiomeProvider caveBiomes) {
+        int height = this.getHeightMapElevation(converter.toBlockPos(quartX), converter.toBlockPos(quartZ));
+        int blockY = converter.toBlockPos(quartY);
 
-        if (y <= height - this.surfaceRange) {
-            Holder<Biome> caveBiome = caveBiomes.getBiome(x, y, z, this);
+        if (blockY <= height - this.surfaceRange) {
+            Holder<Biome> caveBiome = caveBiomes.getBiome(quartX, blockY, quartZ, this);
             if (caveBiome != null) {
                 return caveBiome;
             }
@@ -150,7 +168,7 @@ public record MapInfo(
     }
 
     @FunctionalInterface
-    public interface Delegate {
-        @NotNull Holder<Biome> getBiome(int x, int y, int z);
+    public interface QuartPosConverter {
+        int toBlockPos(int quart);
     }
 }

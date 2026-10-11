@@ -7,6 +7,7 @@ import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProv
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import org.jetbrains.annotations.NotNull;
@@ -28,10 +29,12 @@ public class ColorMapBiomeSource extends BiomeSource {
 
     private final Holder<MapInfo> mapInfo;
     private final Holder<Biome> defaultBiome;
+    private final BiomeResolver resolver;
 
     public ColorMapBiomeSource(Holder<MapInfo> mapInfo, Holder<Biome> defaultBiome) {
         this.mapInfo = mapInfo;
         this.defaultBiome = defaultBiome;
+        this.resolver = mapInfo.value().createBiomeResolver(q -> q, defaultBiome);
     }
 
     @Override
@@ -62,12 +65,11 @@ public class ColorMapBiomeSource extends BiomeSource {
 
     @Override
     public Holder<Biome> getNoiseBiome(int biomeX, int biomeY, int biomeZ, Climate.Sampler sampler) {
-        MapInfo info = this.mapInfo.value();
         int x = QuartPos.toBlock(biomeX);
         int y = QuartPos.toBlock(biomeY);
         int z = QuartPos.toBlock(biomeZ);
 
-        return info.getBiome(x, y, z, this.defaultBiome);
+        return this.resolver.getNoiseBiome(x, y, z, sampler);
     }
 
     public Holder<MapInfo> getMapInfo() {

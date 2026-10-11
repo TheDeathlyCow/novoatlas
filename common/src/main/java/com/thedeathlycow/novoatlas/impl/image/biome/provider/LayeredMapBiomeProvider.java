@@ -32,8 +32,8 @@ public record LayeredMapBiomeProvider(
 
     @Override
     @Nullable
-    public Holder<Biome> getBiome(int x, int y, int z, MapInfo info) {
-        Holder<Biome> colorMapBiome = this.getBiomeFromColorMap(x, y, z, info);
+    public Holder<Biome> getBiome(int quartX, int blockY, int quartZ, MapInfo info) {
+        Holder<Biome> colorMapBiome = this.getBiomeFromColorMap(quartX, blockY, quartZ, info);
 
         return colorMapBiome != null && !colorMapBiome.is(SURFACE_BIOME) ? colorMapBiome : null;
     }
@@ -61,8 +61,8 @@ public record LayeredMapBiomeProvider(
         return null;
     }
 
-    private Holder<Biome> getBiomeFromColorMap(int x, int y, int z, MapInfo info) {
-        BiomeLayerEntry layer = this.getLayer(y);
-        return layer != null ? layer.biomeProvider().getBiome(x, y, z, info) : null;
+    private Holder<Biome> getBiomeFromColorMap(int quartX, int blockY, int quartZ, MapInfo info) {
+        BiomeLayerEntry layer = this.getLayer(blockY);
+        return layer != null ? layer.biomeProvider().getBiome(quartX, blockY, quartZ, info) : null;
     }
 }
