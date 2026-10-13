@@ -2,10 +2,10 @@ package com.thedeathlycow.novoatlas.impl.gen.biome;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.impl.gen.density.BlendedSampler;
 import com.thedeathlycow.novoatlas.impl.image.BiomeMapImage;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.image.biome.provider.LayeredMapBiomeProvider;
+import com.thedeathlycow.novoatlas.impl.math.Blending;
 import com.thedeathlycow.novoatlas.mixin.accessor.BiomeSourceAccessor;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.NoiseData;
@@ -146,13 +146,13 @@ public class BoundedMapBiomeSource extends BiomeSource {
 
             float distanceToEdge = (float) surfaceBiomes.getDistanceToEdge(quartX, quartZ, this.mapInfo);
 
-            float alpha = BlendedSampler.smoothstep(0, this.blendDistance, distanceToEdge);
+            float alpha = Blending.smoothstep(0, this.blendDistance, distanceToEdge);
 
             if (alpha >= 1.0f) {
                 return this.outsideMapResolver.getNoiseBiome(quartX, quartY, quartZ);
             }
 
-            alpha = BlendedSampler.smoothstep(0f, 1f, alpha);
+            alpha = Blending.smoothstep(0f, 1f, alpha);
 
             float noise = Mth.clamp(this.generateNoise(quartX, quartZ, 0.25f, 0.15f), 0f, 1f);
 

@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.image.HeightMapImage;
 import com.thedeathlycow.novoatlas.impl.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.math.Blending;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Interval;
@@ -84,7 +85,7 @@ public record BlendSurfaceLevel(
 
                 for (int z = 0; z < volume.sizeZ(); z++) {
                     for (int x = 0; x < volume.sizeX(); x++) {
-                        final float alpha = BlendedSampler.smoothstep(
+                        final float alpha = Blending.smoothstep(
                                 0,
                                 this.blendDistance,
                                 (float) heightmap.getDistanceToEdge(volume.blockX(x), volume.blockZ(z), this.mapInfo)
