@@ -19,7 +19,7 @@ public class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
                                     .forGetter(ImageMapChunkGenerator::getBiomeSource),
                             NoiseGeneratorSettings.CODEC
                                     .fieldOf("settings")
-                                    .forGetter(ImageMapChunkGenerator::generatorSettings),
+                                    .forGetter(ImageMapChunkGenerator::baseGeneratorSettings),
                             MapInfo.CODEC
                                     .fieldOf("map_info")
                                     .forGetter(ImageMapChunkGenerator::getMapInfo),
@@ -43,6 +43,7 @@ public class ImageMapChunkGenerator extends ImageBasedChunkGenerator {
         super(
                 biomeSource,
                 applyHeightMapToDensityFunctions(settings.value(), mapInfo, undergroundDensityFunction.value()),
+                settings,
                 mapInfo,
                 undergroundDensityFunction,
                 enableCarvers

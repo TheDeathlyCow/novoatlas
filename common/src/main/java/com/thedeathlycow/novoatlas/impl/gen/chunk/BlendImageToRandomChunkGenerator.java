@@ -21,7 +21,7 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
                                     .forGetter(BlendImageToRandomChunkGenerator::getBiomeSource),
                             NoiseGeneratorSettings.CODEC
                                     .fieldOf("settings")
-                                    .forGetter(BlendImageToRandomChunkGenerator::generatorSettings),
+                                    .forGetter(BlendImageToRandomChunkGenerator::baseGeneratorSettings),
                             MapInfo.CODEC
                                     .fieldOf("map_info")
                                     .forGetter(BlendImageToRandomChunkGenerator::getMapInfo),
@@ -51,6 +51,7 @@ public final class BlendImageToRandomChunkGenerator extends ImageBasedChunkGener
         super(
                 biomeSource,
                 applyHeightMapToDensityFunctions(settings.value(), mapInfo, undergroundDensityFunction.value(), blendDistance),
+                settings,
                 mapInfo,
                 undergroundDensityFunction,
                 enableCarvers

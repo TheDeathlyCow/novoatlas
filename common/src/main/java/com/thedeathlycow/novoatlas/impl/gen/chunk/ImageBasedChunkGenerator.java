@@ -16,25 +16,45 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.*;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ImageBasedChunkGenerator extends NoiseBasedChunkGenerator {
     private final Holder<MapInfo> mapInfo;
     private final Holder<DensityFunction> undergroundDensityFunction;
+    private final Holder<NoiseGeneratorSettings> patchedGeneratorSettings;
     private final boolean enableCarvers;
 
     protected ImageBasedChunkGenerator(
             BiomeSource biomeSource,
-            Holder<NoiseGeneratorSettings> settings,
+            Holder<NoiseGeneratorSettings> patchedGeneratorSettings,
+            Holder<NoiseGeneratorSettings> baseGeneratorSettings,
             Holder<MapInfo> mapInfo,
             Holder<DensityFunction> undergroundDensityFunction,
             boolean enableCarvers
     ) {
-        super(biomeSource, settings);
+        super(biomeSource, baseGeneratorSettings);
+        this.patchedGeneratorSettings = patchedGeneratorSettings;
         this.mapInfo = mapInfo;
         this.undergroundDensityFunction = undergroundDensityFunction;
         this.enableCarvers = enableCarvers;
 
         ((NoiseBasedChunkGeneratorAccessor) this).novoatlas$setGlobalFluidPicker(Suppliers.memoize(() -> this.pickFluid(this.generatorSettings().value())));
+    }
+
+    @Override
+    @NotNull
+    public final Holder<NoiseGeneratorSettings> generatorSettings() {
+        return this.patchedGeneratorSettings();
+    }
+
+    @NotNull
+    public final Holder<NoiseGeneratorSettings> patchedGeneratorSettings() {
+        return this.patchedGeneratorSettings;
+    }
+
+    @NotNull
+    public final Holder<NoiseGeneratorSettings> baseGeneratorSettings() {
+        return super.generatorSettings();
     }
 
     public final Holder<MapInfo> getMapInfo() {
