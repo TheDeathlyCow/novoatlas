@@ -12,7 +12,7 @@ These are the official sources of NovoAtlas:
 
 ## How to Use
 
-The [repository wiki](https://github.com/TheDeathlyCow/novoatlas/wiki) describes how to use this mod to create your own worlds/dimensions.
+NovoAtlas documentation is available at https://novoatlas.thedeathlycow.com
 
 Example datapacks are builtin with the mod, and can be found in the "Datapacks" folder of the world creation screen. However, they can also be downloaded separately from the [releases page](https://github.com/TheDeathlyCow/novoatlas/releases).
 

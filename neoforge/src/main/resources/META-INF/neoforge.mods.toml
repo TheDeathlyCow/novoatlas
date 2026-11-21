@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "${neoforge_loader_version_range}"
-issueTrackerURL = "https://github.com/TheDeathlyCow/novo-atlas/issues"
+issueTrackerURL = "https://github.com/TheDeathlyCow/novoatlas/issues"
 license = "${license}"
 
 [[mods]]

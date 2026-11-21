@@ -33,5 +33,15 @@
         "minecraft": "${minecraft_version_predicate}",
         "java": ">=${java_version}"
     },
-    "accessWidener": "${mod_id}.accesswidener"
+    "accessWidener": "${mod_id}.accesswidener",
+    "custom": {
+        "modmenu": {
+            "links": {
+                "modmenu.discord": "https://discord.thedeathlycow.com/",
+                "modmenu.wiki": "https://novoatlas.thedeathlycow.com/",
+                "modmenu.kofi": "https://ko-fi.com/thedeathlycow",
+                "modmenu.modrinth": "https://modrinth.com/mod/novoatlas"
+            }
+        }
+    }
 }
