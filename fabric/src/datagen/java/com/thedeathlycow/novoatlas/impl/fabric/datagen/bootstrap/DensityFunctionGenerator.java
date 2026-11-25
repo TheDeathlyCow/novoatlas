@@ -1,6 +1,6 @@
 package com.thedeathlycow.novoatlas.impl.fabric.datagen.bootstrap;
 
-import com.thedeathlycow.novoatlas.impl.gen.NovoAtlasDensityFunctions;
+import com.thedeathlycow.novoatlas.impl.v1.gen.NovoAtlasDensityFunctions;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
