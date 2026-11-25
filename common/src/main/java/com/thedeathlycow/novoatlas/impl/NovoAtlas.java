@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.impl.v1;
+package com.thedeathlycow.novoatlas.impl;
 
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;

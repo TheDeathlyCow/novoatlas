@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.impl.v1.platform;
+package com.thedeathlycow.novoatlas.impl.platform;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;

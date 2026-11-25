@@ -1,9 +1,10 @@
 package com.thedeathlycow.novoatlas.impl.v1.registry;
 
-import com.thedeathlycow.novoatlas.impl.v1.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.v1.image.BiomeMapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.HeightMapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapImage;
+import com.thedeathlycow.novoatlas.impl.v2.image.io.MultiFileTypeToIdConverter;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;

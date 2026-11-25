@@ -1,7 +1,7 @@
 package com.thedeathlycow.novoatlas.impl.v1.image.interpolation;
 
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.v1.image.ImageWrapping;
+import com.thedeathlycow.novoatlas.impl.v2.image.ImageWrapping;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
 import net.minecraft.util.Mth;

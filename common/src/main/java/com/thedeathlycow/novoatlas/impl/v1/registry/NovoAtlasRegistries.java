@@ -1,7 +1,7 @@
 package com.thedeathlycow.novoatlas.impl.v1.registry;
 
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.v1.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.v1.image.BiomeMapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.HeightMapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;

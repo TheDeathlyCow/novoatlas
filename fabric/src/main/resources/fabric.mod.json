@@ -33,7 +33,7 @@
         "minecraft": "${minecraft_version_predicate}",
         "java": ">=${java_version}"
     },
-    "accessWidener": "${mod_id}.accesswidener",
+    "accessWidener": "${mod_id}.classtweaker",
     "custom": {
         "modmenu": {
             "links": {

@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.impl.v1.registry;
+package com.thedeathlycow.novoatlas.impl.v2.image.io;
 
 import com.thedeathlycow.novoatlas.impl.v1.image.MapImage;
 import net.minecraft.core.Registry;
@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class MultiFileTypeToIdConverter {
     private final String prefix;
@@ -31,7 +32,11 @@ public class MultiFileTypeToIdConverter {
     }
 
     public static <T extends MapImage> MultiFileTypeToIdConverter imageRegistry(ResourceKey<Registry<T>> registryKey) {
-        return builtinImages(getElementsPath(registryKey));
+        return imageRegistry(registryKey.identifier());
+    }
+
+    public static <T extends MapImage> MultiFileTypeToIdConverter imageRegistry(Identifier id) {
+        return builtinImages(getElementsPath(id));
     }
 
     public Identifier fileToId(Identifier file) {
@@ -53,6 +58,10 @@ public class MultiFileTypeToIdConverter {
         return resourceManager.listResources(this.prefix, this::test);
     }
 
+    public Optional<Resource> getResource(Identifier location, ResourceManager resourceManager) {
+        return resourceManager.getResource(location);
+    }
+
     public Map<Identifier, List<Resource>> listMatchingResourceStacks(ResourceManager resourceManager) {
         return resourceManager.listResourceStacks(this.prefix, this::test);
     }
@@ -65,13 +74,13 @@ public class MultiFileTypeToIdConverter {
         return Arrays.stream(this.extensions).anyMatch(extension -> location.getPath().endsWith(extension));
     }
 
-    private static String getElementsPath(ResourceKey<? extends Registry<?>> registryKey) {
-        String namespace = registryKey.identifier().getNamespace();
+    private static String getElementsPath(Identifier id) {
+        String namespace = id.getNamespace();
 
         if (namespace.equals(Identifier.DEFAULT_NAMESPACE)) {
-            return Registries.elementsDirPath(registryKey);
+            return id.getPath();
         } else {
-            return "%s/%s".formatted(namespace, registryKey.identifier().getPath());
+            return "%s/%s".formatted(namespace, id.getPath());
         }
     }
 }

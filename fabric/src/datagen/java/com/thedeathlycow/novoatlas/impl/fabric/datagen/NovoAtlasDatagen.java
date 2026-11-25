@@ -1,6 +1,6 @@
 package com.thedeathlycow.novoatlas.impl.fabric.datagen;
 
-import com.thedeathlycow.novoatlas.impl.v1.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.fabric.datagen.bootstrap.DensityFunctionGenerator;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;

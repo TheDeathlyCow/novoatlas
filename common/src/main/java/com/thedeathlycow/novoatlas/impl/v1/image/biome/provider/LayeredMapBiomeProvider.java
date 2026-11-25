@@ -2,7 +2,7 @@ package com.thedeathlycow.novoatlas.impl.v1.image.biome.provider;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.impl.v1.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.v1.image.biome.BiomeLayerEntry;
 import net.minecraft.core.Holder;

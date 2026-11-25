@@ -1,6 +1,6 @@
 package com.thedeathlycow.novoatlas.impl.fabric.v1;
 
-import com.thedeathlycow.novoatlas.impl.v1.platform.NovoAtlasPlatform;
+import com.thedeathlycow.novoatlas.impl.platform.NovoAtlasPlatform;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.loader.api.FabricLoader;

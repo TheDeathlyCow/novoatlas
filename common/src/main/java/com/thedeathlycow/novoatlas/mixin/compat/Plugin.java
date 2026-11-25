@@ -1,6 +1,6 @@
 package com.thedeathlycow.novoatlas.mixin.compat;
 
-import com.thedeathlycow.novoatlas.impl.v1.platform.Services;
+import com.thedeathlycow.novoatlas.impl.platform.Services;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;

@@ -1,6 +1,6 @@
-package com.thedeathlycow.novoatlas.impl.v1.platform;
+package com.thedeathlycow.novoatlas.impl.platform;
 
-import com.thedeathlycow.novoatlas.impl.v1.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 
 import java.util.ServiceLoader;
 

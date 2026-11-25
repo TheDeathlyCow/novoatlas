@@ -1,6 +1,6 @@
 package com.thedeathlycow.novoatlas.impl.fabric.v1;
 
-import com.thedeathlycow.novoatlas.impl.v1.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.v1.gen.biome.BiomeCellColorMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.v1.gen.biome.BoundedMapBiomeSource;
 import com.thedeathlycow.novoatlas.impl.v1.gen.biome.ColorMapBiomeSource;

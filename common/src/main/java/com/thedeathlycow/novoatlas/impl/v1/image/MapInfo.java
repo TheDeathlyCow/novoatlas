@@ -6,6 +6,7 @@ import com.thedeathlycow.novoatlas.impl.v1.image.biome.provider.ColorMapBiomePro
 import com.thedeathlycow.novoatlas.impl.v1.image.biome.provider.LayeredMapBiomeProvider;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
 import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.v2.image.ImageWrapping;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.codec.RegistryFileCodec;
