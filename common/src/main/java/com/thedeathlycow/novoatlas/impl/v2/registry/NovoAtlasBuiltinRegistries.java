@@ -1,7 +1,7 @@
-package com.thedeathlycow.novoatlas.impl.v1.registry;
+package com.thedeathlycow.novoatlas.impl.v2.registry;
 
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Interpolator;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Interpolator;
 import com.thedeathlycow.novoatlas.impl.platform.Services;
 import net.minecraft.core.Registry;
 

@@ -3,7 +3,7 @@ package com.thedeathlycow.novoatlas.impl.v1.image;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Interpolator;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Interpolator;
 import net.minecraft.util.ExtraCodecs;
 
 public record MapScaleConfig(
@@ -58,7 +58,7 @@ public record MapScaleConfig(
         public static final Codec<HorizontalConfig> CODEC = Codec.withAlternative(BASE_CODEC, FLOAT_CODEC);
 
         public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
-            return this.interpolation.sample(x, z, image, mapInfo);
+            return this.interpolation.sample(x, z, new Interpolator.Context(image.asNewApiData(), mapInfo.imageWrapping()));
         }
     }
 }

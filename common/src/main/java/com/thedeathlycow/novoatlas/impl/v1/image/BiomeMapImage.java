@@ -1,5 +1,7 @@
 package com.thedeathlycow.novoatlas.impl.v1.image;
 
+import com.thedeathlycow.novoatlas.impl.v2.image.data.ColorImageData;
+
 import java.awt.image.BufferedImage;
 
 public final class BiomeMapImage extends MapImage {
@@ -14,20 +16,9 @@ public final class BiomeMapImage extends MapImage {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        int[] pixels = getColorPixels(image, width, height);
+        int[] pixels = ColorImageData.getColorPixels(image, width, height);
 
         return new BiomeMapImage(width, height, pixels);
-    }
-
-    private static int[] getColorPixels(BufferedImage image, int width, int height) {
-        int[] data = new int[width * height];
-        image.getRGB(0, 0, width, height, data, 0, width);
-
-        for (int i = 0; i < data.length; i++) {
-            data[i] = data[i] & 0xffffff;
-        }
-
-        return data;
     }
 
     @Override

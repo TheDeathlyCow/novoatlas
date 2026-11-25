@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.v1.image.BiomeMapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.v1.image.biome.BiomeColorEntry;
-import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 public final class ColorMapBiomeProvider implements BiomeMapProvider {
     public static final MapCodec<ColorMapBiomeProvider> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
-                    ResourceKey.codec(NovoAtlasRegistries.BIOME_MAP)
+                    ResourceKey.codec(OldNovoAtlasRegistries.BIOME_MAP)
                             .fieldOf("map")
                             .forGetter(ColorMapBiomeProvider::getMap),
                     BiomeColorEntry.LIST_CODEC

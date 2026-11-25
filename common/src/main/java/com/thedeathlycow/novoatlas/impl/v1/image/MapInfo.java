@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.v1.image.biome.provider.ColorMapBiomeProvider;
 import com.thedeathlycow.novoatlas.impl.v1.image.biome.provider.LayeredMapBiomeProvider;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
-import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
 import com.thedeathlycow.novoatlas.impl.v2.image.ImageWrapping;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
@@ -35,10 +35,10 @@ public record MapInfo(
 ) {
     public static final Codec<MapInfo> DIRECT_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    ResourceKey.codec(NovoAtlasRegistries.HEIGHTMAP)
+                    ResourceKey.codec(OldNovoAtlasRegistries.HEIGHTMAP)
                             .fieldOf("height_map")
                             .forGetter(MapInfo::heightMap),
-                    ResourceKey.codec(NovoAtlasRegistries.HEIGHTMAP)
+                    ResourceKey.codec(OldNovoAtlasRegistries.HEIGHTMAP)
                             .optionalFieldOf("fluid_height_map")
                             .forGetter(MapInfo::fluidHeightMap),
                     ColorMapBiomeProvider.CODEC.codec()
@@ -65,7 +65,7 @@ public record MapInfo(
             ).apply(instance, MapInfo::new)
     );
 
-    public static final Codec<Holder<MapInfo>> CODEC = RegistryFileCodec.create(NovoAtlasRegistries.MAP_INFO, DIRECT_CODEC, false);
+    public static final Codec<Holder<MapInfo>> CODEC = RegistryFileCodec.create(OldNovoAtlasRegistries.MAP_INFO, DIRECT_CODEC, false);
 
     public static HeightMapImage lookupHeightmap(ResourceKey<HeightMapImage> map) {
         return Objects.requireNonNull(MapImageRegistry.HEIGHTMAP.getImage(map), "Missing height map image " + map);

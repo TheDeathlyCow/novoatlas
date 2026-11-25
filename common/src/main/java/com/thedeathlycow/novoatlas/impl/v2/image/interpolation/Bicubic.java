@@ -1,9 +1,10 @@
-package com.thedeathlycow.novoatlas.impl.v1.image.interpolation;
+package com.thedeathlycow.novoatlas.impl.v2.image.interpolation;
 
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.impl.v2.image.ImageWrapping;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
 import net.minecraft.util.Mth;
 
 public final class Bicubic implements Interpolator {
@@ -13,7 +14,7 @@ public final class Bicubic implements Interpolator {
 
     /// Implementation by [Paul Breeuwsma](https://www.paulinternet.nl/?page=bicubic)
     @Override
-    public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
+    public double sample(double x, double z, Context ctx) {
         int truncatedX = Mth.floor(x);
         int truncatedZ = Mth.floor(z);
 
@@ -21,7 +22,7 @@ public final class Bicubic implements Interpolator {
         double deltaZ = z - truncatedZ;
 
         double[] neighborHood = new double[NEIGHBORHOOD_WIDTH * NEIGHBORHOOD_WIDTH];
-        cubicNeighborhood(neighborHood, truncatedX, truncatedZ, image, mapInfo.imageWrapping());
+        cubicNeighborhood(neighborHood, truncatedX, truncatedZ, ctx.image(), ctx.wrapping());
 
         double[] arr = new double[NEIGHBORHOOD_WIDTH];
         arr[0] = getValue(neighborHood, 0, deltaZ);
@@ -45,12 +46,12 @@ public final class Bicubic implements Interpolator {
         return CODEC;
     }
 
-    private static void cubicNeighborhood(double[] output, int x, int z, MapImage image, ImageWrapping imageWrapping) {
+    private static void cubicNeighborhood(double[] output, int x, int z, ImageData image, ImageWrapping imageWrapping) {
         for (int col = -1; col < 3; col++) {
             for (int row = -1; row < 3; row++) {
                 int px = x + col;
                 int pz = z + row;
-                output[(col + 1) * NEIGHBORHOOD_WIDTH + row + 1] = image.getPixelValue(px, pz, imageWrapping);
+                output[(col + 1) * NEIGHBORHOOD_WIDTH + row + 1] = image.getWrappedPixelValue(px, pz, imageWrapping);
             }
         }
     }

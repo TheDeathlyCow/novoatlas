@@ -8,13 +8,13 @@ import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.BlendImageToRandomChunkGene
 import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.v1.gen.density.*;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Bicubic;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Bilinear;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Lanczos;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.NearestNeighbour;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bicubic;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bilinear;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Lanczos;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.NearestNeighbour;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
-import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasBuiltinRegistries;
-import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
+import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -110,11 +110,11 @@ public final class NovoAtlasNeoForge {
             event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_surface_level"), () -> BlendSurfaceLevel.CODEC);
         }
 
-        if (event.getRegistryKey() == NovoAtlasRegistries.INTERPOLATOR_TYPE) {
-            event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), () -> NearestNeighbour.CODEC);
-            event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), () -> Bilinear.CODEC);
-            event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"), () -> Bicubic.CODEC);
-            event.register(NovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"), () -> Lanczos.CODEC);
+        if (event.getRegistryKey() == OldNovoAtlasRegistries.INTERPOLATOR_TYPE) {
+            event.register(OldNovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), () -> NearestNeighbour.CODEC);
+            event.register(OldNovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), () -> Bilinear.CODEC);
+            event.register(OldNovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"), () -> Bicubic.CODEC);
+            event.register(OldNovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"), () -> Lanczos.CODEC);
 
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("nearest_neighbor"));
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("bilinear"));
@@ -124,12 +124,12 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(NovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
+        event.dataPackRegistry(OldNovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
     }
 
     private static void registerResourceReloader(AddServerReloadListenersEvent event) {
-        event.addListener(NovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
-        event.addListener(NovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
+        event.addListener(OldNovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
+        event.addListener(OldNovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
     }
 
     private static void addDefaultAlias(Registry<?> registry, Identifier id) {

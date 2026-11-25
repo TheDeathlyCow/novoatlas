@@ -1,6 +1,8 @@
 package com.thedeathlycow.novoatlas.impl.v1.image;
 
 import com.thedeathlycow.novoatlas.impl.v2.image.ImageWrapping;
+import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
+import com.thedeathlycow.novoatlas.impl.v2.image.data.LegacyMapImage;
 import net.minecraft.util.Mth;
 import org.joml.Vector2fc;
 import org.joml.Vector2i;
@@ -8,10 +10,12 @@ import org.joml.Vector2i;
 public abstract class MapImage {
     private final int width;
     private final int height;
+    private final ImageData newApiWrapper;
 
     protected MapImage(int width, int height) {
         this.width = width;
         this.height = height;
+        this.newApiWrapper = new LegacyMapImage(this);
     }
 
     public final double getDistanceToEdge(int x, int z, MapInfo info) {
@@ -24,6 +28,10 @@ public abstract class MapImage {
         Vector2i clampedEdgePoint = new Vector2i(Mth.clamp(p.x(), minX, maxX), Mth.clamp(p.y(), minZ, maxZ));
 
         return p.distance(clampedEdgePoint);
+    }
+
+    public final ImageData asNewApiData() {
+        return this.newApiWrapper;
     }
 
     public final boolean isBlockInsideImage(int x, int z, MapInfo info) {
@@ -89,7 +97,7 @@ public abstract class MapImage {
         return imageWrapping.transform(x, z, this.width, this.height, this::getPixelValue);
     }
 
-    protected abstract int getPixelValue(int x, int z);
+    public abstract int getPixelValue(int x, int z);
 
     protected abstract int sampleInterpolated(double x, double z, MapInfo info);
 }

@@ -1,15 +1,15 @@
-package com.thedeathlycow.novoatlas.impl.v1.image.interpolation;
+package com.thedeathlycow.novoatlas.impl.v2.image.interpolation;
 
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.v1.image.MapImage;
-import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.v2.image.ImageWrapping;
+import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
 import net.minecraft.util.Mth;
 
 public final class Bilinear implements Interpolator {
     public static final MapCodec<Bilinear> CODEC = MapCodec.unit(new Bilinear());
 
     @Override
-    public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
+    public double sample(double x, double z, Context ctx) {
         // x and z are the truncated (floor) coordinates
         // deltaX and deltaZ are the fractional parts
         int truncatedX = Mth.floor(x);
@@ -22,10 +22,13 @@ public final class Bilinear implements Interpolator {
         int nextX = truncatedX + 1;
         int nextZ = truncatedZ + 1;
 
-        int topLeft = image.getPixelValue(truncatedX, truncatedZ, mapInfo.imageWrapping());
-        int topRight = image.getPixelValue(nextX, truncatedZ, mapInfo.imageWrapping());
-        int bottomLeft = image.getPixelValue(truncatedX, nextZ, mapInfo.imageWrapping());
-        int bottomRight = image.getPixelValue(nextX, nextZ, mapInfo.imageWrapping());
+        ImageData image = ctx.image();
+        ImageWrapping wrapping = ctx.wrapping();
+
+        int topLeft = image.getWrappedPixelValue(truncatedX, truncatedZ, wrapping);
+        int topRight = image.getWrappedPixelValue(nextX, truncatedZ, wrapping);
+        int bottomLeft = image.getWrappedPixelValue(truncatedX, nextZ, wrapping);
+        int bottomRight = image.getWrappedPixelValue(nextX, nextZ, wrapping);
 
         return Mth.lerp2(deltaX, deltaZ, topLeft, topRight, bottomLeft, bottomRight);
     }

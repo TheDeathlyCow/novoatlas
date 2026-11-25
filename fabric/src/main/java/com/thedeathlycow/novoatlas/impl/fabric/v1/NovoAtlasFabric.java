@@ -8,13 +8,13 @@ import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.BlendImageToRandomChunkGene
 import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.v1.gen.density.*;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Bicubic;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Bilinear;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Lanczos;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.NearestNeighbour;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bicubic;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bilinear;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Lanczos;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.NearestNeighbour;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
-import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasBuiltinRegistries;
-import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
+import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
@@ -31,7 +31,7 @@ public final class NovoAtlasFabric implements ModInitializer {
     public void onInitialize() {
         NovoAtlas.init();
 
-        DynamicRegistries.register(NovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
+        DynamicRegistries.register(OldNovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
 
         Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), ImageMapChunkGenerator.CODEC);
         Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.expId("blend_image_map_to_random"), BlendImageToRandomChunkGenerator.CODEC);
@@ -56,8 +56,8 @@ public final class NovoAtlasFabric implements ModInitializer {
         addDefaultAlias(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"));
         addDefaultAlias(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"));
 
-        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
-        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(OldNovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(OldNovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
 
         ModContainer mod = FabricLoader.getInstance().getModContainer(NovoAtlas.MOD_ID).orElseThrow();
 

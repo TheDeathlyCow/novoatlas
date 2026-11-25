@@ -35,7 +35,7 @@ public final class HeightMapImage extends MapImage {
     }
 
     @Override
-    protected int getPixelValue(int x, int z) {
+    public int getPixelValue(int x, int z) {
         return this.pixels[z * this.width() + x];
     }
 
