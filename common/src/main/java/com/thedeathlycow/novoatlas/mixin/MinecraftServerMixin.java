@@ -7,12 +7,14 @@ import com.thedeathlycow.novoatlas.impl.v2.image.data.GrayscaleImageData;
 import com.thedeathlycow.novoatlas.impl.v2.image.io.ImageLoader;
 import com.thedeathlycow.novoatlas.impl.v2.image.io.NovoAtlasMinecraftServer;
 import com.thedeathlycow.novoatlas.impl.v2.image.io.ResourceIndex;
+import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.Services;
 import net.minecraft.server.WorldStem;
 import net.minecraft.server.level.progress.LevelLoadListener;
 import net.minecraft.server.notifications.NotificationManager;
 import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import org.spongepowered.asm.mixin.Mixin;
@@ -47,8 +49,9 @@ public class MinecraftServerMixin implements NovoAtlasMinecraftServer {
             final NotificationManager notificationManager,
             CallbackInfo ci
     ) {
-        this.novoatlas_grayscaleLoader = new ImageLoader<>(NovoAtlas.id("images/grayscale"), ResourceIndex.GRAYSCALE_IMAGES, GrayscaleImageData::fromBufferedImage);
-        this.novoatlas_colorLoader = new ImageLoader<>(NovoAtlas.id("images/color"), ResourceIndex.COLOR_IMAGES, ColorImageData::fromBufferedImage);
+        ResourceManager manager = worldStem.resourceManager();
+        this.novoatlas_grayscaleLoader = new ImageLoader<>(NovoAtlasRegistries.GRAYSCALE_IMAGES, manager, GrayscaleImageData::fromBufferedImage);
+        this.novoatlas_colorLoader = new ImageLoader<>(NovoAtlasRegistries.COLOR_IMAGES, manager, ColorImageData::fromBufferedImage);
     }
 
     @Override
@@ -59,15 +62,5 @@ public class MinecraftServerMixin implements NovoAtlasMinecraftServer {
     @Override
     public ImageLoader<ColorImageData> novoatlas$colorLoader() {
         return this.novoatlas_colorLoader;
-    }
-
-    // close image loaders before resources
-    @Inject(
-            method = "stopServer",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer$ReloadableResources;close()V")
-    )
-    private void onServerStop(CallbackInfo ci) {
-        this.novoatlas_grayscaleLoader.close();
-        this.novoatlas_colorLoader.close();
     }
 }

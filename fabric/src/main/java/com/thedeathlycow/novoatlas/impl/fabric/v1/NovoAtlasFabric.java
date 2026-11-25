@@ -32,8 +32,6 @@ public final class NovoAtlasFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         NovoAtlas.init();
-        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistries.GRAYSCALE_IMAGES.identifier(), ResourceIndex.GRAYSCALE_IMAGES);
-        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistries.COLOR_IMAGES.identifier(), ResourceIndex.COLOR_IMAGES);
 
         this.initV1();
 

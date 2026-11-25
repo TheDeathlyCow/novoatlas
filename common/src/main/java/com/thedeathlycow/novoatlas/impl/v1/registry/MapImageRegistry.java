@@ -52,7 +52,7 @@ public final class MapImageRegistry<T extends MapImage> extends SimplePreparable
     protected Map<ResourceKey<T>, T> prepare(ResourceManager manager, ProfilerFiller profiler) {
         Map<ResourceKey<T>, T> updatedRegistry = new IdentityHashMap<>();
 
-        var converter = MultiFileTypeToIdConverter.imageRegistry(registryKey);
+        var converter = MultiFileTypeToIdConverter.registry(registryKey);
         if (NovoAtlas.LOGGER.isInfoEnabled()) {
             NovoAtlas.LOGGER.info(
                     "Reloading map images for {}, supported image formats are: {}",
