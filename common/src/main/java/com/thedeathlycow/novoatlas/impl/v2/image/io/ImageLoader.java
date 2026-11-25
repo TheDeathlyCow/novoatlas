@@ -1,9 +1,10 @@
 package com.thedeathlycow.novoatlas.impl.v2.image.io;
 
+import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
+import org.jspecify.annotations.NonNull;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,37 +17,62 @@ public final class ImageLoader<T extends ImageData> implements AutoCloseable {
     private final ConcurrentMap<Identifier, CompletableFuture<T>> registry = new ConcurrentHashMap<>();
 
     private final Identifier registryId;
-    private final ResourceManager manager;
     private final Factory<T> factory;
+    private final ResourceIndex<T> index;
 
-    public ImageLoader(Identifier registryId, ResourceManager manager, Factory<T> factory) {
+    public ImageLoader(Identifier registryId, ResourceIndex<T> index, Factory<T> factory) {
         this.registryId = registryId;
-        this.manager = manager;
+        this.index = index;
         this.factory = factory;
     }
 
-    public CompletableFuture<T> get(Identifier id) {
-        return this.registry.computeIfAbsent(id, i -> CompletableFuture.supplyAsync(() -> {
-            try {
-                return this.loadImage(i);
-            } catch (IOException e) {
-                throw new CompletionException(e);
-            }
-        }, this.executor));
+    @FunctionalInterface
+    public interface Factory<T extends @NonNull ImageData> {
+        T fromBufferedImage(@NonNull BufferedImage image);
     }
 
-    private T loadImage(Identifier id) throws IOException {
-        var converter = MultiFileTypeToIdConverter.imageRegistry(this.registryId);
+    public CompletableFuture<T> get(Identifier id) {
+        CompletableFuture<T> created = new CompletableFuture<>();
+        CompletableFuture<T> existing = this.registry.putIfAbsent(id, created);
 
-        Resource resource = converter.getResource(id, manager).orElse(null);
+        if (existing != null) {
+            return existing.copy();
+        }
+
+        try {
+            this.executor.execute(() -> this.run(id, created));
+        } catch (RejectedExecutionException e) {
+            this.registry.remove(id, created);
+            created.completeExceptionally(e);
+        }
+
+        return created.copy();
+    }
+
+    private void run(Identifier id, CompletableFuture<T> future) {
+        try {
+            future.complete(this.loadImage(id));
+        } catch (Throwable t) {
+            NovoAtlas.LOGGER.error("Error loading image [{}]: {}", this.registryId, id, t);
+            future.completeExceptionally(t);
+        }
+    }
+
+    private T loadImage(Identifier cleanId) throws IOException {
+        Resource resource = this.index.get(cleanId);
 
         if (resource == null) {
-            throw new IOException("Unknown image in registry: [" + this.registryId + "]: " + id);
+            throw new IOException("Unknown image in registry: [" + this.registryId + "]: " + cleanId);
         }
 
         BufferedImage image;
+
         try (InputStream stream = resource.open()) {
             image = ImageIO.read(stream);
+        }
+
+        if (image == null) {
+            throw new IOException("Unsupported image format in image registry found [" + this.registryId + "]: " + cleanId);
         }
 
         return this.factory.fromBufferedImage(image);
@@ -55,10 +81,5 @@ public final class ImageLoader<T extends ImageData> implements AutoCloseable {
     @Override
     public void close() {
         this.executor.close();
-    }
-
-    @FunctionalInterface
-    public interface Factory<T extends ImageData> {
-        T fromBufferedImage(BufferedImage image);
     }
 }

@@ -13,8 +13,10 @@ import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Lanczos;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.NearestNeighbour;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
+import com.thedeathlycow.novoatlas.impl.v2.image.io.ResourceIndex;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
 import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
@@ -30,7 +32,27 @@ public final class NovoAtlasFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         NovoAtlas.init();
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistries.GRAYSCALE_IMAGES.identifier(), ResourceIndex.GRAYSCALE_IMAGES);
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistries.COLOR_IMAGES.identifier(), ResourceIndex.COLOR_IMAGES);
 
+        this.initV1();
+
+        ModContainer mod = FabricLoader.getInstance().getModContainer(NovoAtlas.MOD_ID).orElseThrow();
+
+        PackActivationType activation = NovoAtlas.enableExampleDataPacks() ? PackActivationType.DEFAULT_ENABLED : PackActivationType.NORMAL;
+
+        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-basic-example"), mod, activation);
+        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-blend-to-random-example"), mod, activation);
+        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-cave-biome-example"), mod, activation);
+        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-no-caves-example"), mod, activation);
+    }
+
+    private static void addDefaultAlias(Registry<?> registry, Identifier id) {
+        registry.addAlias(Identifier.withDefaultNamespace(id.getPath()), id);
+    }
+
+    @Deprecated
+    private void initV1() {
         DynamicRegistries.register(OldNovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
 
         Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), ImageMapChunkGenerator.CODEC);
@@ -58,18 +80,5 @@ public final class NovoAtlasFabric implements ModInitializer {
 
         ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(OldNovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
         ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(OldNovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
-
-        ModContainer mod = FabricLoader.getInstance().getModContainer(NovoAtlas.MOD_ID).orElseThrow();
-
-        PackActivationType activation = NovoAtlas.enableExampleDataPacks() ? PackActivationType.DEFAULT_ENABLED : PackActivationType.NORMAL;
-
-        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-basic-example"), mod, activation);
-        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-blend-to-random-example"), mod, activation);
-        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-cave-biome-example"), mod, activation);
-        ResourceLoader.registerBuiltinPack(NovoAtlas.id("avila-no-caves-example"), mod, activation);
-    }
-
-    private static void addDefaultAlias(Registry<?> registry, Identifier id) {
-        registry.addAlias(Identifier.withDefaultNamespace(id.getPath()), id);
     }
 }

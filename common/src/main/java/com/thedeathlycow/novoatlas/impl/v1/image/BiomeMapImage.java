@@ -15,9 +15,7 @@ public final class BiomeMapImage extends MapImage {
     public static BiomeMapImage fromBufferedImage(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
-
         int[] pixels = ColorImageData.getColorPixels(image, width, height);
-
         return new BiomeMapImage(width, height, pixels);
     }
 

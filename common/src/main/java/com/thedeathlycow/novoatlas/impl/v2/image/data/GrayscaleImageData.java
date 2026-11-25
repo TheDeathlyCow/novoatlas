@@ -33,7 +33,7 @@ public final class GrayscaleImageData implements ImageData {
         return this.pixels[z * this.width() + x];
     }
 
-    public static GrayscaleImageData fromBufferedImage(BufferedImage image) {
+    public static GrayscaleImageData  fromBufferedImage(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
 
@@ -42,7 +42,7 @@ public final class GrayscaleImageData implements ImageData {
         return new GrayscaleImageData(width, height, pixels);
     }
 
-    private static char[] getGrayScalePixels(BufferedImage image, int width, int height) {
+    public static char[] getGrayScalePixels(BufferedImage image, int width, int height) {
         char[] pixels = new char[width * height];
         Raster raster = image.getRaster();
 

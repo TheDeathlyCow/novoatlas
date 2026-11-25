@@ -1,7 +1,8 @@
 package com.thedeathlycow.novoatlas.impl.v1.image;
 
+import com.thedeathlycow.novoatlas.impl.v2.image.data.GrayscaleImageData;
+
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 
 public final class HeightMapImage extends MapImage {
     // char used as an unsigned 16 bit value
@@ -15,23 +16,8 @@ public final class HeightMapImage extends MapImage {
     public static HeightMapImage fromBufferedImage(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
-
-        char[] pixels = getGrayScalePixels(image, width, height);
-
+        char[] pixels = GrayscaleImageData.getGrayScalePixels(image, width, height);
         return new HeightMapImage(width, height, pixels);
-    }
-
-    private static char[] getGrayScalePixels(BufferedImage image, int width, int height) {
-        char[] pixels = new char[width * height];
-        Raster raster = image.getRaster();
-
-        for (int x = 0; x < width; x++) {
-            for (int z = 0; z < height; z++) {
-                pixels[z * width + x] = (char) raster.getSample(x, z, 0);
-            }
-        }
-
-        return pixels;
     }
 
     @Override

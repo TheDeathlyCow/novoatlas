@@ -31,12 +31,8 @@ public class MultiFileTypeToIdConverter {
         return new MultiFileTypeToIdConverter(prefix, extensions);
     }
 
-    public static <T extends MapImage> MultiFileTypeToIdConverter imageRegistry(ResourceKey<Registry<T>> registryKey) {
-        return imageRegistry(registryKey.identifier());
-    }
-
-    public static <T extends MapImage> MultiFileTypeToIdConverter imageRegistry(Identifier id) {
-        return builtinImages(getElementsPath(id));
+    public static <T> MultiFileTypeToIdConverter registry(ResourceKey<Registry<T>> registryKey) {
+        return builtinImages(getElementsPath(registryKey));
     }
 
     public Identifier fileToId(Identifier file) {
@@ -74,13 +70,13 @@ public class MultiFileTypeToIdConverter {
         return Arrays.stream(this.extensions).anyMatch(extension -> location.getPath().endsWith(extension));
     }
 
-    private static String getElementsPath(Identifier id) {
-        String namespace = id.getNamespace();
+    private static <T> String getElementsPath(ResourceKey<Registry<T>> registryKey) {
+        String namespace = registryKey.identifier().getNamespace();
 
         if (namespace.equals(Identifier.DEFAULT_NAMESPACE)) {
-            return id.getPath();
+            return Registries.elementsDirPath(registryKey);
         } else {
-            return "%s/%s".formatted(namespace, id.getPath());
+            return "%s/%s".formatted(namespace, registryKey.identifier().getPath());
         }
     }
 }

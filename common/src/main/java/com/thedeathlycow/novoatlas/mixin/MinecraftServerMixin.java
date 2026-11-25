@@ -6,13 +6,13 @@ import com.thedeathlycow.novoatlas.impl.v2.image.data.ColorImageData;
 import com.thedeathlycow.novoatlas.impl.v2.image.data.GrayscaleImageData;
 import com.thedeathlycow.novoatlas.impl.v2.image.io.ImageLoader;
 import com.thedeathlycow.novoatlas.impl.v2.image.io.NovoAtlasMinecraftServer;
+import com.thedeathlycow.novoatlas.impl.v2.image.io.ResourceIndex;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.Services;
 import net.minecraft.server.WorldStem;
 import net.minecraft.server.level.progress.LevelLoadListener;
 import net.minecraft.server.notifications.NotificationManager;
 import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import org.spongepowered.asm.mixin.Mixin;
@@ -47,9 +47,8 @@ public class MinecraftServerMixin implements NovoAtlasMinecraftServer {
             final NotificationManager notificationManager,
             CallbackInfo ci
     ) {
-        ResourceManager resources = worldStem.resourceManager();
-        this.novoatlas_grayscaleLoader = new ImageLoader<>(NovoAtlas.id("images/grayscale"), resources, GrayscaleImageData::fromBufferedImage);
-        this.novoatlas_colorLoader = new ImageLoader<>(NovoAtlas.id("images/color"), resources, ColorImageData::fromBufferedImage);
+        this.novoatlas_grayscaleLoader = new ImageLoader<>(NovoAtlas.id("images/grayscale"), ResourceIndex.GRAYSCALE_IMAGES, GrayscaleImageData::fromBufferedImage);
+        this.novoatlas_colorLoader = new ImageLoader<>(NovoAtlas.id("images/color"), ResourceIndex.COLOR_IMAGES, ColorImageData::fromBufferedImage);
     }
 
     @Override
