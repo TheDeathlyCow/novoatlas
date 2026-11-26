@@ -1,9 +1,13 @@
 package com.thedeathlycow.novoatlas.impl.fabric.v2;
 
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bicubic;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bilinear;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Lanczos;
+import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.NearestNeighbour;
+import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
 import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.HeightMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.sampler.SingleImageSampler;
-import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
@@ -22,6 +26,11 @@ public class NovoAtlasFabric implements ModInitializer {
         DynamicRegistries.register(NovoAtlasRegistries.HEIGHT_MAP, HeightMap.DIRECT_CODEC);
 
         Registry.register(NovoAtlasBuiltinRegistries.IMAGE_SAMPLER_TYPE, NovoAtlas.id("single_image"), SingleImageSampler.CODEC);
+
+        Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), NearestNeighbour.CODEC);
+        Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), Bilinear.CODEC);
+        Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"), Bicubic.CODEC);
+        Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"), Lanczos.CODEC);
 
         ModContainer mod = FabricLoader.getInstance().getModContainer(NovoAtlas.MOD_ID).orElseThrow();
 
