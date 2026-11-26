@@ -8,8 +8,12 @@ import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.BlendImageToRandomChunkGene
 import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.v1.gen.density.*;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.BicubicV1;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.BilinearV1;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.LanczosV1;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.NearestNeighbourV1;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
-import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistriesV1;
 import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.HeightMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bilinear;
@@ -121,11 +125,11 @@ public final class NovoAtlasNeoForge {
             event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_surface_level"), () -> BlendSurfaceLevel.CODEC);
         }
 
-        if (event.getRegistryKey() == OldNovoAtlasRegistries.INTERPOLATOR_TYPE) {
-            event.register(OldNovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), () -> NearestNeighbour.CODEC);
-            event.register(OldNovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), () -> Bilinear.CODEC);
-            event.register(OldNovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"), () -> Bicubic.CODEC);
-            event.register(OldNovoAtlasRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"), () -> Lanczos.CODEC);
+        if (event.getRegistryKey() == NovoAtlasRegistriesV1.INTERPOLATOR_TYPE) {
+            event.register(NovoAtlasRegistriesV1.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), () -> NearestNeighbourV1.CODEC);
+            event.register(NovoAtlasRegistriesV1.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), () -> BilinearV1.CODEC);
+            event.register(NovoAtlasRegistriesV1.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"), () -> BicubicV1.CODEC);
+            event.register(NovoAtlasRegistriesV1.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"), () -> LanczosV1.CODEC);
 
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("nearest_neighbor"));
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("bilinear"));
@@ -135,12 +139,12 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void registerDatapackRegistriesV1(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(OldNovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
+        event.dataPackRegistry(NovoAtlasRegistriesV1.MAP_INFO, MapInfo.DIRECT_CODEC);
     }
 
     private static void registerResourceReloaderV1(AddServerReloadListenersEvent event) {
-        event.addListener(OldNovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
-        event.addListener(OldNovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
+        event.addListener(NovoAtlasRegistriesV1.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
+        event.addListener(NovoAtlasRegistriesV1.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
     }
 
     private static void addDefaultAlias(Registry<?> registry, Identifier id) {

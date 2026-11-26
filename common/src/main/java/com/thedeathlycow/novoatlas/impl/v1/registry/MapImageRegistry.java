@@ -25,11 +25,11 @@ import java.util.Map;
 
 public final class MapImageRegistry<T extends MapImage> extends SimplePreparableReloadListener<Map<ResourceKey<T>, T>> {
     public static final MapImageRegistry<HeightMapImage> HEIGHTMAP = new MapImageRegistry<>(
-            OldNovoAtlasRegistries.HEIGHTMAP,
+            NovoAtlasRegistriesV1.HEIGHTMAP,
             HeightMapImage::fromBufferedImage
     );
     public static final MapImageRegistry<BiomeMapImage> BIOME_MAP = new MapImageRegistry<>(
-            OldNovoAtlasRegistries.BIOME_MAP,
+            NovoAtlasRegistriesV1.BIOME_MAP,
             BiomeMapImage::fromBufferedImage
     );
 

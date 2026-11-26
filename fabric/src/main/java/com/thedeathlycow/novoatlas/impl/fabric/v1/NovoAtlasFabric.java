@@ -9,13 +9,12 @@ import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.v1.gen.density.*;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
-import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistriesV1;
 import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.HeightMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Lanczos;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.NearestNeighbour;
-import com.thedeathlycow.novoatlas.impl.v2.image.sampler.ImageSampler;
 import com.thedeathlycow.novoatlas.impl.v2.image.sampler.SingleImageSampler;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
@@ -57,7 +56,7 @@ public final class NovoAtlasFabric implements ModInitializer {
 
     @Deprecated
     private void initV1() {
-        DynamicRegistries.register(OldNovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
+        DynamicRegistries.register(NovoAtlasRegistriesV1.MAP_INFO, MapInfo.DIRECT_CODEC);
 
         Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), ImageMapChunkGenerator.CODEC);
         Registry.register(BuiltInRegistries.CHUNK_GENERATOR, NovoAtlas.expId("blend_image_map_to_random"), BlendImageToRandomChunkGenerator.CODEC);
@@ -82,7 +81,7 @@ public final class NovoAtlasFabric implements ModInitializer {
         addDefaultAlias(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"));
         addDefaultAlias(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"));
 
-        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(OldNovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
-        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(OldNovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistriesV1.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(NovoAtlasRegistriesV1.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
     }
 }

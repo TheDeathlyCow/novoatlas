@@ -5,11 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.v1.image.biome.provider.ColorMapBiomeProvider;
 import com.thedeathlycow.novoatlas.impl.v1.image.biome.provider.LayeredMapBiomeProvider;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
-import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageTransform;
+import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistriesV1;
 import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageWrapping;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.Offset;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.Scaling;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.codec.RegistryFileCodec;
@@ -38,10 +35,10 @@ public record MapInfo(
 ) {
     public static final Codec<MapInfo> DIRECT_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    ResourceKey.codec(OldNovoAtlasRegistries.HEIGHTMAP)
+                    ResourceKey.codec(NovoAtlasRegistriesV1.HEIGHTMAP)
                             .fieldOf("height_map")
                             .forGetter(MapInfo::heightMap),
-                    ResourceKey.codec(OldNovoAtlasRegistries.HEIGHTMAP)
+                    ResourceKey.codec(NovoAtlasRegistriesV1.HEIGHTMAP)
                             .optionalFieldOf("fluid_height_map")
                             .forGetter(MapInfo::fluidHeightMap),
                     ColorMapBiomeProvider.CODEC.codec()
@@ -68,7 +65,7 @@ public record MapInfo(
             ).apply(instance, MapInfo::new)
     );
 
-    public static final Codec<Holder<MapInfo>> CODEC = RegistryFileCodec.create(OldNovoAtlasRegistries.MAP_INFO, DIRECT_CODEC, false);
+    public static final Codec<Holder<MapInfo>> CODEC = RegistryFileCodec.create(NovoAtlasRegistriesV1.MAP_INFO, DIRECT_CODEC, false);
 
     public static HeightMapImage lookupHeightmap(ResourceKey<HeightMapImage> map) {
         return Objects.requireNonNull(MapImageRegistry.HEIGHTMAP.getImage(map), "Missing height map image " + map);
@@ -76,15 +73,6 @@ public record MapInfo(
 
     public static BiomeMapImage lookupBiomeMap(ResourceKey<BiomeMapImage> map) {
         return Objects.requireNonNull(MapImageRegistry.BIOME_MAP.getImage(map), "Missing biome map image " + map);
-    }
-
-    @Deprecated
-    public ImageTransform asTransform() {
-        return new ImageTransform(
-                this.imageWrapping(),
-                new Scaling(this.verticalScale(), new Scaling.InterpolatedScale(this.horizontalScale().interpolation(), this.horizontalScale().value())),
-                new Offset(this.centerOffset(), this.startingY())
-        );
     }
 
     public HeightMapImage getHeightMap() {

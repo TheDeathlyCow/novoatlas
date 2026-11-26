@@ -1,7 +1,7 @@
 package com.thedeathlycow.novoatlas.impl.v1.image;
 
-import com.thedeathlycow.novoatlas.impl.v2.image.sampler.ImageSampler;
 import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageWrapping;
+import com.thedeathlycow.novoatlas.impl.v2.math.CoordinateSpace;
 import net.minecraft.util.Mth;
 import org.joml.Vector2fc;
 import org.joml.Vector2i;
@@ -9,12 +9,10 @@ import org.joml.Vector2i;
 public abstract class MapImage {
     private final int width;
     private final int height;
-    private final ImageSampler newApiWrapper;
 
     protected MapImage(int width, int height) {
         this.width = width;
         this.height = height;
-        this.newApiWrapper = new LegacyImageSampler(this);
     }
 
     public final double getDistanceToEdge(int x, int z, MapInfo info) {
@@ -29,53 +27,40 @@ public abstract class MapImage {
         return p.distance(clampedEdgePoint);
     }
 
-    public final ImageSampler asNewApiSampler() {
-        return this.newApiWrapper;
-    }
-
     public final boolean isBlockInsideImage(int x, int z, MapInfo info) {
         double horizontalScale = info.horizontalScale().value();
         Vector2fc centerOffset = info.centerOffset();
 
-        double xR = getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
-        double zR = getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
+        double xR = CoordinateSpace.coordToIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
+        double zR = CoordinateSpace.coordToIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
 
         return xR >= 0 && xR <= this.width && zR >= 0 && zR <= this.height;
     }
 
     public final int minBlockX(MapInfo info) {
-        return Mth.floor(indexToBlock(0, info.horizontalScale().value(), info.centerOffset().x(), this.width));
+        return Mth.floor(CoordinateSpace.indexToCoord(0, info.horizontalScale().value(), info.centerOffset().x(), this.width));
     }
 
     public final int minBlockZ(MapInfo info) {
-        return Mth.floor(indexToBlock(0, info.horizontalScale().value(), info.centerOffset().y(), this.height));
+        return Mth.floor(CoordinateSpace.indexToCoord(0, info.horizontalScale().value(), info.centerOffset().y(), this.height));
     }
 
     public final int maxBlockX(MapInfo info) {
-        return Mth.floor(indexToBlock(this.width, info.horizontalScale().value(), info.centerOffset().x(), this.width));
+        return Mth.floor(CoordinateSpace.indexToCoord(this.width, info.horizontalScale().value(), info.centerOffset().x(), this.width));
     }
 
     public final int maxBlockZ(MapInfo info) {
-        return Mth.floor(indexToBlock(this.height, info.horizontalScale().value(), info.centerOffset().y(), this.height));
+        return Mth.floor(CoordinateSpace.indexToCoord(this.height, info.horizontalScale().value(), info.centerOffset().y(), this.height));
     }
 
     public final int sample(int x, int z, MapInfo info) {
         double horizontalScale = info.horizontalScale().value();
         Vector2fc centerOffset = info.centerOffset();
 
-        double xR = getIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
-        double zR = getIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
+        double xR = CoordinateSpace.coordToIndexWithAlpha(x, horizontalScale, centerOffset.x(), this.width);
+        double zR = CoordinateSpace.coordToIndexWithAlpha(z, horizontalScale, centerOffset.y(), this.height);
 
         return this.sampleInterpolated(xR, zR, info);
-    }
-
-    private static double getIndexWithAlpha(int block, double horizontalScale, double centerOffset, double size) {
-        double iR = block - (centerOffset * size);
-        return (iR / horizontalScale) + size * 0.5;
-    }
-
-    public static double indexToBlock(int index, double horizontalScale, double centerOffset, double size) {
-        return horizontalScale * (index - (size * 0.5)) + centerOffset * size;
     }
 
     public final int width() {
@@ -99,5 +84,4 @@ public abstract class MapImage {
     public abstract int getPixelValue(int x, int z);
 
     protected abstract int sampleInterpolated(double x, double z, MapInfo info);
-
 }
