@@ -1,7 +1,6 @@
 package com.thedeathlycow.novoatlas.impl.v2.image.transform;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.ExtraCodecs;
 import org.joml.Vector2f;
@@ -13,7 +12,7 @@ public record Offset(
 ) {
     public static final Offset DEFAULT = new Offset(new Vector2f(0f, 0f), 0);
 
-    public static final MapCodec<Offset> CODEC = RecordCodecBuilder.mapCodec(
+    public static final Codec<Offset> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     ExtraCodecs.VECTOR2F
                             .optionalFieldOf("center_offset", DEFAULT.centerOffset())

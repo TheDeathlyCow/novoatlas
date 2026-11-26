@@ -1,6 +1,6 @@
 package com.thedeathlycow.novoatlas.impl.v2.image.transform;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record ImageTransform(
@@ -8,16 +8,22 @@ public record ImageTransform(
         Scaling scaling,
         Offset offset
 ) {
-    public static final MapCodec<ImageTransform> CODEC = RecordCodecBuilder.mapCodec(
+    public static final ImageTransform DEFAULT = new ImageTransform(
+            ImageWrapping.CLAMP_TO_EDGE,
+            Scaling.DEFAULT,
+            Offset.DEFAULT
+    );
+
+    public static final Codec<ImageTransform> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     ImageWrapping.CODEC
-                            .optionalFieldOf("image_wrapping", ImageWrapping.CLAMP_TO_EDGE)
+                            .optionalFieldOf("image_wrapping", DEFAULT.imageWrapping())
                             .forGetter(ImageTransform::imageWrapping),
-                    Scaling.CODEC.codec()
-                            .optionalFieldOf("scaling", Scaling.DEFAULT)
+                    Scaling.CODEC
+                            .optionalFieldOf("scaling", DEFAULT.scaling())
                             .forGetter(ImageTransform::scaling),
-                    Offset.CODEC.codec()
-                            .optionalFieldOf("offset", Offset.DEFAULT)
+                    Offset.CODEC
+                            .optionalFieldOf("offset", DEFAULT.offset())
                             .forGetter(ImageTransform::offset)
             ).apply(instance, ImageTransform::new)
     );

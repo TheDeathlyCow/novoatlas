@@ -3,13 +3,9 @@ package com.thedeathlycow.novoatlas.impl.v2.image.sampler;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
-import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Interpolator;
 import com.thedeathlycow.novoatlas.impl.v2.image.io.ImageLoader;
 import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageTransform;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.Offset;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.Scaling;
 import net.minecraft.resources.Identifier;
-import org.joml.Vector2fc;
 import org.jspecify.annotations.Nullable;
 
 public final class SingleImageSampler implements ImageSampler {

@@ -65,18 +65,21 @@ public record MapScaleConfig(
         public static final Codec<HorizontalConfig> CODEC = Codec.withAlternative(BASE_CODEC, FLOAT_CODEC);
 
         public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
-            return this.interpolation.sample(x, z, Interpolator.context(new LegacyImageSampler(image, mapInfo), null));
+            return this.interpolation.sample(
+                    x, z,
+                    Interpolator.context(new LegacyImageSampler(image.asNewApiData(), mapInfo), null)
+            );
         }
     }
 
-    private record LegacyImageSampler(MapImage image, ImageTransform transform) implements ImageSampler {
-        private LegacyImageSampler(MapImage image, MapInfo transform) {
+    private record LegacyImageSampler(ImageData image, ImageTransform transform) implements ImageSampler {
+        private LegacyImageSampler(ImageData image, MapInfo info) {
             this(
                     image,
                     new ImageTransform(
-                            transform.imageWrapping(),
-                            new Scaling(transform.verticalScale(), new Scaling.InterpolatedScale(transform.horizontalScale().interpolation, transform.horizontalScale().value)),
-                            new Offset(transform.centerOffset(), transform.startingY())
+                            info.imageWrapping(),
+                            new Scaling(info.verticalScale(), new Scaling.InterpolatedScale(info.horizontalScale().interpolation, info.horizontalScale().value)),
+                            new Offset(info.centerOffset(), info.startingY())
                     )
             );
         }

@@ -2,7 +2,6 @@ package com.thedeathlycow.novoatlas.impl.v2.image.transform;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Interpolator;
 import net.minecraft.util.ExtraCodecs;
@@ -13,7 +12,7 @@ public record Scaling(
 ) {
     public static final Scaling DEFAULT = new Scaling(1f, Scaling.InterpolatedScale.DEFAULT);
 
-    public static final MapCodec<Scaling> CODEC = RecordCodecBuilder.mapCodec(
+    public static final Codec<Scaling> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     ExtraCodecs.POSITIVE_FLOAT
                             .optionalFieldOf("vertical_scale", 1.0f)

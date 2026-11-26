@@ -10,11 +10,11 @@ import com.thedeathlycow.novoatlas.impl.v1.gen.density.*;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
 import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.HeightMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Lanczos;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.NearestNeighbour;
-import com.thedeathlycow.novoatlas.impl.v2.image.sampler.ImageSampler;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
 import net.minecraft.core.Registry;
@@ -56,7 +56,7 @@ public final class NovoAtlasNeoForge {
 
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(NovoAtlasRegistries.IMAGE_SAMPLER, ImageSampler.BASE_CODEC.codec());
+        event.dataPackRegistry(NovoAtlasRegistries.HEIGHT_MAP, HeightMap.DIRECT_CODEC);
     }
 
     private static void addExamplePacks(AddPackFindersEvent event) {
