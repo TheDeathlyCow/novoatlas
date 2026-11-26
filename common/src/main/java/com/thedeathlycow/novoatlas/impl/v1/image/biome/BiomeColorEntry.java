@@ -3,6 +3,7 @@ package com.thedeathlycow.novoatlas.impl.v1.image.biome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.impl.v2.math.ColorHelper;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.core.Holder;

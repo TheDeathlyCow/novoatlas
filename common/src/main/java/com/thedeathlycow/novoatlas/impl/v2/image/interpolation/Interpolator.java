@@ -30,8 +30,8 @@ public interface Interpolator {
         int getWrappedPixelValue(int pixelX, int pixelZ);
     }
 
-    static Context context(ImageSampler sampler, ImageLoader<? extends ImageData> loader) {
-        return new ContextImpl(sampler, loader);
+    static Context context(ImageSampler sampler, ImageTransform transform, ImageLoader<? extends ImageData> loader) {
+        return new ContextImpl(sampler, transform, loader);
     }
 
     double sample(double pixelX, double pixelZ, Context ctx);

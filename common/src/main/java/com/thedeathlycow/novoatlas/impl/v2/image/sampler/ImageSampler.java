@@ -2,13 +2,10 @@ package com.thedeathlycow.novoatlas.impl.v2.image.sampler;
 
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
-import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Interpolator;
 import com.thedeathlycow.novoatlas.impl.v2.image.io.ImageLoader;
 import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageTransform;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.Offset;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.Scaling;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
-import org.joml.Vector2fc;
+import net.minecraft.util.Mth;
 
 import java.util.function.Function;
 
@@ -26,9 +23,18 @@ public interface ImageSampler {
     /// Gets the height of the data in pixels.
     int height(ImageLoader<? extends ImageData> loader);
 
-    /// The transform information of the data.
-    ImageTransform transform();
-
     /// The data's type codec. You should register this to [NovoAtlasBuiltinRegistries#IMAGE_SAMPLER_TYPE]
     MapCodec<? extends ImageSampler> codec();
+
+    default int getTruncated(double pixelXR, double pixelZR, ImageTransform transform, ImageLoader<? extends ImageData> loader) {
+        return this.getWrappedPixelValue(Mth.floor(pixelXR), Mth.floor(pixelZR), transform, loader);
+    }
+
+    default int getWrappedPixelValue(int pixelX, int pixelZ, ImageTransform transform, ImageLoader<? extends ImageData> loader) {
+        return transform.imageWrapping().transform(
+                pixelX, pixelZ,
+                this.width(loader), this.height(loader),
+                (x1, z1) -> this.getPixelValue(x1, z1, loader)
+        );
+    }
 }

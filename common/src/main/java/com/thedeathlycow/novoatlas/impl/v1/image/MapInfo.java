@@ -6,7 +6,10 @@ import com.thedeathlycow.novoatlas.impl.v1.image.biome.provider.ColorMapBiomePro
 import com.thedeathlycow.novoatlas.impl.v1.image.biome.provider.LayeredMapBiomeProvider;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
 import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageTransform;
 import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageWrapping;
+import com.thedeathlycow.novoatlas.impl.v2.image.transform.Offset;
+import com.thedeathlycow.novoatlas.impl.v2.image.transform.Scaling;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.codec.RegistryFileCodec;
@@ -73,6 +76,15 @@ public record MapInfo(
 
     public static BiomeMapImage lookupBiomeMap(ResourceKey<BiomeMapImage> map) {
         return Objects.requireNonNull(MapImageRegistry.BIOME_MAP.getImage(map), "Missing biome map image " + map);
+    }
+
+    @Deprecated
+    public ImageTransform asTransform() {
+        return new ImageTransform(
+                this.imageWrapping(),
+                new Scaling(this.verticalScale(), new Scaling.InterpolatedScale(this.horizontalScale().interpolation(), this.horizontalScale().value())),
+                new Offset(this.centerOffset(), this.startingY())
+        );
     }
 
     public HeightMapImage getHeightMap() {

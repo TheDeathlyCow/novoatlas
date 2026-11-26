@@ -1,12 +1,12 @@
-package com.thedeathlycow.novoatlas.impl.v2.image.data;
+package com.thedeathlycow.novoatlas.impl.v1.image;
 
-import com.thedeathlycow.novoatlas.impl.v1.image.MapImage;
+import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
 
 /// Wraps the old [MapImage] with new API.
 ///
 /// @deprecated Should be considered deprecated along with the rest of the v1 API.
 @Deprecated
-public record LegacyMapImage(MapImage legacyImage) implements ImageData {
+record LegacyMapImage(MapImage legacyImage) implements ImageData {
     @Override
     public int width() {
         return this.legacyImage.width();

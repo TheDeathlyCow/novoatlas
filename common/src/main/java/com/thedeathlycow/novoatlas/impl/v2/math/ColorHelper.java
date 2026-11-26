@@ -1,15 +1,15 @@
-package com.thedeathlycow.novoatlas.impl.v1.image.biome;
+package com.thedeathlycow.novoatlas.impl.v2.math;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.util.ExtraCodecs;
 
 public final class ColorHelper {
+    public static final Codec<String> STRING_CODEC = Codec.STRING.validate(ColorHelper::isValidColor);
+
     public static final Codec<Integer> CODEC = Codec.withAlternative(
             ExtraCodecs.intRange(0, 0xFFFFFF),
-            Codec.STRING
-                    .validate(ColorHelper::isValidColor)
-                    .xmap(ColorHelper::toRGB, ColorHelper::fromRGB)
+            STRING_CODEC.xmap(ColorHelper::toRGB, ColorHelper::fromRGB)
     );
 
     private static DataResult<String> isValidColor(String str) {
@@ -34,12 +34,12 @@ public final class ColorHelper {
         return DataResult.success(str);
     }
 
-    private static int toRGB(String str) {
+    public static int toRGB(String str) {
         String code = str.substring(1);
         return Integer.parseUnsignedInt(code, 16);
     }
 
-    private static String fromRGB(int rgb) {
+    public static String fromRGB(int rgb) {
         return String.format("#%06x", rgb);
     }
 

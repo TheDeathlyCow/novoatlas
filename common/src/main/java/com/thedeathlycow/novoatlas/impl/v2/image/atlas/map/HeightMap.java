@@ -33,10 +33,9 @@ public record HeightMap(
 
     public static final Codec<Holder<HeightMap>> CODEC = RegistryFileCodec.create(NovoAtlasRegistries.HEIGHT_MAP, DIRECT_CODEC, false);
 
-    public int getHeightValue(int coordX, int coordZ, MinecraftServer server) {
+    public int getHeightValue(int coordX, int coordZ, ImageLoader<GrayscaleImageData> loader) {
         Scaling scaling = this.transform().scaling();
         Offset offset = this.transform().offset();
-        ImageLoader<GrayscaleImageData> loader = server.novoatlas$grayscaleLoader();
 
         Scaling.InterpolatedScale horizontalScale = scaling.horizontalScale();
         float horizontalScaleValue = horizontalScale.value();
@@ -45,7 +44,7 @@ public record HeightMap(
         double xR = CoordinateSpace.coordToIndexWithAlpha(coordX, horizontalScaleValue, centerOffset.x(), this.data.width(loader));
         double zR = CoordinateSpace.coordToIndexWithAlpha(coordZ, horizontalScaleValue, centerOffset.y(), this.data.height(loader));
 
-        double height = horizontalScale.interpolation().sample(xR, zR, Interpolator.context(this.data, loader));
+        double height = horizontalScale.interpolation().sample(xR, zR, Interpolator.context(this.data, this.transform, loader));
 
         return (int) Math.round(scaling.verticalScale() * height + offset.startingY());
     }

@@ -67,41 +67,10 @@ public record MapScaleConfig(
         public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
             return this.interpolation.sample(
                     x, z,
-                    Interpolator.context(new LegacyImageSampler(image.asNewApiData(), mapInfo), null)
+                    Interpolator.context(image.asNewApiSampler(), mapInfo.asTransform(), null)
             );
         }
     }
 
-    private record LegacyImageSampler(ImageData image, ImageTransform transform) implements ImageSampler {
-        private LegacyImageSampler(ImageData image, MapInfo info) {
-            this(
-                    image,
-                    new ImageTransform(
-                            info.imageWrapping(),
-                            new Scaling(info.verticalScale(), new Scaling.InterpolatedScale(info.horizontalScale().interpolation, info.horizontalScale().value)),
-                            new Offset(info.centerOffset(), info.startingY())
-                    )
-            );
-        }
 
-        @Override
-        public int getPixelValue(int pixelX, int pixelZ, ImageLoader<? extends ImageData> loader) {
-            return this.image.getPixelValue(pixelX, pixelZ);
-        }
-
-        @Override
-        public int width(ImageLoader<? extends ImageData> loader) {
-            return this.image.width();
-        }
-
-        @Override
-        public int height(ImageLoader<? extends ImageData> loader) {
-            return this.image.height();
-        }
-
-        @Override
-        public MapCodec<? extends ImageSampler> codec() {
-            return null;
-        }
-    }
 }
