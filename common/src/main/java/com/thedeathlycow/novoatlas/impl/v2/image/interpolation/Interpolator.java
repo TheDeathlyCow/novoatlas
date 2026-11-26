@@ -2,10 +2,10 @@ package com.thedeathlycow.novoatlas.impl.v2.image.interpolation;
 
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.v1.image.MapImage;
-import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
-import com.thedeathlycow.novoatlas.impl.v2.image.ImageWrapping;
 import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
+import com.thedeathlycow.novoatlas.impl.v2.image.io.ImageLoader;
+import com.thedeathlycow.novoatlas.impl.v2.image.sampler.ImageSampler;
+import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageTransform;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
 
 import java.util.function.Function;
@@ -20,7 +20,21 @@ public interface Interpolator {
                     Function.identity()
             );
 
-    double sample(double x, double z, Context ctx);
+    interface Context {
+        ImageSampler sampler();
+
+        ImageTransform transform();
+
+        int getTruncated(double pixelXR, double pixelZR);
+
+        int getWrappedPixelValue(int pixelX, int pixelZ);
+    }
+
+    static Context create(ImageSampler sampler, ImageLoader<? extends ImageData> loader) {
+        return new ContextImpl(sampler, loader);
+    }
+
+    double sample(double pixelX, double pixelZ, Context ctx);
 
     MapCodec<? extends Interpolator> codec();
 
@@ -39,9 +53,5 @@ public interface Interpolator {
     static Interpolator lanczos(int window) {
         Preconditions.checkArgument(window > 0, "Lanczos window must be positive");
         return new Lanczos(window);
-    }
-
-    record Context(ImageData image, ImageWrapping wrapping) {
-
     }
 }

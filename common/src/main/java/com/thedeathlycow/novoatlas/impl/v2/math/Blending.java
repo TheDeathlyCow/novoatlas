@@ -1,10 +1,8 @@
-package com.thedeathlycow.novoatlas.impl.v1.math;
+package com.thedeathlycow.novoatlas.impl.v2.math;
 
 import net.minecraft.util.Mth;
 
 public final class Blending {
-
-
     /// Hermite Spline interpolation for better blending than simple lerp.
     ///
     /// Implementation is from [the Book of Shaders](https://thebookofshaders.com/glossary/?search=smoothstep).

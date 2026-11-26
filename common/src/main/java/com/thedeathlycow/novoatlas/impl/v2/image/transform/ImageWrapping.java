@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.impl.v2.image;
+package com.thedeathlycow.novoatlas.impl.v2.image.transform;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.util.Mth;

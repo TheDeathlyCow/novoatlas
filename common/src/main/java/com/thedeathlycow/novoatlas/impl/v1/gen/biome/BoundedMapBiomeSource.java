@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.v1.image.BiomeMapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.v1.image.biome.provider.LayeredMapBiomeProvider;
-import com.thedeathlycow.novoatlas.impl.v1.math.Blending;
+import com.thedeathlycow.novoatlas.impl.v2.math.Blending;
 import com.thedeathlycow.novoatlas.mixin.accessor.BiomeSourceAccessor;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.NoiseData;

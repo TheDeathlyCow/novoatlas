@@ -1,6 +1,6 @@
 package com.thedeathlycow.novoatlas.impl.v1.image;
 
-import com.thedeathlycow.novoatlas.impl.v2.image.ImageWrapping;
+import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageWrapping;
 import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
 import com.thedeathlycow.novoatlas.impl.v2.image.data.LegacyMapImage;
 import net.minecraft.util.Mth;

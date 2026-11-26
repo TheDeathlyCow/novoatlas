@@ -8,14 +8,14 @@ import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.BlendImageToRandomChunkGene
 import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.v1.gen.density.*;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
+import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Lanczos;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.NearestNeighbour;
-import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
-import com.thedeathlycow.novoatlas.impl.v2.image.io.ResourceIndex;
+import com.thedeathlycow.novoatlas.impl.v2.image.sampler.ImageSampler;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
-import com.thedeathlycow.novoatlas.impl.v1.registry.OldNovoAtlasRegistries;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
@@ -32,6 +32,8 @@ public final class NovoAtlasFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         NovoAtlas.init();
+
+        DynamicRegistries.register(NovoAtlasRegistries.IMAGE_SAMPLER, ImageSampler.BASE_CODEC.codec());
 
         this.initV1();
 

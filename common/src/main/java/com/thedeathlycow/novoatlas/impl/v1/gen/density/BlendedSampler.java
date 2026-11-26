@@ -2,7 +2,7 @@ package com.thedeathlycow.novoatlas.impl.v1.gen.density;
 
 import com.thedeathlycow.novoatlas.impl.v1.image.HeightMapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
-import com.thedeathlycow.novoatlas.impl.v1.math.Blending;
+import com.thedeathlycow.novoatlas.impl.v2.math.Blending;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.densityfunction.DensityBuffer;
 import net.minecraft.world.level.levelgen.densityfunction.DensitySampler;

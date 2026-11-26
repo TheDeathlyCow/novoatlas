@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.v1.image.HeightMapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
-import com.thedeathlycow.novoatlas.impl.v1.math.Blending;
+import com.thedeathlycow.novoatlas.impl.v2.math.Blending;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Interval;

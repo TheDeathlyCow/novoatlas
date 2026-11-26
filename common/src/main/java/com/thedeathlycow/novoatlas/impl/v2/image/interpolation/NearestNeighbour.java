@@ -6,8 +6,8 @@ public final class NearestNeighbour implements Interpolator {
     public static final MapCodec<NearestNeighbour> CODEC = MapCodec.unit(new NearestNeighbour());
 
     @Override
-    public double sample(double x, double z, Context ctx) {
-        return ctx.image().getTruncated(x, z, ctx.wrapping());
+    public double sample(double pixelX, double pixelZ, Context ctx) {
+        return ctx.getTruncated(pixelX, pixelZ);
     }
 
     @Override
