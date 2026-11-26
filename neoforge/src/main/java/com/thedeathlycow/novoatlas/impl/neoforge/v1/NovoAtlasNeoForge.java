@@ -13,25 +13,14 @@ import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.BilinearV1;
 import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.LanczosV1;
 import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.NearestNeighbourV1;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
+import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasBuiltinRegistriesV1;
 import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistriesV1;
-import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.HeightMap;
-import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bicubic;
-import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bilinear;
-import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Lanczos;
-import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.NearestNeighbour;
-import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
-import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.repository.PackSource;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -41,71 +30,20 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 public final class NovoAtlasNeoForge {
     public NovoAtlasNeoForge(IEventBus bus) {
         bus.addListener(NovoAtlasNeoForge::registerRegistries);
-        NovoAtlas.init();
-
-//        NeoForge.EVENT_BUS.addListener(NovoAtlasNeoForge::registerResourceReloader);
+        NeoForge.EVENT_BUS.addListener(NovoAtlasNeoForge::registerResourceReloader);
         bus.addListener(NovoAtlasNeoForge::registerDatapackRegistries);
-//        bus.addListener(NovoAtlasNeoForge::register);
-        bus.addListener(NovoAtlasNeoForge::addExamplePacks);
+        bus.addListener(NovoAtlasNeoForge::register);
+    }
 
-        NeoForge.EVENT_BUS.addListener(NovoAtlasNeoForge::registerResourceReloaderV1);
-        bus.addListener(NovoAtlasNeoForge::registerDatapackRegistriesV1);
-        bus.addListener(NovoAtlasNeoForge::registerV1);
+    private static void addDefaultAlias(Registry<?> registry, Identifier id) {
+        registry.addAlias(Identifier.withDefaultNamespace(id.getPath()), id);
     }
 
     private static void registerRegistries(NewRegistryEvent event) {
-        event.register(NovoAtlasBuiltinRegistries.IMAGE_SAMPLER_TYPE);
-        event.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE);
+        event.register(NovoAtlasBuiltinRegistriesV1.INTERPOLATOR_TYPE);
     }
 
-
-    private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(NovoAtlasRegistries.HEIGHT_MAP, HeightMap.DIRECT_CODEC);
-    }
-
-    private static void addExamplePacks(AddPackFindersEvent event) {
-        if (event.getPackType() == PackType.SERVER_DATA) {
-            PackSource packSource = NovoAtlas.enableExampleDataPacks() ? PackSource.WORLD : PackSource.FEATURE;
-
-            event.addPackFinders(
-                    NovoAtlas.id("resourcepacks/avila-basic-example"),
-                    PackType.SERVER_DATA,
-                    Component.literal("novoatlas/avila-basic-example"),
-                    packSource,
-                    false,
-                    Pack.Position.TOP
-            );
-
-            event.addPackFinders(
-                    NovoAtlas.id("resourcepacks/avila-blend-to-random-example"),
-                    PackType.SERVER_DATA,
-                    Component.literal("novoatlas/avila-blend-to-random-example"),
-                    packSource,
-                    false,
-                    Pack.Position.TOP
-            );
-
-            event.addPackFinders(
-                    NovoAtlas.id("resourcepacks/avila-cave-biome-example"),
-                    PackType.SERVER_DATA,
-                    Component.literal("novoatlas/avila-cave-biome-example"),
-                    packSource,
-                    false,
-                    Pack.Position.TOP
-            );
-
-            event.addPackFinders(
-                    NovoAtlas.id("resourcepacks/avila-no-caves-example"),
-                    PackType.SERVER_DATA,
-                    Component.literal("novoatlas/avila-no-caves-example"),
-                    packSource,
-                    false,
-                    Pack.Position.TOP
-            );
-        }
-    }
-
-    private static void registerV1(RegisterEvent event) {
+    private static void register(RegisterEvent event) {
         if (event.getRegistryKey() == Registries.CHUNK_GENERATOR) {
             event.register(Registries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), () -> ImageMapChunkGenerator.CODEC);
             event.register(Registries.CHUNK_GENERATOR, NovoAtlas.expId("blend_image_map_to_random"), () -> BlendImageToRandomChunkGenerator.CODEC);
@@ -138,16 +76,12 @@ public final class NovoAtlasNeoForge {
         }
     }
 
-    private static void registerDatapackRegistriesV1(DataPackRegistryEvent.NewRegistry event) {
+    private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(NovoAtlasRegistriesV1.MAP_INFO, MapInfo.DIRECT_CODEC);
     }
 
-    private static void registerResourceReloaderV1(AddServerReloadListenersEvent event) {
+    private static void registerResourceReloader(AddServerReloadListenersEvent event) {
         event.addListener(NovoAtlasRegistriesV1.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
         event.addListener(NovoAtlasRegistriesV1.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
-    }
-
-    private static void addDefaultAlias(Registry<?> registry, Identifier id) {
-        registry.addAlias(Identifier.withDefaultNamespace(id.getPath()), id);
     }
 }

@@ -18,10 +18,8 @@
     "environment": "*",
     "entrypoints": {
         "main": [
+            "com.thedeathlycow.novoatlas.impl.fabric.v2.NovoAtlasFabric",
             "com.thedeathlycow.novoatlas.impl.fabric.v1.NovoAtlasFabric"
-        ],
-        "client": [
-            "com.thedeathlycow.novoatlas.impl.fabric.client.NovoAtlasClient"
         ]
     },
     "mixins": [

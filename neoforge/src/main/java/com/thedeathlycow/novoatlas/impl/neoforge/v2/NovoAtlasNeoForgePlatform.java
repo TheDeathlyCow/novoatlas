@@ -1,4 +1,4 @@
-package com.thedeathlycow.novoatlas.impl.neoforge.v1;
+package com.thedeathlycow.novoatlas.impl.neoforge.v2;
 
 import com.thedeathlycow.novoatlas.impl.platform.NovoAtlasPlatform;
 import net.minecraft.core.Registry;
