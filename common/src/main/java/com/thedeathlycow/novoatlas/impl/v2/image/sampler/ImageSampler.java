@@ -29,12 +29,12 @@ public interface ImageSampler {
         double xR = coordToIndexWithAlpha(coordX, horizontalScaleValue, centerOffset.x(), this.width(loader));
         double zR = coordToIndexWithAlpha(coordZ, horizontalScaleValue, centerOffset.y(), this.height(loader));
 
-        double height = horizontalScale.interpolation().sample(xR, zR, Interpolator.create(this, loader));
+        double height = horizontalScale.interpolation().sample(xR, zR, Interpolator.context(this, loader));
 
         return (int) Math.round(scaling.verticalScale() * height + offset.startingY());
     }
 
-    /// Gets the pixel value in pixel space.
+    /// Gets the pixel value in pixel space. Coordinates are already wrapped for you, no need to apply wrapping.
     int getPixelValue(int pixelX, int pixelZ, ImageLoader<? extends ImageData> loader);
 
     /// Gets the width of the sampler in pixels.

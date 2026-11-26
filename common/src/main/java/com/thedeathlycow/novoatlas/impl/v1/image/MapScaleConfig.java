@@ -2,8 +2,15 @@ package com.thedeathlycow.novoatlas.impl.v1.image;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Interpolator;
+import com.thedeathlycow.novoatlas.impl.v2.image.io.ImageLoader;
+import com.thedeathlycow.novoatlas.impl.v2.image.sampler.ImageSampler;
+import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageTransform;
+import com.thedeathlycow.novoatlas.impl.v2.image.transform.Offset;
+import com.thedeathlycow.novoatlas.impl.v2.image.transform.Scaling;
 import net.minecraft.util.ExtraCodecs;
 
 public record MapScaleConfig(
@@ -58,7 +65,40 @@ public record MapScaleConfig(
         public static final Codec<HorizontalConfig> CODEC = Codec.withAlternative(BASE_CODEC, FLOAT_CODEC);
 
         public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
-            return this.interpolation.sample(x, z, new Interpolator.Context(image.asNewApiData(), mapInfo.imageWrapping()));
+            return this.interpolation.sample(x, z, Interpolator.context(new LegacyImageSampler(image, mapInfo), null));
+        }
+    }
+
+    private record LegacyImageSampler(MapImage image, ImageTransform transform) implements ImageSampler {
+        private LegacyImageSampler(MapImage image, MapInfo transform) {
+            this(
+                    image,
+                    new ImageTransform(
+                            transform.imageWrapping(),
+                            new Scaling(transform.verticalScale(), new Scaling.InterpolatedScale(transform.horizontalScale().interpolation, transform.horizontalScale().value)),
+                            new Offset(transform.centerOffset(), transform.startingY())
+                    )
+            );
+        }
+
+        @Override
+        public int getPixelValue(int pixelX, int pixelZ, ImageLoader<? extends ImageData> loader) {
+            return this.image.getPixelValue(pixelX, pixelZ);
+        }
+
+        @Override
+        public int width(ImageLoader<? extends ImageData> loader) {
+            return this.image.width();
+        }
+
+        @Override
+        public int height(ImageLoader<? extends ImageData> loader) {
+            return this.image.height();
+        }
+
+        @Override
+        public MapCodec<? extends ImageSampler> codec() {
+            return null;
         }
     }
 }
