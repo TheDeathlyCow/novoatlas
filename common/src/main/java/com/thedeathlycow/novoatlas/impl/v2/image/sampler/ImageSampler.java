@@ -31,7 +31,7 @@ public interface ImageSampler {
     }
 
     default int getWrappedPixelValue(int pixelX, int pixelZ, ImageTransform transform, ImageLoader<? extends ImageData> loader) {
-        return transform.imageWrapping().transform(
+        return transform.imageWrapping().apply(
                 pixelX, pixelZ,
                 this.width(loader), this.height(loader),
                 (x1, z1) -> this.getPixelValue(x1, z1, loader)

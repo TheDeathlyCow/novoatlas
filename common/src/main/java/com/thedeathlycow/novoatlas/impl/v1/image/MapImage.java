@@ -78,7 +78,7 @@ public abstract class MapImage {
     }
 
     public final int getPixelValue(int x, int z, ImageWrapping imageWrapping) {
-        return imageWrapping.transform(x, z, this.width, this.height, this::getPixelValue);
+        return imageWrapping.apply(x, z, this.width, this.height, this::getPixelValue);
     }
 
     public abstract int getPixelValue(int x, int z);

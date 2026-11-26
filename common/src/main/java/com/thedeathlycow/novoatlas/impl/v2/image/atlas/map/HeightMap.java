@@ -13,29 +13,34 @@ import com.thedeathlycow.novoatlas.impl.v2.math.CoordinateSpace;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.codec.RegistryFileCodec;
-import net.minecraft.server.MinecraftServer;
 import org.joml.Vector2fc;
 
-public record HeightMap(
-        ImageTransform transform,
-        ImageSampler data
-) {
+public final class HeightMap {
     public static final Codec<HeightMap> DIRECT_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     ImageTransform.CODEC
                             .optionalFieldOf("transform", ImageTransform.DEFAULT)
-                            .forGetter(HeightMap::transform),
+                            .forGetter(i -> i.transform),
                     ImageSampler.BASE_CODEC
                             .fieldOf("data")
-                            .forGetter(HeightMap::data)
+                            .forGetter(i -> i.data)
             ).apply(instance, HeightMap::new)
     );
 
     public static final Codec<Holder<HeightMap>> CODEC = RegistryFileCodec.create(NovoAtlasRegistries.HEIGHT_MAP, DIRECT_CODEC, false);
 
+    private final ImageTransform transform;
+
+    private final ImageSampler data;
+
+    public HeightMap(ImageTransform transform, ImageSampler data) {
+        this.transform = transform;
+        this.data = data;
+    }
+
     public int getHeightValue(int coordX, int coordZ, ImageLoader<GrayscaleImageData> loader) {
-        Scaling scaling = this.transform().scaling();
-        Offset offset = this.transform().offset();
+        Scaling scaling = this.transform.scaling();
+        Offset offset = this.transform.offset();
 
         Scaling.InterpolatedScale horizontalScale = scaling.horizontalScale();
         float horizontalScaleValue = horizontalScale.value();

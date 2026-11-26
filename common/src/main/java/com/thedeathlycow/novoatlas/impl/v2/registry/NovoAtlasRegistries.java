@@ -2,7 +2,9 @@ package com.thedeathlycow.novoatlas.impl.v2.registry;
 
 import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.BiomeMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.HeightMap;
+import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.biome.ColorMappingData;
 import com.thedeathlycow.novoatlas.impl.v2.image.data.ColorImageData;
 import com.thedeathlycow.novoatlas.impl.v2.image.data.GrayscaleImageData;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Interpolator;
@@ -17,9 +19,13 @@ public final class NovoAtlasRegistries {
 
     public static final ResourceKey<Registry<HeightMap>> HEIGHT_MAP = ResourceKey.createRegistryKey(NovoAtlas.id("maps/height_map"));
 
+    public static final ResourceKey<Registry<BiomeMap>> BIOME_MAP = ResourceKey.createRegistryKey(NovoAtlas.id("maps/biome_map"));
+
     public static final ResourceKey<Registry<MapCodec<? extends ImageSampler>>> IMAGE_SAMPLER_TYPE = ResourceKey.createRegistryKey(NovoAtlas.id("image_sampler_type"));
 
     public static final ResourceKey<Registry<MapCodec<? extends Interpolator>>> INTERPOLATOR_TYPE = ResourceKey.createRegistryKey(NovoAtlas.id("interpolator_type"));
+
+    public static final ResourceKey<Registry<ColorMappingData>> COLOR_MAPPING = ResourceKey.createRegistryKey(NovoAtlas.id("color_mapping"));
 
     private NovoAtlasRegistries() {
     }

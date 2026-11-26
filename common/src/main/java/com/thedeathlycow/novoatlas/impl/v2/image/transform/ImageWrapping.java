@@ -23,7 +23,7 @@ public enum ImageWrapping implements StringRepresentable {
         int get(int x, int z);
     }
 
-    public int transform(int x, int z, int width, int height, ValueGetter pixels) {
+    public int apply(int x, int z, int width, int height, ValueGetter pixels) {
         return switch (this) {
             case CLAMP_TO_EDGE -> pixels.get(Mth.clamp(x, 0, width - 1), Mth.clamp(z, 0, height - 1));
             case REPEAT -> pixels.get(Math.floorMod(x, width),  Math.floorMod(z, height));

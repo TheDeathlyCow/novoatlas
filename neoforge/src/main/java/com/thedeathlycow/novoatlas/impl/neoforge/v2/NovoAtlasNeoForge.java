@@ -1,7 +1,9 @@
 package com.thedeathlycow.novoatlas.impl.neoforge.v2;
 
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.BiomeMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.HeightMap;
+import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.biome.ColorMappingData;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Lanczos;
@@ -50,6 +52,8 @@ public final class NovoAtlasNeoForge {
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(NovoAtlasRegistries.HEIGHT_MAP, HeightMap.DIRECT_CODEC);
+        event.dataPackRegistry(NovoAtlasRegistries.BIOME_MAP, BiomeMap.DIRECT_CODEC);
+        event.dataPackRegistry(NovoAtlasRegistries.COLOR_MAPPING, ColorMappingData.DIRECT_CODEC);
     }
 
     private static void register(RegisterEvent event) {
