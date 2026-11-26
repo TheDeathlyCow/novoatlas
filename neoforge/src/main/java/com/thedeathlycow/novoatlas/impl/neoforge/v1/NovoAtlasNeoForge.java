@@ -14,7 +14,9 @@ import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bicubic;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Bilinear;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Lanczos;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.NearestNeighbour;
+import com.thedeathlycow.novoatlas.impl.v2.image.sampler.ImageSampler;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasBuiltinRegistries;
+import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -38,7 +40,7 @@ public final class NovoAtlasNeoForge {
         NovoAtlas.init();
 
 //        NeoForge.EVENT_BUS.addListener(NovoAtlasNeoForge::registerResourceReloader);
-//        bus.addListener(NovoAtlasNeoForge::registerDatapackRegistries);
+        bus.addListener(NovoAtlasNeoForge::registerDatapackRegistries);
 //        bus.addListener(NovoAtlasNeoForge::register);
         bus.addListener(NovoAtlasNeoForge::addExamplePacks);
 
@@ -48,7 +50,13 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void registerRegistries(NewRegistryEvent event) {
+        event.register(NovoAtlasBuiltinRegistries.IMAGE_SAMPLER_TYPE);
         event.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE);
+    }
+
+
+    private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
+        event.dataPackRegistry(NovoAtlasRegistries.IMAGE_SAMPLER, ImageSampler.BASE_CODEC.codec());
     }
 
     private static void addExamplePacks(AddPackFindersEvent event) {
