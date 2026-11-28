@@ -2,15 +2,8 @@ package com.thedeathlycow.novoatlas.impl.v1.image;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
-import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Interpolator;
-import com.thedeathlycow.novoatlas.impl.v2.image.io.ImageLoader;
-import com.thedeathlycow.novoatlas.impl.v2.image.sampler.ImageSampler;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageTransform;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.Offset;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.Scaling;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.InterpolatorV1;
 import net.minecraft.util.ExtraCodecs;
 
 public record MapScaleConfig(
@@ -31,10 +24,10 @@ public record MapScaleConfig(
     );
 
     public record HorizontalConfig(
-            Interpolator interpolation,
+            InterpolatorV1 interpolation,
             float value
     ) {
-        public static final HorizontalConfig DEFAULT = new HorizontalConfig(Interpolator.nearestNeighbour(), 1.0f);
+        public static final HorizontalConfig DEFAULT = new HorizontalConfig(InterpolatorV1.nearestNeighbour(), 1.0f);
 
         public HorizontalConfig(float value) {
             this(DEFAULT.interpolation(), value);
@@ -42,7 +35,7 @@ public record MapScaleConfig(
 
         private static final Codec<HorizontalConfig> BASE_CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
-                        Interpolator.BASE_CODEC
+                        InterpolatorV1.BASE_CODEC
                                 .forGetter(HorizontalConfig::interpolation),
                         ExtraCodecs.POSITIVE_FLOAT
                                 .fieldOf("value")
@@ -65,10 +58,7 @@ public record MapScaleConfig(
         public static final Codec<HorizontalConfig> CODEC = Codec.withAlternative(BASE_CODEC, FLOAT_CODEC);
 
         public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
-            return this.interpolation.sample(
-                    x, z,
-                    Interpolator.context(image.asNewApiSampler(), mapInfo.asTransform(), null)
-            );
+            return this.interpolation.sample(x, z, image, mapInfo);
         }
     }
 
