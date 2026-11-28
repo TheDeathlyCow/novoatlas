@@ -6,8 +6,8 @@ import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
 import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageWrapping;
 import net.minecraft.util.Mth;
 
-public final class BicubicV1 implements InterpolatorV1 {
-    public static final MapCodec<BicubicV1> CODEC = MapCodec.unit(new BicubicV1());
+public final class Bicubic implements Interpolator {
+    public static final MapCodec<Bicubic> CODEC = MapCodec.unit(new Bicubic());
 
     private static final int NEIGHBORHOOD_WIDTH = 4;
 
@@ -41,7 +41,7 @@ public final class BicubicV1 implements InterpolatorV1 {
     }
 
     @Override
-    public MapCodec<BicubicV1> codec() {
+    public MapCodec<Bicubic> codec() {
         return CODEC;
     }
 

@@ -4,8 +4,8 @@ import com.mojang.serialization.MapCodec;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
 
-public final class NearestNeighbourV1 implements InterpolatorV1 {
-    public static final MapCodec<NearestNeighbourV1> CODEC = MapCodec.unit(new NearestNeighbourV1());
+public final class NearestNeighbour implements Interpolator {
+    public static final MapCodec<NearestNeighbour> CODEC = MapCodec.unit(new NearestNeighbour());
 
     @Override
     public double sample(double pixelX, double pixelZ, MapImage image, MapInfo mapInfo) {
@@ -13,7 +13,7 @@ public final class NearestNeighbourV1 implements InterpolatorV1 {
     }
 
     @Override
-    public MapCodec<NearestNeighbourV1> codec() {
+    public MapCodec<NearestNeighbour> codec() {
         return CODEC;
     }
 }

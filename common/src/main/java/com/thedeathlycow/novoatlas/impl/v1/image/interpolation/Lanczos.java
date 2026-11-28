@@ -7,15 +7,15 @@ import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
 import net.minecraft.util.ExtraCodecs;
 
 /// Implementation based on [Lánczos interpolation explained](https://mazzo.li/posts/lanczos.html).
-public record LanczosV1(
+public record Lanczos(
         int window
-) implements InterpolatorV1 {
-    public static final MapCodec<LanczosV1> CODEC = RecordCodecBuilder.mapCodec(
+) implements Interpolator {
+    public static final MapCodec<Lanczos> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     ExtraCodecs.POSITIVE_INT
                             .optionalFieldOf("window", 2)
-                            .forGetter(LanczosV1::window)
-            ).apply(instance, LanczosV1::new)
+                            .forGetter(Lanczos::window)
+            ).apply(instance, Lanczos::new)
     );
 
     @Override
@@ -51,7 +51,7 @@ public record LanczosV1(
     }
 
     @Override
-    public MapCodec<LanczosV1> codec() {
+    public MapCodec<Lanczos> codec() {
         return CODEC;
     }
 

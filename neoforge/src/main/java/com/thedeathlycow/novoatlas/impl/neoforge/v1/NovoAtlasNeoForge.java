@@ -8,13 +8,13 @@ import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.BlendImageToRandomChunkGene
 import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.ImageMapChunkGenerator;
 import com.thedeathlycow.novoatlas.impl.v1.gen.density.*;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.BicubicV1;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.BilinearV1;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.LanczosV1;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.NearestNeighbourV1;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Bicubic;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Bilinear;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Lanczos;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.NearestNeighbour;
 import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
-import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasBuiltinRegistriesV1;
-import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistriesV1;
+import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasBuiltinRegistries;
+import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistries;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -40,7 +40,7 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void registerRegistries(NewRegistryEvent event) {
-        event.register(NovoAtlasBuiltinRegistriesV1.INTERPOLATOR_TYPE);
+        event.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE);
     }
 
     private static void register(RegisterEvent event) {
@@ -63,11 +63,11 @@ public final class NovoAtlasNeoForge {
             event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_surface_level"), () -> BlendSurfaceLevel.CODEC);
         }
 
-        if (event.getRegistryKey() == NovoAtlasRegistriesV1.INTERPOLATOR_TYPE) {
-            event.register(NovoAtlasRegistriesV1.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), () -> NearestNeighbourV1.CODEC);
-            event.register(NovoAtlasRegistriesV1.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), () -> BilinearV1.CODEC);
-            event.register(NovoAtlasRegistriesV1.INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"), () -> BicubicV1.CODEC);
-            event.register(NovoAtlasRegistriesV1.INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"), () -> LanczosV1.CODEC);
+        if (event.getRegistryKey() == NovoAtlasRegistries.LEGACY_INTERPOLATOR_TYPE) {
+            event.register(NovoAtlasRegistries.LEGACY_INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), () -> NearestNeighbour.CODEC);
+            event.register(NovoAtlasRegistries.LEGACY_INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), () -> Bilinear.CODEC);
+            event.register(NovoAtlasRegistries.LEGACY_INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"), () -> Bicubic.CODEC);
+            event.register(NovoAtlasRegistries.LEGACY_INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"), () -> Lanczos.CODEC);
 
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("nearest_neighbor"));
             addDefaultAlias(event.getRegistry(), NovoAtlas.id("bilinear"));
@@ -77,11 +77,11 @@ public final class NovoAtlasNeoForge {
     }
 
     private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(NovoAtlasRegistriesV1.MAP_INFO, MapInfo.DIRECT_CODEC);
+        event.dataPackRegistry(NovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
     }
 
     private static void registerResourceReloader(AddServerReloadListenersEvent event) {
-        event.addListener(NovoAtlasRegistriesV1.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
-        event.addListener(NovoAtlasRegistriesV1.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
+        event.addListener(NovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
+        event.addListener(NovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
     }
 }

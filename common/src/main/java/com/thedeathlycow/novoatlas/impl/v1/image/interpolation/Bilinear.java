@@ -5,8 +5,8 @@ import com.thedeathlycow.novoatlas.impl.v1.image.MapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
 import net.minecraft.util.Mth;
 
-public final class BilinearV1 implements InterpolatorV1 {
-    public static final MapCodec<BilinearV1> CODEC = MapCodec.unit(new BilinearV1());
+public final class Bilinear implements Interpolator {
+    public static final MapCodec<Bilinear> CODEC = MapCodec.unit(new Bilinear());
 
     @Override
     public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
@@ -31,7 +31,7 @@ public final class BilinearV1 implements InterpolatorV1 {
     }
 
     @Override
-    public MapCodec<BilinearV1> codec() {
+    public MapCodec<Bilinear> codec() {
         return CODEC;
     }
 }

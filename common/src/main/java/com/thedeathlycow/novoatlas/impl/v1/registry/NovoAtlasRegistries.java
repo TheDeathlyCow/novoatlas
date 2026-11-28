@@ -5,13 +5,11 @@ import com.thedeathlycow.novoatlas.impl.NovoAtlas;
 import com.thedeathlycow.novoatlas.impl.v1.image.BiomeMapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.HeightMapImage;
 import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
-import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.InterpolatorV1;
-import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Interpolator;
-import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Interpolator;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 
-public final class NovoAtlasRegistriesV1 {
+public final class NovoAtlasRegistries {
     public static final ResourceKey<Registry<MapInfo>> MAP_INFO = ResourceKey.createRegistryKey(
             NovoAtlas.id("map_info")
     );
@@ -24,10 +22,10 @@ public final class NovoAtlasRegistriesV1 {
             NovoAtlas.id("biome_map")
     );
 
-    public static final ResourceKey<Registry<MapCodec<? extends InterpolatorV1>>> INTERPOLATOR_TYPE = ResourceKey.createRegistryKey(
-            NovoAtlas.id("v1/interpolation_type")
+    public static final ResourceKey<Registry<MapCodec<? extends Interpolator>>> LEGACY_INTERPOLATOR_TYPE = ResourceKey.createRegistryKey(
+            NovoAtlas.id("legacy_interpolation_type")
     );
 
-    private NovoAtlasRegistriesV1() {
+    private NovoAtlasRegistries() {
     }
 }
