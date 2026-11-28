@@ -7,8 +7,6 @@ import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Interpolator;
 import com.thedeathlycow.novoatlas.impl.v2.image.io.ImageLoader;
 import com.thedeathlycow.novoatlas.impl.v2.image.sampler.ImageSampler;
 import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageTransform;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.Offset;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.Scaling;
 import com.thedeathlycow.novoatlas.impl.v2.math.CoordinateSpace;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
 import net.minecraft.core.Holder;
@@ -38,8 +36,18 @@ public final class HeightMap {
     public int getHeightValue(int coordX, int coordZ, ImageLoader<GrayscaleImageData> loader, ImageTransform baseTransform) {
         ImageTransform mergedTransform = this.transform.merge(baseTransform);
 
-        double xR = CoordinateSpace.coordToIndexX(coordX, mergedTransform, this.data.width(loader));
-        double zR = CoordinateSpace.coordToIndexX(coordZ, mergedTransform, this.data.height(loader));
+        double xR = CoordinateSpace.coordToIndexWithAlpha(
+                coordX,
+                mergedTransform.getHorizontalScaleValue(),
+                mergedTransform.getRelativeOffsetZ(),
+                this.data.width(loader)
+        );
+        double zR = CoordinateSpace.coordToIndexWithAlpha(
+                coordZ,
+                mergedTransform.getHorizontalScaleValue(),
+                mergedTransform.getRelativeOffsetZ(),
+                this.data.height(loader)
+        );
 
         double height = transform.getHorizontalScaleInterpolation().sample(xR, zR, Interpolator.context(this.data, mergedTransform, loader));
 

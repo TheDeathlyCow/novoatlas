@@ -34,7 +34,7 @@ public final class ColorMappingData {
 
     private final Map<String, Optional<Holder<Biome>>> biomes;
 
-    public ColorMappingData(Map<String, Optional<Holder<Biome>>> biomes) {
+    private ColorMappingData(Map<String, Optional<Holder<Biome>>> biomes) {
         this.biomes = biomes;
     }
 

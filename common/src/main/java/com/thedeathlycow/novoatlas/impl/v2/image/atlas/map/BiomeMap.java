@@ -14,7 +14,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.codec.RegistryFileCodec;
 import net.minecraft.world.level.biome.Biome;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public final class BiomeMap {
     public static final Codec<BiomeMap> DIRECT_CODEC = RecordCodecBuilder.create(
@@ -49,21 +50,31 @@ public final class BiomeMap {
         this.strict = strict;
     }
 
-    @Nullable
+    @NonNull
     public Holder<Biome> getBiome(
             int quartX,
             int quartZ,
             ImageLoader<ColorImageData> loader,
-            @Nullable Holder<Biome> surfaceBiome,
-            ImageTransform baseTransform
+            ImageTransform baseTransform,
+            Holder<Biome> defaultBiome
     ) {
         ImageTransform mergedTransform = this.transform.merge(baseTransform);
 
-        double xR = CoordinateSpace.coordToIndexX(quartX, mergedTransform, this.data.width(loader));
-        double zR = CoordinateSpace.coordToIndexX(quartZ, mergedTransform, this.data.height(loader));
+        double xR = CoordinateSpace.coordToIndexWithAlpha(
+                quartX,
+                mergedTransform.getHorizontalScaleValue(),
+                mergedTransform.getRelativeOffsetZ(),
+                this.data.width(loader)
+        );
+        double zR = CoordinateSpace.coordToIndexWithAlpha(
+                quartZ,
+                mergedTransform.getHorizontalScaleValue(),
+                mergedTransform.getRelativeOffsetZ(),
+                this.data.height(loader)
+        );
 
         int color = this.data.getTruncated(xR, zR, this.transform, loader);
 
-        return this.mapping.getBiome(color, strict, surfaceBiome);
+        return this.mapping.getBiome(color, strict, defaultBiome);
     }
 }

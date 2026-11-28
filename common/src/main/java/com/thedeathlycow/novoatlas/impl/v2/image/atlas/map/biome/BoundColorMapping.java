@@ -8,6 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.biome.Biome;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
@@ -39,12 +40,12 @@ public final class BoundColorMapping {
         }
     }
 
-    @Nullable
-    public Holder<Biome> getBiome(int color, boolean strict, @Nullable Holder<Biome> surfaceBiome) {
+    @NonNull
+    public Holder<Biome> getBiome(int color, boolean strict, Holder<Biome> defaultBiome) {
         if (!this.cache.containsKey(color)) {
-            return strict ? null : this.getClosest(color).orElse(surfaceBiome);
+            return strict ? defaultBiome : this.getClosest(color).orElse(defaultBiome);
         } else {
-            return this.cache.get(color).orElse(surfaceBiome);
+            return this.cache.get(color).orElse(defaultBiome);
         }
     }
 
