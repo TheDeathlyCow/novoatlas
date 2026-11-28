@@ -29,6 +29,10 @@ public record Offset(
     }
 
     public Offset merge(Offset other) {
+        if (this.isUnitOffset()) {
+            return other;
+        }
+
         if (other.isUnitOffset()) {
             return this;
         }

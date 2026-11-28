@@ -42,6 +42,10 @@ public record ImageTransform(
     /// Uses this transform's wrapping and/or interpolation if they are non-empty, otherwise falls back to the wrapping
     /// and/or interpolation provided by `other`.
     public ImageTransform merge(ImageTransform other) {
+        if (this.isUnitTransform()) {
+            return other;
+        }
+
         if (other.isUnitTransform()) {
             return this;
         }

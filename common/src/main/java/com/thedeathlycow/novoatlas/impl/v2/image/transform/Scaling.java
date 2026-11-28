@@ -30,6 +30,10 @@ public record Scaling(
     }
 
     public Scaling merge(Scaling other) {
+        if (this.isUnitScaling()) {
+            return other;
+        }
+
         if (other.isUnitScaling()) {
             return this;
         }
