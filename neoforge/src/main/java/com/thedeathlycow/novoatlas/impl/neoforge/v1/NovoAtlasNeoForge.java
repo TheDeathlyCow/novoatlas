@@ -1,0 +1,87 @@
+package com.thedeathlycow.novoatlas.impl.neoforge.v1;
+
+import com.thedeathlycow.novoatlas.impl.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.v1.gen.biome.BiomeCellColorMapBiomeSource;
+import com.thedeathlycow.novoatlas.impl.v1.gen.biome.BoundedMapBiomeSource;
+import com.thedeathlycow.novoatlas.impl.v1.gen.biome.ColorMapBiomeSource;
+import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.BlendImageToRandomChunkGenerator;
+import com.thedeathlycow.novoatlas.impl.v1.gen.chunk.ImageMapChunkGenerator;
+import com.thedeathlycow.novoatlas.impl.v1.gen.density.*;
+import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Bicubic;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Bilinear;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.Lanczos;
+import com.thedeathlycow.novoatlas.impl.v1.image.interpolation.NearestNeighbour;
+import com.thedeathlycow.novoatlas.impl.v1.registry.MapImageRegistry;
+import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasBuiltinRegistries;
+import com.thedeathlycow.novoatlas.impl.v1.registry.NovoAtlasRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
+
+@Mod(NovoAtlas.MOD_ID)
+public final class NovoAtlasNeoForge {
+    public NovoAtlasNeoForge(IEventBus bus) {
+        bus.addListener(NovoAtlasNeoForge::registerRegistries);
+        NeoForge.EVENT_BUS.addListener(NovoAtlasNeoForge::registerResourceReloader);
+        bus.addListener(NovoAtlasNeoForge::registerDatapackRegistries);
+        bus.addListener(NovoAtlasNeoForge::register);
+    }
+
+    private static void addDefaultAlias(Registry<?> registry, Identifier id) {
+        registry.addAlias(Identifier.withDefaultNamespace(id.getPath()), id);
+    }
+
+    private static void registerRegistries(NewRegistryEvent event) {
+        event.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE);
+    }
+
+    private static void register(RegisterEvent event) {
+        if (event.getRegistryKey() == Registries.CHUNK_GENERATOR) {
+            event.register(Registries.CHUNK_GENERATOR, NovoAtlas.id("image_map"), () -> ImageMapChunkGenerator.CODEC);
+            event.register(Registries.CHUNK_GENERATOR, NovoAtlas.expId("blend_image_map_to_random"), () -> BlendImageToRandomChunkGenerator.CODEC);
+        }
+
+        if (event.getRegistryKey() == Registries.BIOME_SOURCE) {
+            event.register(Registries.BIOME_SOURCE, NovoAtlas.id("color_map"), () -> ColorMapBiomeSource.CODEC);
+            event.register(Registries.BIOME_SOURCE, NovoAtlas.id("biome_cell_color_map"), () -> BiomeCellColorMapBiomeSource.CODEC);
+            event.register(Registries.BIOME_SOURCE, NovoAtlas.expId("bounded_biome_cell_color_map"), () -> BoundedMapBiomeSource.CODEC);
+        }
+
+        if (event.getRegistryKey() == Registries.DENSITY_FUNCTION_TYPE) {
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("heightmap"), () -> HeightmapDensityFunction.CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_height_from_map"), () -> GetHeightFromMapDensityFunction.CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_preliminary_height_from_map"), () -> GetPreliminaryHeightFromMapDensityFunction.CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_at_map_border"), () -> BlendAtMapBorder.CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.expId("blend_surface_level"), () -> BlendSurfaceLevel.CODEC);
+        }
+
+        if (event.getRegistryKey() == NovoAtlasRegistries.LEGACY_INTERPOLATOR_TYPE) {
+            event.register(NovoAtlasRegistries.LEGACY_INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), () -> NearestNeighbour.CODEC);
+            event.register(NovoAtlasRegistries.LEGACY_INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), () -> Bilinear.CODEC);
+            event.register(NovoAtlasRegistries.LEGACY_INTERPOLATOR_TYPE, NovoAtlas.id("bicubic"), () -> Bicubic.CODEC);
+            event.register(NovoAtlasRegistries.LEGACY_INTERPOLATOR_TYPE, NovoAtlas.id("lanczos"), () -> Lanczos.CODEC);
+
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("nearest_neighbor"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("bilinear"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("bicubic"));
+            addDefaultAlias(event.getRegistry(), NovoAtlas.id("lanczos"));
+        }
+    }
+
+    private static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
+        event.dataPackRegistry(NovoAtlasRegistries.MAP_INFO, MapInfo.DIRECT_CODEC);
+    }
+
+    private static void registerResourceReloader(AddServerReloadListenersEvent event) {
+        event.addListener(NovoAtlasRegistries.HEIGHTMAP.identifier(), MapImageRegistry.HEIGHTMAP);
+        event.addListener(NovoAtlasRegistries.BIOME_MAP.identifier(), MapImageRegistry.BIOME_MAP);
+    }
+}

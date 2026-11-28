@@ -1,0 +1,85 @@
+package com.thedeathlycow.novoatlas.impl.v1.gen.biome;
+
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.thedeathlycow.novoatlas.impl.v1.image.MapInfo;
+import com.thedeathlycow.novoatlas.impl.v1.image.biome.provider.LayeredMapBiomeProvider;
+import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeResolver;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Climate;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
+import java.util.stream.Stream;
+
+@Deprecated(since = "1.7.4")
+public class ColorMapBiomeSource extends BiomeSource {
+    public static final MapCodec<ColorMapBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                    MapInfo.CODEC
+                            .fieldOf("map_info")
+                            .forGetter(ColorMapBiomeSource::getMapInfo),
+                    Biome.CODEC
+                            .fieldOf("default_biome")
+                            .forGetter(ColorMapBiomeSource::getDefaultBiome)
+            ).apply(instance, ColorMapBiomeSource::new)
+    );
+
+    private final Holder<MapInfo> mapInfo;
+    private final Holder<Biome> defaultBiome;
+
+    public ColorMapBiomeSource(Holder<MapInfo> mapInfo, Holder<Biome> defaultBiome) {
+        this.mapInfo = mapInfo;
+        this.defaultBiome = defaultBiome;
+    }
+
+    @Override
+    protected MapCodec<? extends ColorMapBiomeSource> codec() {
+        return CODEC;
+    }
+
+    @Override
+    @NotNull
+    protected Stream<Holder<Biome>> collectPossibleBiomes() {
+        MapInfo mapInfoValue = this.mapInfo.value();
+
+        Stream<Holder<Biome>> baseBiomes = mapInfoValue
+                .surfaceBiomes()
+                .collectPossibleBiomes();
+
+        Optional<LayeredMapBiomeProvider> caveBiomes = mapInfoValue.caveBiomes();
+
+        if (caveBiomes.isPresent()) {
+            baseBiomes = Stream.concat(
+                    baseBiomes,
+                    mapInfoValue.caveBiomes().orElseThrow().collectPossibleBiomes()
+            );
+        }
+
+        return Stream.concat(Stream.of(this.defaultBiome), baseBiomes);
+    }
+
+    @Override
+    public BiomeResolver createResolver(Climate.Sampler sampler) {
+        BiomeResolver resolver = this.mapInfo.value().createBiomeResolver(this.defaultBiome, quart -> quart);
+
+        return (quartX, quartY, quartZ) -> {
+            int x = QuartPos.toBlock(quartX);
+            int y = QuartPos.toBlock(quartY);
+            int z = QuartPos.toBlock(quartZ);
+
+            return resolver.getNoiseBiome(x, y, z);
+        };
+    }
+
+    public Holder<MapInfo> getMapInfo() {
+        return mapInfo;
+    }
+
+    public Holder<Biome> getDefaultBiome() {
+        return defaultBiome;
+    }
+}

@@ -18,10 +18,8 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.thedeathlycow.novoatlas.impl.fabric.NovoAtlasFabric"
-        ],
-        "client": [
-            "com.thedeathlycow.novoatlas.impl.fabric.client.NovoAtlasClient"
+            "com.thedeathlycow.novoatlas.impl.fabric.v2.NovoAtlasFabric",
+            "com.thedeathlycow.novoatlas.impl.fabric.v1.NovoAtlasFabric"
         ]
     },
     "mixins": [
@@ -33,7 +31,7 @@
         "minecraft": "${minecraft_version_predicate}",
         "java": ">=${java_version}"
     },
-    "accessWidener": "${mod_id}.accesswidener",
+    "accessWidener": "${mod_id}.classtweaker",
     "custom": {
         "modmenu": {
             "links": {
