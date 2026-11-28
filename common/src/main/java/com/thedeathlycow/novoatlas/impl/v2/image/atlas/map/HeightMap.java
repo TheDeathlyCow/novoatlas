@@ -13,7 +13,6 @@ import com.thedeathlycow.novoatlas.impl.v2.math.CoordinateSpace;
 import com.thedeathlycow.novoatlas.impl.v2.registry.NovoAtlasRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.codec.RegistryFileCodec;
-import org.joml.Vector2fc;
 
 public final class HeightMap {
     public static final Codec<HeightMap> DIRECT_CODEC = RecordCodecBuilder.create(
@@ -26,11 +25,9 @@ public final class HeightMap {
                             .forGetter(i -> i.data)
             ).apply(instance, HeightMap::new)
     );
-
     public static final Codec<Holder<HeightMap>> CODEC = RegistryFileCodec.create(NovoAtlasRegistries.HEIGHT_MAP, DIRECT_CODEC, false);
 
     private final ImageTransform transform;
-
     private final ImageSampler data;
 
     public HeightMap(ImageTransform transform, ImageSampler data) {
@@ -38,19 +35,16 @@ public final class HeightMap {
         this.data = data;
     }
 
-    public int getHeightValue(int coordX, int coordZ, ImageLoader<GrayscaleImageData> loader) {
-        Scaling scaling = this.transform.scaling();
-        Offset offset = this.transform.offset();
+    public int getHeightValue(int coordX, int coordZ, ImageLoader<GrayscaleImageData> loader, ImageTransform baseTransform) {
+        Scaling scaling = transform.scaling();
+        Scaling.InterpolatedScale horizontalScale = transform.scaling().horizontalScale();
+        Offset offset = transform.offset();
 
-        Scaling.InterpolatedScale horizontalScale = scaling.horizontalScale();
-        float horizontalScaleValue = horizontalScale.value();
-        Vector2fc centerOffset = offset.centerOffset();
-
-        double xR = CoordinateSpace.coordToIndexWithAlpha(coordX, horizontalScaleValue, centerOffset.x(), this.data.width(loader));
-        double zR = CoordinateSpace.coordToIndexWithAlpha(coordZ, horizontalScaleValue, centerOffset.y(), this.data.height(loader));
+        double xR = CoordinateSpace.coordToIndexX(coordX, this.transform, this.data.width(loader));
+        double zR = CoordinateSpace.coordToIndexX(coordZ, this.transform, this.data.height(loader));
 
         double height = horizontalScale.interpolation().sample(xR, zR, Interpolator.context(this.data, this.transform, loader));
 
-        return (int) Math.round(scaling.verticalScale() * height + offset.startingY());
+        return (int) Math.round(scaling.verticalScale() * height + offset.absoluteY());
     }
 }

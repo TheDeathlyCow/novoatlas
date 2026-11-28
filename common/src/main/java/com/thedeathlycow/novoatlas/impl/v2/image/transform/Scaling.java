@@ -53,9 +53,5 @@ public record Scaling(
         public InterpolatedScale(float value) {
             this(DEFAULT.interpolation(), value);
         }
-
-//        public double sample(double x, double z, MapImage image, MapInfo mapInfo) {
-//            return this.interpolation.sample(x, z, new Interpolator.Context(image.asNewApiData(), mapInfo.imageWrapping()));
-//        }
     }
 }
