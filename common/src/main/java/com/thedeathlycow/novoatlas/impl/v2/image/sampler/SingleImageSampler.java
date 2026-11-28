@@ -4,28 +4,22 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
 import com.thedeathlycow.novoatlas.impl.v2.image.io.ImageLoader;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageTransform;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
 public final class SingleImageSampler implements ImageSampler {
     public static final MapCodec<SingleImageSampler> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
-                    ImageTransform.CODEC
-                            .fieldOf("transform")
-                            .forGetter(i -> i.transform),
                     Identifier.CODEC
                             .fieldOf("image_id")
                             .forGetter(i -> i.imageId)
             ).apply(instance, SingleImageSampler::new)
     );
 
-    private final ImageTransform transform;
     private final Identifier imageId;
     private @Nullable ImageData data;
 
-    public SingleImageSampler(ImageTransform transform, Identifier imageId) {
-        this.transform = transform;
+    public SingleImageSampler(Identifier imageId) {
         this.imageId = imageId;
     }
 
@@ -47,11 +41,6 @@ public final class SingleImageSampler implements ImageSampler {
     @Override
     public int height(ImageLoader<? extends ImageData> loader) {
         return this.getImageData(loader).height();
-    }
-
-    @Override
-    public ImageTransform transform() {
-        return this.transform;
     }
 
     private ImageData getImageData(ImageLoader<? extends ImageData> loader) {
