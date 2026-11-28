@@ -1,6 +1,9 @@
 package com.thedeathlycow.novoatlas.impl.fabric.v2;
 
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.v2.gen.density.GetDirectHeight;
+import com.thedeathlycow.novoatlas.impl.v2.gen.density.GetDirectPreliminaryHeight;
+import com.thedeathlycow.novoatlas.impl.v2.gen.density.LerpHeightMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.BiomeMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.HeightMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.biome.ColorMappingData;
@@ -18,6 +21,7 @@ import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 
 public class NovoAtlasFabric implements ModInitializer {
@@ -30,6 +34,10 @@ public class NovoAtlasFabric implements ModInitializer {
         DynamicRegistries.register(NovoAtlasRegistries.COLOR_MAPPING, ColorMappingData.DIRECT_CODEC);
 
         Registry.register(NovoAtlasBuiltinRegistries.IMAGE_SAMPLER_TYPE, NovoAtlas.id("single_image"), SingleImageSampler.CODEC);
+
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("lerp_heightmap"), LerpHeightMap.CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_direct_height"), GetDirectHeight.CODEC);
+        Registry.register(BuiltInRegistries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_direct_preliminary_height"), GetDirectPreliminaryHeight.CODEC);
 
         Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("nearest_neighbor"), NearestNeighbour.CODEC);
         Registry.register(NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE, NovoAtlas.id("bilinear"), Bilinear.CODEC);

@@ -2,6 +2,8 @@ package com.thedeathlycow.novoatlas.impl.v2.image.io;
 
 import com.google.common.base.Suppliers;
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.v2.image.data.ColorImageData;
+import com.thedeathlycow.novoatlas.impl.v2.image.data.GrayscaleImageData;
 import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
@@ -9,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Util;
+import net.minecraft.util.context.ContextKey;
 import org.jspecify.annotations.NonNull;
 
 import javax.imageio.ImageIO;
@@ -19,6 +22,9 @@ import java.util.concurrent.*;
 import java.util.function.Supplier;
 
 public final class ImageLoader<T extends ImageData> {
+    public static final ContextKey<ImageLoader<GrayscaleImageData>> GRAYSCALE_CONTEXT = new ContextKey<>(NovoAtlas.id("grayscale_loader"));
+    public static final ContextKey<ImageLoader<ColorImageData>> COLOR_CONTEXT = new ContextKey<>(NovoAtlas.id("color_loader"));
+
     private final ConcurrentMap<Identifier, CompletableFuture<T>> registry = new ConcurrentHashMap<>();
 
     private final ResourceKey<Registry<T>> registryId;

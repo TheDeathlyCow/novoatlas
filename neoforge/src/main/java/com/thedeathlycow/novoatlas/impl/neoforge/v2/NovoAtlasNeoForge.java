@@ -1,6 +1,9 @@
 package com.thedeathlycow.novoatlas.impl.neoforge.v2;
 
 import com.thedeathlycow.novoatlas.impl.NovoAtlas;
+import com.thedeathlycow.novoatlas.impl.v2.gen.density.GetDirectHeight;
+import com.thedeathlycow.novoatlas.impl.v2.gen.density.GetDirectPreliminaryHeight;
+import com.thedeathlycow.novoatlas.impl.v2.gen.density.LerpHeightMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.BiomeMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.HeightMap;
 import com.thedeathlycow.novoatlas.impl.v2.image.atlas.map.biome.ColorMappingData;
@@ -64,6 +67,9 @@ public final class NovoAtlasNeoForge {
         }
 
         if (event.getRegistryKey() == Registries.DENSITY_FUNCTION_TYPE) {
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("lerp_heightmap"), () -> LerpHeightMap.CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_direct_height"), () -> GetDirectHeight.CODEC);
+            event.register(Registries.DENSITY_FUNCTION_TYPE, NovoAtlas.id("get_direct_preliminary_height"), () -> GetDirectPreliminaryHeight.CODEC);
         }
 
         if (event.getRegistryKey() == NovoAtlasRegistries.INTERPOLATOR_TYPE) {
