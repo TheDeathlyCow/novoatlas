@@ -6,8 +6,8 @@ public final class CoordinateSpace {
     public static double coordToIndexX(int coordIndex, ImageTransform transform, double size) {
         return CoordinateSpace.coordToIndexWithAlpha(
                 coordIndex,
-                transform.scaling().horizontalScale().value(),
-                transform.offset().relativeX(),
+                transform.getHorizontalScaleValue(),
+                transform.getRelativeOffsetX(),
                 size
         );
     }
@@ -15,8 +15,8 @@ public final class CoordinateSpace {
     public static double coordToIndexZ(int coordIndex, ImageTransform transform, double size) {
         return CoordinateSpace.coordToIndexWithAlpha(
                 coordIndex,
-                transform.scaling().horizontalScale().value(),
-                transform.offset().relativeZ(),
+                transform.getHorizontalScaleValue(),
+                transform.getRelativeOffsetZ(),
                 size
         );
     }

@@ -6,6 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.thedeathlycow.novoatlas.impl.v2.image.interpolation.Interpolator;
 import net.minecraft.util.ExtraCodecs;
 
+import java.util.Optional;
+
 public record Scaling(
         float verticalScale,
         InterpolatedScale horizontalScale
@@ -23,12 +25,31 @@ public record Scaling(
             ).apply(instance, Scaling::new)
     );
 
-    public record InterpolatedScale(Interpolator interpolation, float value) {
-        public static final InterpolatedScale DEFAULT = new InterpolatedScale(Interpolator.nearestNeighbour(), 1.0f);
+    public boolean isUnitScaling() {
+        return this == DEFAULT || (this.verticalScale == 1.0f && this.horizontalScale.value == 1.0f && this.horizontalScale.interpolation.isEmpty());
+    }
+
+    public Scaling merge(Scaling other) {
+        if (other.isUnitScaling()) {
+            return this;
+        }
+
+        return new Scaling(
+                this.verticalScale * other.verticalScale,
+                new InterpolatedScale(
+                        this.horizontalScale.interpolation.or(() -> other.horizontalScale.interpolation),
+                        this.horizontalScale.value * other.horizontalScale.value
+                )
+        );
+    }
+
+    public record InterpolatedScale(Optional<Interpolator> interpolation, float value) {
+        public static final InterpolatedScale DEFAULT = new InterpolatedScale(Optional.empty(), 1.0f);
 
         private static final Codec<InterpolatedScale> BASE_CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
-                        Interpolator.BASE_CODEC
+                        Interpolator.BASE_CODEC.codec()
+                                .optionalFieldOf("interpolation")
                                 .forGetter(InterpolatedScale::interpolation),
                         ExtraCodecs.POSITIVE_FLOAT
                                 .fieldOf("value")
@@ -52,6 +73,10 @@ public record Scaling(
 
         public InterpolatedScale(float value) {
             this(DEFAULT.interpolation(), value);
+        }
+
+        public Interpolator getInterpolation() {
+            return this.interpolation().orElse(Interpolator.nearestNeighbour());
         }
     }
 }

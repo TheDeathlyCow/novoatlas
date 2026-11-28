@@ -36,15 +36,13 @@ public final class HeightMap {
     }
 
     public int getHeightValue(int coordX, int coordZ, ImageLoader<GrayscaleImageData> loader, ImageTransform baseTransform) {
-        Scaling scaling = transform.scaling();
-        Scaling.InterpolatedScale horizontalScale = transform.scaling().horizontalScale();
-        Offset offset = transform.offset();
+        ImageTransform mergedTransform = this.transform.merge(baseTransform);
 
-        double xR = CoordinateSpace.coordToIndexX(coordX, this.transform, this.data.width(loader));
-        double zR = CoordinateSpace.coordToIndexX(coordZ, this.transform, this.data.height(loader));
+        double xR = CoordinateSpace.coordToIndexX(coordX, mergedTransform, this.data.width(loader));
+        double zR = CoordinateSpace.coordToIndexX(coordZ, mergedTransform, this.data.height(loader));
 
-        double height = horizontalScale.interpolation().sample(xR, zR, Interpolator.context(this.data, this.transform, loader));
+        double height = transform.getHorizontalScaleInterpolation().sample(xR, zR, Interpolator.context(this.data, mergedTransform, loader));
 
-        return (int) Math.round(scaling.verticalScale() * height + offset.absoluteY());
+        return (int) Math.round(mergedTransform.getVerticalScaleValue() * height + mergedTransform.getStartingY());
     }
 }

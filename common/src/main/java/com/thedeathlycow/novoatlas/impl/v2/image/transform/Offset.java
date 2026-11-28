@@ -23,4 +23,20 @@ public record Offset(
                             .forGetter(Offset::relativeZ)
             ).apply(instance, Offset::new)
     );
+
+    public boolean isUnitOffset() {
+        return this == DEFAULT || (this.absoluteY == 0 && this.relativeX == 0.0 && this.relativeZ == 0.0);
+    }
+
+    public Offset merge(Offset other) {
+        if (other.isUnitOffset()) {
+            return this;
+        }
+
+        return new Offset(
+                this.absoluteY + other.absoluteY,
+                this.relativeX + other.relativeX,
+                this.relativeZ + other.relativeZ
+        );
+    }
 }

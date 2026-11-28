@@ -15,7 +15,6 @@ import java.util.function.Function;
 public interface Interpolator {
     MapCodec<Interpolator> BASE_CODEC = NovoAtlasBuiltinRegistries.INTERPOLATOR_TYPE.byNameCodec()
             .dispatchMap(
-                    "interpolation",
                     Interpolator::codec,
                     Function.identity()
             );
@@ -39,15 +38,15 @@ public interface Interpolator {
     MapCodec<? extends Interpolator> codec();
 
     static Interpolator nearestNeighbour() {
-        return new NearestNeighbour();
+        return NearestNeighbour.INSTANCE;
     }
 
     static Interpolator bilinear() {
-        return new Bilinear();
+        return Bilinear.INSTANCE;
     }
 
     static Interpolator bicubic() {
-        return new Bicubic();
+        return Bicubic.INSTANCE;
     }
 
     static Interpolator lanczos(int window) {

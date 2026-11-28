@@ -1,12 +1,11 @@
 package com.thedeathlycow.novoatlas.impl.v2.image.interpolation;
 
 import com.mojang.serialization.MapCodec;
-import com.thedeathlycow.novoatlas.impl.v2.image.transform.ImageWrapping;
-import com.thedeathlycow.novoatlas.impl.v2.image.data.ImageData;
 import net.minecraft.util.Mth;
 
 public final class Bicubic implements Interpolator {
-    public static final MapCodec<Bicubic> CODEC = MapCodec.unit(new Bicubic());
+    static final Bicubic INSTANCE = new Bicubic();
+    public static final MapCodec<Bicubic> CODEC = MapCodec.unit(INSTANCE);
 
     private static final int NEIGHBORHOOD_WIDTH = 4;
 
@@ -52,5 +51,9 @@ public final class Bicubic implements Interpolator {
                 output[(col + 1) * NEIGHBORHOOD_WIDTH + row + 1] = ctx.getWrappedPixelValue(px, pz);
             }
         }
+    }
+
+    private Bicubic() {
+
     }
 }

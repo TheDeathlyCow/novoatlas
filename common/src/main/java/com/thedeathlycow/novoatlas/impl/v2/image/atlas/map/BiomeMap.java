@@ -52,14 +52,15 @@ public final class BiomeMap {
     @Nullable
     public Holder<Biome> getBiome(
             int quartX,
-            int quartY,
             int quartZ,
             ImageLoader<ColorImageData> loader,
             @Nullable Holder<Biome> surfaceBiome,
             ImageTransform baseTransform
     ) {
-        double xR = CoordinateSpace.coordToIndexX(quartX, this.transform, this.data.width(loader));
-        double zR = CoordinateSpace.coordToIndexX(quartZ, this.transform, this.data.height(loader));
+        ImageTransform mergedTransform = this.transform.merge(baseTransform);
+
+        double xR = CoordinateSpace.coordToIndexX(quartX, mergedTransform, this.data.width(loader));
+        double zR = CoordinateSpace.coordToIndexX(quartZ, mergedTransform, this.data.height(loader));
 
         int color = this.data.getTruncated(xR, zR, this.transform, loader);
 

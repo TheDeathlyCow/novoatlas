@@ -4,7 +4,8 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.util.Mth;
 
 public final class Bilinear implements Interpolator {
-    public static final MapCodec<Bilinear> CODEC = MapCodec.unit(new Bilinear());
+    static final Bilinear INSTANCE = new Bilinear();
+    public static final MapCodec<Bilinear> CODEC = MapCodec.unit(INSTANCE);
 
     @Override
     public double sample(double pixelX, double pixelZ, Context ctx) {
@@ -31,5 +32,9 @@ public final class Bilinear implements Interpolator {
     @Override
     public MapCodec<Bilinear> codec() {
         return CODEC;
+    }
+
+    private Bilinear() {
+
     }
 }
